@@ -5,7 +5,7 @@ import {
   store,
   UpdateGuideTips,
 } from "./store";
-import { EnumResourceItem } from "./table";
+import { EnumBuildItem, EnumResourceItem } from "./table";
 import { intToString } from "./utils";
 
 export function resourceUnpate(deltaTime: number) {
@@ -34,6 +34,8 @@ function updateResourceValue(
 ) {
   const add = data.cacheSpeed * deltaTime;
   data.cacheValue += add;
+  if (data.cacheMaxValue > 0 && data.cacheValue > data.cacheMaxValue)
+    data.cacheValue = data.cacheMaxValue;
   const strValue = intToString(data.cacheValue);
   if (strValue !== data.curValue) {
     store.commit(ModifyResourceCurValue, {
@@ -42,6 +44,7 @@ function updateResourceValue(
     });
   }
 }
+
 
 //设置各个资源的速率
 function setResourceSpeed(
@@ -87,13 +90,13 @@ function checkBuildUnlock(
 ) {
   if (data.unlock) return;
   switch (data.ID) {
-    case 2: //解锁获得金钱按钮
+    case EnumBuildItem.AddMoney: //解锁获得金钱按钮
       if (sourceArr.get(1)!.cacheValue >= 10) {
         data.unlock = true;
         store.commit(UpdateGuideTips, 0);
       }
       break;
-    case 3: //解锁获得知识按钮
+    case EnumBuildItem.AddResearch: //解锁获得知识按钮
       if (sourceArr.get(1)!.cacheValue >= 20) {
         data.unlock = true;
         store.commit(UpdateGuideTips, 1);
@@ -107,12 +110,18 @@ function checkResourceUnlock(
   data: resourceItemData,
   sourceArr: Map<number, resourceItemData>
 ) {
+  //影响力提升等级和各种解锁
+  if (data.ID === EnumResourceItem.Influence) {
+    if (data.cacheValue >= 100) {
+    }
+  }
+
   if (data.unlock) return;
   switch (data.ID) {
-    case 2: //解锁金钱，需要影响力大于10
+    case EnumResourceItem.Money: //解锁金钱，需要影响力大于10
       if (sourceArr.get(1)!.cacheValue >= 10) data.unlock = true;
       break;
-    case 3: //解锁知识，影响力大于20
+    case EnumResourceItem.Cost1: //解锁知识，影响力大于20
       if (sourceArr.get(1)!.cacheValue >= 20) data.unlock = true;
       break;
   }

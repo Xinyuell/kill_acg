@@ -16,14 +16,14 @@ const getData = computed(() => {
 </script>
 
 <template>
-  <div class="resourcePanel">
+  <div class="leftTable">
     <el-table
       :data="getData"
       :show-header="false"
       :stripe="true"
       tooltip-effect="dark"
     >
-      <el-table-column width="120">
+      <el-table-column width="90">
         <template #default="{ row }">
           <el-popover placement="bottom" trigger="hover" :width="400">
             <span style="font-size: 10px"
@@ -69,12 +69,15 @@ const getData = computed(() => {
         </template>
       </el-table-column>
     </el-table>
+
+     
   </div>
 </template>
 
-<style scoped>
-.resourcePanel {
+<style>
+.leftTable {
   width: 90%;
   margin: 2%;
 }
+
 </style>

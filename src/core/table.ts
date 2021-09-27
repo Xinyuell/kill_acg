@@ -32,10 +32,15 @@ export interface IBuildInfo extends IBaseInfo {
   UpgradeCostRatio: number;
 }
 
+
 export interface IResearchInfo extends IBaseInfo {
   Cost1: number;
   Cost2: number;
   UnLock: number[];
+}
+
+export interface IWorkInfo extends IBaseInfo{
+
 }
 
 export enum EnumResourceItem{
@@ -48,6 +53,7 @@ export enum EnumResourceItem{
   People
 }
 
+
 export const ItemInfoList: Map<number, IItemInfo> = new Map([
   [
     EnumResourceItem.Influence,
@@ -55,7 +61,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       ID: EnumResourceItem.Influence,
       Name: "影响力",
       Desc: "你对这个社会的影响力，很多事情都需要扩大影响力之后才能办到",
-      TipsContent: "每10点影响力获得1点金钱每秒",
+      TipsContent: "每20点影响力获得1点金钱每秒",
       BaseMax: 100,
       Type: ItemType.ShowPanel | ItemType.AutoUnLock,
     },
@@ -118,6 +124,13 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
   
 ]);
 
+export enum EnumBuildItem{
+  None,
+  AddInfluence,
+  AddMoney,
+  AddResearch,
+}
+
 export const BuildInfoList: Map<number, IBuildInfo> = new Map([
   [
     1,
@@ -147,8 +160,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
     3,
     {
       ID: 3,
-      Name: "了解动漫",
-      Desc: "在业余时间你了解动漫知识，为伟大的计划奠定良好的基础。消耗2点金钱获得1点动漫知识",
+      Name: "买漫画书",
+      Desc: "在业余时间你了解动漫知识，为伟大的计划奠定良好的基础。消耗5点金钱获得1点动漫知识",
       Type: ItemType.None,
       cityName: 0,
       OnClickType: BuildClickType.AddResearch,
@@ -162,7 +175,7 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     1,
     {
       ID: 1,
-      Name: "研究1",
+      Name: "",
       Desc: "I研究",
       Cost1: 50,
       Cost2: 0,
@@ -203,3 +216,40 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     },
   ],
 ]);
+
+
+export enum EnumWorkType {
+  None,
+  InfluenceWork,
+  MoneyWork,
+  CostWork,
+}
+/**
+ * 工作默认信息，map索引从1开始
+ */
+export const WorkInfoList:Map<number, IWorkInfo> = new Map([
+  [
+    EnumWorkType.InfluenceWork,
+    {
+      ID: EnumWorkType.InfluenceWork,
+      Name: "扩大影响力",
+      Desc: "去产出影响力的主要建筑工作，每个信徒/从众提升0.5%效率",
+    },
+  ],
+  [
+    EnumWorkType.MoneyWork,
+    {
+      ID: EnumWorkType.MoneyWork,
+      Name: "赚取金钱",
+      Desc: "去产出金钱的主要建筑工作，每个信徒/从众提升0.5%效率",
+    },
+  ],
+  [
+    EnumWorkType.CostWork,
+    {
+      ID: EnumWorkType.CostWork,
+      Name: "加快研究",
+      Desc: "去研究建筑工作，每个信徒/从众提升0.5%效率",
+    },
+  ],
+])

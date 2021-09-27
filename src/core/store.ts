@@ -1,7 +1,7 @@
 import { App } from "@vue/runtime-core";
 import { createStore } from "vuex";
 import { GameControl} from "./game";
-import { GameDataPayLoad, GameData } from "./gameSave";
+import {  GameData } from "./gameSave";
 
 export const ModifyResourceCurValue = "modifyResourceCurValue";
 export const ModifyResourceMaxValue = "modifyResourceMaxValue";
@@ -20,7 +20,7 @@ export const store = createStore({
     guideTipsID: -1,
   },
   mutations: {
-    modifyResourceCurValue(state: any, payload: GameDataPayLoad) {
+    modifyResourceCurValue(state: any, payload: any) {
       const data: GameData = state.gameData;
       if (data.sourceArr.has(payload.index))
         data.sourceArr.get(payload.index)!.curValue = payload.value;

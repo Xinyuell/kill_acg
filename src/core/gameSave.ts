@@ -22,6 +22,7 @@ export function getGameDataByBase64(code: string | undefined) {
   gameData.influenceLevel = saveGameData.influenceLevel;
   gameData.researchUnLockList = saveGameData.researchUnLockList;
   gameData.researchComplete = saveGameData.researchComplete;
+  gameData.workConfig = saveGameData.workConfig;
 
   saveGameData.sourceArr.forEach(function (value) {
     if (gameData.sourceArr.has(value.ID)) {
@@ -49,8 +50,9 @@ export function getCurrentSaveGameData() {
     buildArryList: [],
     acgProgressData: gameData.acgProgressData,
     influenceLevel: gameData.influenceLevel,
-    researchUnLockList:gameData.researchUnLockList,//已经解锁的研究
-    researchComplete:gameData.researchComplete//已经完成的研究
+    researchUnLockList: gameData.researchUnLockList, 
+    researchComplete: gameData.researchComplete, 
+    workConfig:gameData.workConfig,
   };
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
@@ -86,8 +88,9 @@ function initGameData() {
       [0, -1],
       [1, -1],
     ],
-    researchUnLockList:[1],//已经解锁的研究
-    researchComplete:[]//已经完成的研究
+    researchUnLockList: [1], //第一个研究默认解锁
+    researchComplete: [],
+    workConfig: [],
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
@@ -125,13 +128,14 @@ function initGameData() {
 }
 
 interface ISaveGameData {
-  cityUnlock: boolean[]; //解锁进度
-  sourceArr: ISaveResourcePanelData[]; //所有资源
-  buildArryList: ISaveBuildPanelData[]; //所有建筑
-  acgProgressData: object; //acg全局进度条
-  influenceLevel: number; //当前影响力的等级
-  researchUnLockList:number[]//已经解锁的研究
-  researchComplete:number[]//已经完成的研究
+  cityUnlock: boolean[]; 
+  sourceArr: ISaveResourcePanelData[]; 
+  buildArryList: ISaveBuildPanelData[]; 
+  acgProgressData: object; 
+  influenceLevel: number; 
+  researchUnLockList: number[]; 
+  researchComplete: number[]; 
+  workConfig:number[];
 }
 
 interface ISaveBuildPanelData {
@@ -175,18 +179,41 @@ export interface resourceItemData {
 }
 
 
-export interface GameDataPayLoad {
-  index: number;
-  value: string;
-}
-
 export interface GameData {
+  /**
+   * 建筑面板城市大分类是否解锁的布尔值数组
+   */
   cityUnlock: boolean[]; //解锁进度
-  sourceArr: Map<number, resourceItemData>; //所有资源
-  buildArryList: Map<number, buildItemData>; //所有建筑
-  acgProgressData: object; //acg全局进度条
-  influenceLevel: number; //当前影响力的等级
-  newsID: number[][];//随机的新闻ID
-  researchUnLockList:number[]//已经解锁的研究
-  researchComplete:number[]//已经完成的研究
+  /**
+   * 所有资源的信息
+   */
+  sourceArr: Map<number, resourceItemData>;
+  /**
+   * 所有建筑的信息
+   */
+  buildArryList: Map<number, buildItemData>;
+  /**
+   * acg全局进度条数据
+   */
+  acgProgressData: object;
+  /**
+   * 当前影响力的等级,同样决定城市等级
+   */
+  influenceLevel: number;
+  /**
+   * 随机的新闻ID
+   */
+  newsID: number[][];
+  /**
+   * 已经解锁的研究,里面也包含已经完成的研究
+   */
+  researchUnLockList: number[];
+  /**
+   * 已经完成的研究
+   */
+  researchComplete: number[];
+  /**
+   * 工作配置，每个工作安排了多少人
+   */
+  workConfig: number[];
 }

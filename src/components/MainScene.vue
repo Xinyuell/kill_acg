@@ -6,6 +6,7 @@ import ResourcePanel from "./Panel/ResourcePanel.vue";
 import BuildPanel from "./Panel/BuildPanel.vue";
 import { ReplaceGameData, store } from "../core/store";
 import { language } from "../core/language";
+import WorkPanel from "./Panel/WorkPanel.vue";
 
 const show1 = ref(false);
 const show2 = ref(false);
@@ -17,7 +18,7 @@ const news_1 = computed(() => {
   if (
     newsID === undefined ||
     newsID[0] === undefined ||
-    newsID[1] === undefined
+    newsID[1] === undefined || newsID[1] < 0
   ) {
     show1.value = false;
     return "";
@@ -35,7 +36,7 @@ const news_2 = computed(() => {
   if (
     newsID === undefined ||
     newsID[0] === undefined ||
-    newsID[1] === undefined
+    newsID[1] === undefined || newsID[1] < 0
   ) {
     show2.value = false;
     return "";
@@ -113,6 +114,7 @@ function handleSelect(key, keyPath){
     <el-container>
       <el-aside width="360px">
         <ResourcePanel />
+        <WorkPanel/>
       </el-aside>
       <el-container>
         <el-main>
@@ -131,8 +133,8 @@ function handleSelect(key, keyPath){
             <el-menu-item index="/game/research">
               <template #title>研究</template>
             </el-menu-item>
-            <el-menu-item index="3">政治</el-menu-item>
-            <el-menu-item index="4">统计</el-menu-item>
+            <el-menu-item index="/game/build">政治</el-menu-item>
+            <el-menu-item index="/game/build">统计</el-menu-item>
           </el-menu>
           <router-view></router-view>
         </el-main>
@@ -174,7 +176,7 @@ function handleSelect(key, keyPath){
   color: var(--el-text-color-primary);
   text-align: center;
   padding: 0px;
-  line-height: 60px;
+  line-height: 10px;
 }
 
 .el-main {

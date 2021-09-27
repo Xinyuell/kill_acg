@@ -1,7 +1,7 @@
 <script lang="ts">
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
 import { ModifyResourceCurValue, store } from "../../core/store";
-import { BuildClickType, EnumResourceItem } from "../../core/table";
+import { BuildClickType, EnumBuildItem, EnumResourceItem } from "../../core/table";
 import { buildItemData, resourceItemData } from "../../core/gameSave";
 
 export default {
@@ -26,9 +26,9 @@ export default {
           sourceArr.get(EnumResourceItem.Money)!.cacheValue += 2;
           break;
         case BuildClickType.AddResearch:
-          if (sourceArr.get(EnumResourceItem.Money)!.cacheValue >= 2) {
+          if (sourceArr.get(EnumResourceItem.Money)!.cacheValue >= 5) {
             sourceArr.get(EnumResourceItem.Cost1)!.cacheValue += 1;
-            sourceArr.get(EnumResourceItem.Money)!.cacheValue -= 2;
+            sourceArr.get(EnumResourceItem.Money)!.cacheValue -= 5;
           }
           break;
       }
@@ -36,6 +36,7 @@ export default {
   },
 };
 </script>
+
 
 <template>
   <el-popover placement="bottom" trigger="hover" transition="" :width="200">

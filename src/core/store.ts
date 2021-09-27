@@ -7,6 +7,8 @@ export const ModifyResourceMaxValue = "modifyResourceCurValue";
 export const SetResourceSpeed = "modifyResourceCurValue";
 export const SetGameRunning = "setGameRunning";
 export const ReplaceGameData = "replaceGameData";
+export const UpdateNews = "updateNews";
+
 
 export const store = createStore({
     state:{
@@ -31,6 +33,10 @@ export const store = createStore({
         },
         replaceGameData(state:any,paload:any){
             state.gameData = paload;
+        },
+        updateNews(state:any,paload:any){
+            const data:GameData = state.gameData;
+            data.newID[paload.newsIndex] = paload.news;
         }
     }
 })

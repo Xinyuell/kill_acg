@@ -34,7 +34,9 @@ export interface IBuildInfo extends IBaseInfo {
 }
 
 export interface IResearchInfo extends IBaseInfo {
-  Cost: number;
+  Cost1: number;
+  Cost2: number;
+  Condition:number[]
 }
 
 export const ItemInfoList: IItemInfo[] = [
@@ -113,11 +115,39 @@ export const BuildInfoList: IBuildInfo[] = [
     },
 ];
 
-export const ResearchInfoList: IResearchInfo[] = [
-    {
-      ID: 1,
-      Name: "街头闲聊",
-      Desc: "在街边闲聊，宣传ACG文化的坏处，扩大你的影响力。",
-      Cost: 50,
-    },
-];
+export const ResearchInfoList:Map<number,IResearchInfo> = new Map([
+  [1,{
+    ID:1,
+    Name:"研究1",
+    Desc:"I研究",
+    Cost1:50,
+    Cost2: 0,
+    Condition:[],
+  }],
+  [2,{
+    ID:2,
+    Name:"研究2",
+    Desc:"I研究",
+    Cost1:50,
+    Cost2: 0,
+    Condition:[1],
+  }],
+  [3,{
+    ID:3,
+    Name:"研究3",
+    Desc:"I研究",
+    Cost1:50,
+    Cost2: 0,
+    Condition:[2],
+  }],
+  [4,{
+    ID:4,
+    Name:"研究4",
+    Desc:"I研究",
+    Cost1:50,
+    Cost2: 0,
+    Condition:[2],
+  }],
+])
+
+

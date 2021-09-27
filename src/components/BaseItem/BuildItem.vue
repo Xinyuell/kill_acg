@@ -1,22 +1,47 @@
-<script setup lang="ts">
+<script lang="ts">
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
 import { buildPanelData, resourcePanelData } from "../../core/game";
+import { ModifyResourceCurValue, store } from "../../core/store";
+import { BuildClickType } from "../../core/table";
 
-const props = defineProps({
-  buildData: {
-    type: Object as PropType<buildPanelData>,
-    required: true,
+export default {
+  props: {
+    buildData: {
+      type: Object as PropType<buildPanelData>,
+      required: true,
+    },
   },
-});
-
-const emit = defineEmits(["onClickBuild"])
+  methods: {
+    buildItemClick: function () {
+      switch (this.buildData.click) {
+        case BuildClickType.Upgrade:
+          //TODO 建筑的升级检查
+          break;
+        case BuildClickType.AddInfluence:
+          store.state.gameData.sourceArr[0].cacheValue++;
+          break;
+        case BuildClickType.AddMoeny:
+           store.state.gameData.sourceArr[1].cacheValue++;
+          break;
+        case BuildClickType.AddResearch:
+           store.state.gameData.sourceArr[2].cacheValue++;
+          break;
+      }
+    },
+  },
+};
 
 </script>
 
 <template>
   <el-popover placement="bottom" trigger="hover" :width="200">
     <template #reference>
-      <el-button class="buildItem" type="info" plain
+      <el-button
+        class="buildItem"
+        ref="buildItems"
+        type="info"
+        plain
+        @click="buildItemClick"
         >{{ buildData.buildName }}
       </el-button>
     </template>

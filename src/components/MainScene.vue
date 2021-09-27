@@ -1,25 +1,42 @@
 
 <script setup lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { mapGetters } from "vuex";
 import ResourcePanel from "./ResourcePanel.vue";
 import BuildPanel from "./BuildPanel.vue";
 import { ReplaceGameData, store } from "../core/store";
 import { language } from "../core/language";
 
+const show1 = ref(false);
+const show2 = ref(false);
+let timeID1 = 0;
+let timeID2 = 0;
 //新闻词，根据当前影响力的等级决定，这个是一个全局数据，在game那边随机更新ID，然后这里去取
-function SetActiveItem(index:number){
-   this.$refs.carousel.setActiveItem(index);
-}
+const news_1 = computed(() => {
+  clearTimeout(timeID1);
+  const newIDs = store.state.gameData.newID[0];
+  show1.value = true;
+  timeID1 = setTimeout(() => {
+    show1.value = false;
+  }, 2000);
+  return language.news[newIDs[0]][newIDs[1]];
+});
 
-
-const newID = ref([0,1,2]);
+const news_2 = computed(() => {
+  clearTimeout(timeID2);
+  const newIDs = store.state.gameData.newID[1];
+  show2.value = true;
+  timeID2 = setTimeout(() => {
+    show2.value = false;
+  }, 2000);
+  return language.news[newIDs[0]][newIDs[1]];
+});
 </script>
 
 
 <template>
   <el-container>
-    <el-header height="100px">
+    <el-header height="200px">
       <el-popover
         placement="bottom"
         title="Title"
@@ -33,20 +50,31 @@ const newID = ref([0,1,2]);
             :stroke-width="24"
             :percentage="store.state.gameData.acgProgressData.value"
             status="exception"
-            id="acg-progress"
+            class="head"
           />
         </template>
       </el-popover>
-     
+      <div v-show="show1">
+        <el-alert type="success" center class="head" :closable="false">
+          <template #title>
+            <p>{{ news_1 }}</p>
+          </template>
+        </el-alert>
+      </div>
+      <div v-show="show2">
+        <el-alert type="success" center class="head" :closable="false">
+          <template #title>
+            <p>{{ news_2 }}</p>
+          </template>
+        </el-alert>
+      </div>
     </el-header>
     <el-container>
       <el-aside width="360px">
         <ResourcePanel />
       </el-aside>
       <el-container>
-        <el-main>
-          <BuildPanel
-        /></el-main>
+        <el-main> <BuildPanel /></el-main>
         <el-footer height="100px">Footer</el-footer>
       </el-container>
     </el-container>
@@ -54,19 +82,20 @@ const newID = ref([0,1,2]);
 </template>
 
 <style scoped>
-#acg-progress {
+.head {
   width: 60%;
   margin-left: 10%;
   margin-right: 10%;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+
 .el-header,
 .el-footer {
   background-color: #b3c0d1;
   color: var(--el-text-color-primary);
   text-align: center;
-  line-height: 60px;
+  line-height: 30px;
 }
 
 .el-aside {

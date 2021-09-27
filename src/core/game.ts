@@ -1,6 +1,6 @@
 import { Base64 } from "js-base64";
 import { router } from "../router";
-import { ModifyResourceCurValue } from "./store";
+import { ModifyResourceCurValue, UpdateNews } from "./store";
 import { BuildClickType, BuildInfoList, ItemInfoList, ItemType } from "./table";
 import { intToString } from "./utils";
 import { store } from "./store";
@@ -35,7 +35,7 @@ export class GameControl {
         cacheValue: 0,
         curValue: "0",
         maxValue: value.BaseMax,
-        speed: 100,
+        speed: 0,
         unlock: (value.Type & ItemType.AutoUnLock) > 0,
         ID: value.ID,
         tip_title: value.Desc,
@@ -79,6 +79,10 @@ export class GameControl {
         cur:5000000000//50亿
       },
       influenceLevel:0,
+      newID:[
+        [0,1],
+        [1,1],
+      ]
     };
     if (window.localStorage[GameControl.saveName]) {
       const str = Base64.decode(window.localStorage[GameControl.saveName]);
@@ -100,12 +104,32 @@ export class GameControl {
       this.saveGame();
     }, GameControl.saveTime);
 
+    setTimeout(() => {
+      this.randomNews()
+    }, 5000);
+
     this.now = Date.now();
 
     return gameData;
   }
 
+  private randomNews(){
+    //TODO 新闻的随机算法
+    store.commit(UpdateNews,{
+      newsIndex:0,
+      news:[0,3]
+    })
+    store.commit(UpdateNews,{
+      newsIndex:1,
+      news:[0,2]
+    })
+    setTimeout(() => {
+      this.randomNews()
+    }, Math.random()*5000+50000);
+  }
+
   private saveGame(){
+    //TODO 读档和存档的数据简化，模板数据走读表
     if (!store.state.running) return;
     const b = Base64.encode(JSON.stringify(store.state.gameData))
     window.localStorage.setItem(GameControl.saveName,b);
@@ -160,6 +184,8 @@ export interface resourcePanelData {
   tip_content: string;
 }
 
+
+
 export interface GameDataPayLoad {
   index: number;
   value: string;
@@ -171,4 +197,5 @@ export interface GameData {
   buildArryList: buildPanelData[][];//所有建筑
   acgProgressData:object;//acg全局进度条
   influenceLevel:number,//当前影响力的等级
+  newID:number[][]
 }

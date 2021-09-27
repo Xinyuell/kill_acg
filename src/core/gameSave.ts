@@ -31,7 +31,7 @@ export function getGameDataByBase64(code: string | undefined) {
     if( gameData.sourceArr.has(value.ID))
     {
         gameData.sourceArr.get(value.ID)!.cacheValue = value.cacheValue;
-        gameData.sourceArr.get(value.ID)!.maxValue = value.maxValue;
+        gameData.sourceArr.get(value.ID)!.cacheMaxValue = value.cacheMaxValue;
         gameData.sourceArr.get(value.ID)!.unlock = value.unlock;
     }
   });
@@ -59,7 +59,7 @@ export function getCurrentSaveGameData() {
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
       cacheValue: value.cacheValue,
-      maxValue: value.maxValue,
+      cacheMaxValue: value.cacheMaxValue,
       unlock: value.unlock,
       ID: value.ID,
     });
@@ -74,6 +74,7 @@ export function getCurrentSaveGameData() {
   return saveGameData;
 }
 
+//初始化数据
 function initGameData() {
   const gameData: GameData = {
     cityUnlock: [true, false, false, false, false, false],
@@ -95,9 +96,11 @@ function initGameData() {
     sourceArr.set(value.ID, {
       resourceName: value.Name,
       cacheValue: 0,
+      cacheSpeed:0,
+      cacheMaxValue:value.BaseMax,
       curValue: "0",
-      maxValue: value.BaseMax,
-      speed: 0,
+      maxValue: value.BaseMax.toString(),
+      speed: "0",
       unlock: (value.Type & ItemType.AutoUnLock) > 0,
       ID: value.ID,
       tip_title: value.Desc,
@@ -139,7 +142,7 @@ interface ISaveBuildPanelData {
 
 export interface ISaveResourcePanelData {
   cacheValue: number;
-  maxValue: number;
+  cacheMaxValue: number;
   unlock: boolean;
   ID: number; //
 }

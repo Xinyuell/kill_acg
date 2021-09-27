@@ -49,9 +49,9 @@ const news_2 = computed(() => {
   return language.news[newIDs[0]][newIDs[1]];
 });
 
-const drawer = ref(true);
+const drawer = ref(false);
 const guideTips = computed(() => {
-  const guideID = store.state.guideTipsID
+  const guideID = store.state.guideTipsID;
   if (guideID < 0) {
     drawer.value = false;
     return;
@@ -59,18 +59,27 @@ const guideTips = computed(() => {
   drawer.value = true;
   return language.guideTips[guideID];
 });
+
+const headerHeight = computed(() => {
+  let base = 50;
+  if (show1.value) base += 60;
+  if (show2.value) base += 60;
+  if (store.state.gameData.influenceLevel >= 2) base += 60;
+  return base + "px";
+});
 </script>
 
 
 <template>
   <el-container>
-    <el-header height="200px">
+    <el-header :height="headerHeight">
       <el-popover
         placement="bottom"
         title="Title"
         :width="400"
         trigger="hover"
         content="详细的速度来源信息，总值和当前值"
+        v-if="store.state.gameData.influenceLevel >= 2"
       >
         <template #reference>
           <el-progress
@@ -115,7 +124,7 @@ const guideTips = computed(() => {
     :close-delay="500"
     size="20%"
   >
-    <span>{{guideTips}}</span>
+    <span>{{ guideTips }}</span>
   </el-drawer>
 </template>
 

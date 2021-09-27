@@ -94,6 +94,18 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       Type: ItemType.ShowPanel,
     },
   ],
+  [
+    6,
+    {
+      ID: 6,
+      Name: "从众",
+      Desc: "从众是一群伪信徒",
+      BaseMax: -1,
+      TipsContent: "这是一种研究资源",
+      Type: ItemType.ShowPanel,
+    },
+  ],
+  
 ]);
 
 export const BuildInfoList: Map<number, IBuildInfo> = new Map([

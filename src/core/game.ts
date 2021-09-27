@@ -92,9 +92,13 @@ export interface buildPanelData {
 export interface resourcePanelData {
   resourceName: string;
   cacheValue:number;
+  cacheSpeed:number;
+  cacheMaxValue:number;
+
   curValue: string;
-  maxValue: number;
-  speed: number;
+  maxValue: string;
+  speed: string;
+  
   unlock: boolean;
   ID: number; //
   tip_title: string;

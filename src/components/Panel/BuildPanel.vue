@@ -4,7 +4,7 @@ import BuildItem from "../BaseItem/BuildItem.vue";
 import { ReplaceGameData, store } from "../../core/store";
 import { buildItemData } from "../../core/gameSave";
 
-const activeNames = ref(["0,1,2"]);
+const activeNames = ref(["0"]);
 const buildArry0 = computed(() => {
   const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;

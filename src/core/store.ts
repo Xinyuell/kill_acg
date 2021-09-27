@@ -10,6 +10,8 @@ export const SetGameRunning = "setGameRunning";
 export const ReplaceGameData = "replaceGameData";
 export const UpdateNews = "updateNews";
 export const UpdateGuideTips = "updateGuideTips";
+export const CompleteResearch = "completeResearch";
+export const UnlockResearch = "unlockResearch";
 
 export const store = createStore({
   state: {
@@ -46,6 +48,16 @@ export const store = createStore({
     updateGuideTips(state: any, paload: number) {
       state.guideTipsID = paload;
     },
+    completeResearch(state:any,paload:any){
+      const data: GameData = state.gameData;
+      data.researchComplete.push(paload);
+    },
+    unlockResearch(state:any,paload:number[]){
+      const data: GameData = state.gameData;
+      paload.forEach(function(id){
+        data.researchUnLockList.push(id);
+      })
+    }
   },
 });
 

@@ -49,14 +49,14 @@ export class GameControl {
 
   private randomNews(){
     //TODO 新闻的随机算法
-    store.commit(UpdateNews,{
-      newsIndex:0,
-      news:[0,3]
-    })
-    store.commit(UpdateNews,{
-      newsIndex:1,
-      news:[0,2]
-    })
+    // store.commit(UpdateNews,{
+    //   newsIndex:0,
+    //   news:[0,3]
+    // })
+    // store.commit(UpdateNews,{
+    //   newsIndex:1,
+    //   news:[0,2]
+    // })
     setTimeout(() => {
       this.randomNews()
     }, Math.random()*5000+50000);

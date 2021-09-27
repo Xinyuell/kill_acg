@@ -35,25 +35,35 @@ export interface IBuildInfo extends IBaseInfo {
 export interface IResearchInfo extends IBaseInfo {
   Cost1: number;
   Cost2: number;
-  Condition: number[];
+  UnLock: number[];
+}
+
+export enum EnumResourceItem{
+  None,
+  Influence,
+  Money,
+  Cost1,
+  Cost2,
+  Believer,
+  People
 }
 
 export const ItemInfoList: Map<number, IItemInfo> = new Map([
   [
-    1,
+    EnumResourceItem.Influence,
     {
-      ID: 1,
+      ID: EnumResourceItem.Influence,
       Name: "影响力",
-      Desc: "你对这个社会的影响力，很多事情都需要扩大影响力之后才能办到。",
-      TipsContent: "影响力达到一万点后，会带来少量的金钱速度",
+      Desc: "你对这个社会的影响力，很多事情都需要扩大影响力之后才能办到",
+      TipsContent: "每10点影响力获得1点金钱每秒",
       BaseMax: 100,
       Type: ItemType.ShowPanel | ItemType.AutoUnLock,
     },
   ],
   [
-    2,
+    EnumResourceItem.Money,
     {
-      ID: 2,
+      ID: EnumResourceItem.Money,
       Name: "金钱",
       Desc: "钱不是目的，只是手段，金钱对你来说如同粪土",
       TipsContent: "你只是为了消灭ACG文化才收集了一点点钱",
@@ -62,46 +72,46 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     },
   ],
   [
-    3,
+    EnumResourceItem.Cost1,
     {
-      ID: 3,
+      ID: EnumResourceItem.Cost1,
       Name: "动漫知识",
-      Desc: "知己知彼百战百胜，我不入地狱谁入地狱。这是一种研究资源",
-      TipsContent: "这是一种研究资源",
+      Desc: "知己知彼百战百胜，我不入地狱谁入地狱。",
+      TipsContent: "在研究分页解锁各项研究",
       BaseMax: -1,
       Type: ItemType.ShowPanel | ItemType.Research,
     },
   ],
   [
-    4,
+    EnumResourceItem.Cost2,
     {
-      ID: 4,
+      ID: EnumResourceItem.Cost2,
       Name: "游戏知识",
       Desc: "知己知彼百战百胜，我不入地狱谁入地狱。",
       BaseMax: -1,
-      TipsContent: "这是一种研究资源",
+      TipsContent: "在研究分页解锁各项研究",
       Type: ItemType.ShowPanel | ItemType.Research,
     },
   ],
   [
-    5,
+    EnumResourceItem.Believer,
     {
-      ID: 5,
+      ID: EnumResourceItem.Believer,
       Name: "信徒",
-      Desc: "信徒是一群彻底追随你消灭ACG的助手，会帮你扩大影响力，根据科技水平提升影响上限。",
+      Desc: "信徒是一群彻底追随你消灭ACG的助手，会帮你扩大影响力。",
       BaseMax: -1,
-      TipsContent: "这是一种研究资源",
+      TipsContent: "每个信徒提供1点基础的影响力速度，受各项研究和建筑的加成。安排信徒工作，每个信徒提升0.5%的效率。",
       Type: ItemType.ShowPanel,
     },
   ],
   [
-    6,
+    EnumResourceItem.People,
     {
-      ID: 6,
+      ID: EnumResourceItem.People,
       Name: "从众",
-      Desc: "从众是一群伪信徒",
+      Desc: "从众是一群伪信徒，他们暂时性的追随你，但你需要付出一些金钱",
       BaseMax: -1,
-      TipsContent: "这是一种研究资源",
+      TipsContent: "每个从众提供1点额外的影响力速度。安排从众工作，每个从众也提升0.5%的效率。从众每秒消耗自身平方的金钱",
       Type: ItemType.ShowPanel,
     },
   ],
@@ -114,7 +124,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
     {
       ID: 1,
       Name: "街头闲聊",
-      Desc: "在街边闲聊，宣传ACG文化的坏处，扩大你的影响力。",
+      Desc: "在街边闲聊，宣传ACG文化的坏处，扩大你的影响力。点击获得1点影响力",
       Type: ItemType.AutoUnLock,
       cityName: 0,
       OnClickType: BuildClickType.AddInfluence,
@@ -126,7 +136,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
     {
       ID: 2,
       Name: "家教服务",
-      Desc: "为小镇居民提供家教服务，收取不菲的酬劳，还能借机打击ACG文化，何乐而不为呢。",
+      Desc: "为小镇居民提供家教服务，收取不菲的酬劳。点击获得2点金钱",
       Type: ItemType.None,
       cityName: 0,
       OnClickType: BuildClickType.AddMoeny,
@@ -138,7 +148,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
     {
       ID: 3,
       Name: "了解动漫",
-      Desc: "在业余时间你了解动漫知识，为伟大的计划奠定良好的基础",
+      Desc: "在业余时间你了解动漫知识，为伟大的计划奠定良好的基础。消耗2点金钱获得1点动漫知识",
       Type: ItemType.None,
       cityName: 0,
       OnClickType: BuildClickType.AddResearch,
@@ -156,7 +166,7 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "I研究",
       Cost1: 50,
       Cost2: 0,
-      Condition: [],
+      UnLock: [2,3],
     },
   ],
   [
@@ -167,7 +177,7 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "I研究",
       Cost1: 50,
       Cost2: 0,
-      Condition: [1],
+      UnLock: [4],
     },
   ],
   [
@@ -178,7 +188,7 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "I研究",
       Cost1: 50,
       Cost2: 0,
-      Condition: [2],
+      UnLock: [],
     },
   ],
   [
@@ -189,7 +199,7 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "I研究",
       Cost1: 50,
       Cost2: 0,
-      Condition: [2],
+      UnLock: [],
     },
   ],
 ]);

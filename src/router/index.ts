@@ -5,6 +5,8 @@ import BuildItemVue from "../components/BaseItem/BuildItem.vuedItem.vue";
 import HomeVue from "../components/Home.vue";
 import MainSceneVue from "../components/MainScene.vue";
 import { SetGameRunning, store } from "../core/store";
+import BuildPanelVue from "../components/Panel/BuildPanel.vue";
+import ResearchPanelVue from "../components/Panel/ResearchPanel.vue";
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -26,6 +28,20 @@ export const router = createRouter({
       path: "/game",
       component: MainSceneVue,
       meta:{isGame:true},
+      children:[
+        {
+          path: "build",
+          name: "build",
+          component: BuildPanelVue,
+          meta:{isGame:true},
+        },
+        {
+          path: "research",
+          name: "research",
+          component: ResearchPanelVue,
+          meta:{isGame:true},
+        },
+      ]
     },
     
   ],

@@ -68,13 +68,11 @@ const headerHeight = computed(() => {
   return base + "px";
 });
 
-const activeIndex = ref(1);
+const activeIndex = ref("/game/build");
 function handleSelect(key, keyPath){
   console.log(key,keyPath)
 }
 </script>
-
-
 
 <template>
   <el-container>
@@ -127,13 +125,14 @@ function handleSelect(key, keyPath){
             active-text-color="#E6A23C"
             @select="handleSelect"
             router
+            style="margin-bottom:0.5rem"
           >
-            <el-menu-item index="1">Processing Center</el-menu-item>
-            <el-menu-item index="2">
-              <template #title>Workspace</template>
+            <el-menu-item index="/game/build">家园</el-menu-item>
+            <el-menu-item index="/game/research">
+              <template #title>研究</template>
             </el-menu-item>
-            <el-menu-item index="3">Info</el-menu-item>
-            <el-menu-item index="4">Orders</el-menu-item>
+            <el-menu-item index="3">政治</el-menu-item>
+            <el-menu-item index="4">统计</el-menu-item>
           </el-menu>
           <router-view></router-view>
         </el-main>

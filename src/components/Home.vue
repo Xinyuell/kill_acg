@@ -8,7 +8,7 @@ import SaveGameItem from "./BaseItem/SaveGameItem.vue";
 const dialogVisible = ref(false);
 function OnNewGameClick() {
   if (store.state.haslog) {
-    router.push("/game");
+    router.push("/game/build");
   } else {
     router.push("/introduction");
   }

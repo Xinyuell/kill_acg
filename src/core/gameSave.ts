@@ -86,7 +86,7 @@ function initGameData() {
       [0, -1],
       [1, -1],
     ],
-    researchUnLockList:[],//已经解锁的研究
+    researchUnLockList:[1],//已经解锁的研究
     researchComplete:[]//已经完成的研究
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);

@@ -5,6 +5,7 @@ import {
   store,
   UpdateGuideTips,
 } from "./store";
+import { EnumResourceItem } from "./table";
 import { intToString } from "./utils";
 
 export function resourceUnpate(deltaTime: number) {
@@ -15,6 +16,7 @@ export function resourceUnpate(deltaTime: number) {
   //第二个循环算值
 
   sourceArr.forEach(function (data, ID) {
+    setResourceSpeed(data, sourceArr, buildArryList);
     checkResourceUnlock(data, sourceArr);
     updateResourceValue(data, deltaTime, ID);
   });
@@ -49,28 +51,31 @@ function setResourceSpeed(
 ) {
   if (!data.unlock) return;
   switch (data.ID) {
-    case 1: //影响力的速度公式：每个信徒提升1点基础值 * 各种建筑的加成 + 从众
-      const num1 = sourceArr.get(5)!.cacheValue;
-      const num2 = sourceArr.get(6)!.cacheValue;
+    case EnumResourceItem.Influence: //影响力的速度公式：每个信徒提升1点基础值 * 各种建筑的加成 + 从众
+      const num1 = sourceArr.get(EnumResourceItem.Believer)!.cacheValue;
+      const num2 = sourceArr.get(EnumResourceItem.People)!.cacheValue;
       data.cacheSpeed = num1 + num2;
-      const strValue = intToString(data.cacheSpeed);
-      if (strValue !== data.speed) {
-        store.commit(SetResourceSpeed, {
-          index: 1,
-          value: strValue,
-        });
-      }
+
       break;
-    case 2: //金钱的公式，主要根据建筑的加成来算
+    case EnumResourceItem.Money: //金钱的公式，每点影响力提供0.1
+      const num3 = sourceArr.get(EnumResourceItem.Influence)!.cacheValue;
+      data.cacheSpeed = num3 / 20;
       break;
-    case 3: //动漫知识的公式
+    case EnumResourceItem.Cost1: //动漫知识的公式
       break;
-    case 4: //游戏知识的公式
+    case EnumResourceItem.Cost2: //游戏知识的公式
       break;
-    case 5: //信徒的公式
+    case EnumResourceItem.Believer: //信徒的公式
       break;
-    case 6: //从众的公式
+    case EnumResourceItem.People: //从众的公式
       break;
+  }
+  const strValue = intToString(data.cacheSpeed);
+  if (strValue !== data.speed) {
+    store.commit(SetResourceSpeed, {
+      index: data.ID,
+      value: strValue,
+    });
   }
 }
 

@@ -1,13 +1,13 @@
 <script lang="ts">
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
-import { buildPanelData, resourcePanelData } from "../../core/game";
 import { ModifyResourceCurValue, store } from "../../core/store";
 import { BuildClickType } from "../../core/table";
+import { buildItemData } from '../../core/gameSave';
 
 export default {
   props: {
     buildData: {
-      type: Object as PropType<buildPanelData>,
+      type: Object as PropType<buildItemData>,
       required: true,
     },
   },

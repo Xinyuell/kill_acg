@@ -1,50 +1,50 @@
 <script setup lang="ts">
 import { computed, PropType, reactive, ref } from "vue";
-import { buildPanelData, resourcePanelData } from "../core/game";
-import BuildItem from "./BaseItem/BuildItem.vue";
-import { ReplaceGameData, store } from "../core/store";
+import BuildItem from "../BaseItem/BuildItem.vue";
+import { ReplaceGameData, store } from "../../core/store";
+import { buildItemData } from "../../core/gameSave";
 
 const activeNames = ref(["0,1,2"]);
 const buildArry0 = computed(() => {
-  const buildArryList: Map<number, buildPanelData> =
+  const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;
-  const data: buildPanelData[] = [];
+  const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
     if (value.unlock && value.cityName === 0) data.push(value);
   });
   return data;
 });
 const buildArry1 = computed(() => {
-  const buildArryList: Map<number, buildPanelData> =
+  const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;
-  const data: buildPanelData[] = [];
+  const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
     if (value.unlock && value.cityName === 0) data.push(value);
   });
   return data;
 });
 const buildArry2 = computed(() => {
-  const buildArryList: Map<number, buildPanelData> =
+  const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;
-  const data: buildPanelData[] = [];
+  const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
     if (value.unlock && value.cityName === 0) data.push(value);
   });
   return data;
 });
 const buildArry3 = computed(() => {
-  const buildArryList: Map<number, buildPanelData> =
+  const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;
-  const data: buildPanelData[] = [];
+  const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
     if (value.unlock && value.cityName === 0) data.push(value);
   });
   return data;
 });
 const buildArry4 = computed(() => {
-  const buildArryList: Map<number, buildPanelData> =
+  const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;
-  const data: buildPanelData[] = [];
+  const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
     if (value.unlock && value.cityName === 0) data.push(value);
   });

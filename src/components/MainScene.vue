@@ -2,8 +2,8 @@
 <script setup lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import { mapGetters } from "vuex";
-import ResourcePanel from "./ResourcePanel.vue";
-import BuildPanel from "./BuildPanel.vue";
+import ResourcePanel from "./Panel/ResourcePanel.vue";
+import BuildPanel from "./Panel/BuildPanel.vue";
 import { ReplaceGameData, store } from "../core/store";
 import { language } from "../core/language";
 
@@ -13,11 +13,11 @@ let timeID1 = 0;
 let timeID2 = 0;
 //新闻词，根据当前影响力的等级决定，这个是一个全局数据，在game那边随机更新ID，然后这里去取
 const news_1 = computed(() => {
-  const newIDs = store.state.gameData.newID[0];
+  const newsID = store.state.gameData.newsID[0];
   if (
-    newIDs === undefined ||
-    newIDs[0] === undefined ||
-    newIDs[1] === undefined
+    newsID === undefined ||
+    newsID[0] === undefined ||
+    newsID[1] === undefined
   ) {
     show1.value = false;
     return "";
@@ -28,14 +28,14 @@ const news_1 = computed(() => {
   timeID1 = setTimeout(() => {
     show1.value = false;
   }, 2000);
-  return language.news[newIDs[0]][newIDs[1]];
+  return language.news[newsID[0]][newsID[1]];
 });
 const news_2 = computed(() => {
-  const newIDs = store.state.gameData.newID[1];
+  const newsID = store.state.gameData.newsID[1];
   if (
-    newIDs === undefined ||
-    newIDs[0] === undefined ||
-    newIDs[1] === undefined
+    newsID === undefined ||
+    newsID[0] === undefined ||
+    newsID[1] === undefined
   ) {
     show2.value = false;
     return "";
@@ -46,7 +46,7 @@ const news_2 = computed(() => {
   timeID2 = setTimeout(() => {
     show2.value = false;
   }, 2000);
-  return language.news[newIDs[0]][newIDs[1]];
+  return language.news[newsID[0]][newsID[1]];
 });
 
 const drawer = ref(false);
@@ -67,7 +67,13 @@ const headerHeight = computed(() => {
   if (store.state.gameData.influenceLevel >= 2) base += 60;
   return base + "px";
 });
+
+const activeIndex = ref(1);
+function handleSelect(key, keyPath){
+  console.log(key,keyPath)
+}
 </script>
+
 
 
 <template>
@@ -111,8 +117,27 @@ const headerHeight = computed(() => {
         <ResourcePanel />
       </el-aside>
       <el-container>
-        <el-main> <BuildPanel /></el-main>
-        <el-footer height="100px">Footer</el-footer>
+        <el-main>
+          <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            background-color="#F2F6FC"
+            text-color="#000"
+            active-text-color="#E6A23C"
+            @select="handleSelect"
+            router
+          >
+            <el-menu-item index="1">Processing Center</el-menu-item>
+            <el-menu-item index="2">
+              <template #title>Workspace</template>
+            </el-menu-item>
+            <el-menu-item index="3">Info</el-menu-item>
+            <el-menu-item index="4">Orders</el-menu-item>
+          </el-menu>
+          <router-view></router-view>
+        </el-main>
+        <!-- <el-footer height="100px">Footer</el-footer> -->
       </el-container>
     </el-container>
   </el-container>

@@ -5,7 +5,7 @@ import { BuildClickType, BuildInfoList, ItemInfoList, ItemType } from "./table";
 import { intToString } from "./utils";
 import { store } from "./store";
 import { resourceUnpate } from "./gameUpdate";
-import { getCurrentSaveGameData, getGameDataByBase64, SaveLocalStorageKey } from "./gameSave";
+import { GameData, getCurrentSaveGameData, getGameDataByBase64, SaveLocalStorageKey } from "./gameSave";
 
 export class GameControl {
   static saveTime = 20000;
@@ -77,46 +77,4 @@ export class GameControl {
     this.now = Date.now();
     resourceUnpate(pass);
   }
-}
-
-export interface buildPanelData {
-  buildName: string;
-  curValue: number;
-  unlock: boolean;
-  cityName: number;
-  click: BuildClickType;
-  ID: number;
-  baseTips: string;
-  upgradeCostRatio: number;
-}
-export interface resourcePanelData {
-  resourceName: string;
-  cacheValue:number;
-  cacheSpeed:number;
-  cacheMaxValue:number;
-
-  curValue: string;
-  maxValue: string;
-  speed: string;
-  
-  unlock: boolean;
-  ID: number; //
-  tip_title: string;
-  tip_content: string;
-}
-
-
-
-export interface GameDataPayLoad {
-  index: number;
-  value: string;
-}
-
-export interface GameData {
-  cityUnlock: boolean[];//解锁进度
-  sourceArr: Map<number,resourcePanelData>;//所有资源
-  buildArryList: Map<number,buildPanelData>;//所有建筑
-  acgProgressData:object;//acg全局进度条
-  influenceLevel:number,//当前影响力的等级
-  newID:number[][]
 }

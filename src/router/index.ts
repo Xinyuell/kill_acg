@@ -27,6 +27,7 @@ export const router = createRouter({
       component: MainSceneVue,
       meta:{isGame:true},
     },
+    
   ],
 });
 router.afterEach((to, from) => {

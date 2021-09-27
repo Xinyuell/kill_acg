@@ -1,6 +1,7 @@
 import { App } from "@vue/runtime-core";
 import { createStore } from "vuex";
-import { GameControl, GameData, GameDataPayLoad } from "./game";
+import { GameControl} from "./game";
+import { GameDataPayLoad, GameData } from "./gameSave";
 
 export const ModifyResourceCurValue = "modifyResourceCurValue";
 export const ModifyResourceMaxValue = "modifyResourceMaxValue";
@@ -40,7 +41,7 @@ export const store = createStore({
     },
     updateNews(state: any, paload: any) {
       const data: GameData = state.gameData;
-      data.newID[paload.newsIndex] = paload.news;
+      data.newsID[paload.newsIndex] = paload.news;
     },
     updateGuideTips(state: any, paload: number) {
       state.guideTipsID = paload;

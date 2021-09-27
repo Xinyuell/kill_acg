@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, PropType, reactive, ref } from "vue";
-import { resourcePanelData } from "../core/game";
-import { ReplaceGameData, store } from "../core/store";
+import { resourceItemData } from "../../core/gameSave";
+import { ReplaceGameData, store } from "../../core/store";
 
 const getData = computed(() => {
-  const sourceArr: Map<number, resourcePanelData> =
+  const sourceArr: Map<number, resourceItemData> =
     store.state.gameData.sourceArr;
-    const data:resourcePanelData[] = [];
+    const data:resourceItemData[] = [];
     sourceArr.forEach(function(value,key){
       if(value.unlock)
       data.push(value);

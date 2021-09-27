@@ -1,12 +1,6 @@
 import { Base64 } from "js-base64";
-import {
-  buildPanelData,
-  GameControl,
-  GameData,
-  resourcePanelData,
-} from "./game";
 import { store } from "./store";
-import { BuildInfoList, ItemInfoList, ItemType } from "./table";
+import { BuildClickType, BuildInfoList, ItemInfoList, ItemType } from "./table";
 
 export const SaveLocalStorageKey = "kill_acg_game";
 
@@ -26,24 +20,24 @@ export function getGameDataByBase64(code: string | undefined) {
   gameData.cityUnlock = saveGameData.cityUnlock;
   gameData.acgProgressData = saveGameData.acgProgressData;
   gameData.influenceLevel = saveGameData.influenceLevel;
+  gameData.researchUnLockList = saveGameData.researchUnLockList;
+  gameData.researchComplete = saveGameData.researchComplete;
 
   saveGameData.sourceArr.forEach(function (value) {
-    if( gameData.sourceArr.has(value.ID))
-    {
-        gameData.sourceArr.get(value.ID)!.cacheValue = value.cacheValue;
-        gameData.sourceArr.get(value.ID)!.cacheMaxValue = value.cacheMaxValue;
-        gameData.sourceArr.get(value.ID)!.unlock = value.unlock;
+    if (gameData.sourceArr.has(value.ID)) {
+      gameData.sourceArr.get(value.ID)!.cacheValue = value.cacheValue;
+      gameData.sourceArr.get(value.ID)!.cacheMaxValue = value.cacheMaxValue;
+      gameData.sourceArr.get(value.ID)!.unlock = value.unlock;
     }
   });
 
   saveGameData.buildArryList.forEach(function (value) {
-    if( gameData.buildArryList.has(value.ID))
-    {
-        gameData.buildArryList.get(value.ID)!.curValue = value.curValue;
-        gameData.buildArryList.get(value.ID)!.unlock = value.unlock;
+    if (gameData.buildArryList.has(value.ID)) {
+      gameData.buildArryList.get(value.ID)!.curValue = value.curValue;
+      gameData.buildArryList.get(value.ID)!.unlock = value.unlock;
     }
   });
-  return { gameData, success: true};
+  return { gameData, success: true };
 }
 
 export function getCurrentSaveGameData() {
@@ -55,6 +49,8 @@ export function getCurrentSaveGameData() {
     buildArryList: [],
     acgProgressData: gameData.acgProgressData,
     influenceLevel: gameData.influenceLevel,
+    researchUnLockList:gameData.researchUnLockList,//已经解锁的研究
+    researchComplete:gameData.researchComplete//已经完成的研究
   };
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
@@ -86,18 +82,20 @@ function initGameData() {
       cur: 5000000000, //50亿
     },
     influenceLevel: 0,
-    newID: [
+    newsID: [
       [0, -1],
       [1, -1],
     ],
+    researchUnLockList:[],//已经解锁的研究
+    researchComplete:[]//已经完成的研究
   };
-  const sourceArr: Map<number, resourcePanelData> = new Map([]);
+  const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
     sourceArr.set(value.ID, {
       resourceName: value.Name,
       cacheValue: 0,
-      cacheSpeed:0,
-      cacheMaxValue:value.BaseMax,
+      cacheSpeed: 0,
+      cacheMaxValue: value.BaseMax,
       curValue: "0",
       maxValue: value.BaseMax.toString(),
       speed: "0",
@@ -107,7 +105,7 @@ function initGameData() {
       tip_content: value.TipsContent,
     });
   });
-  const buildArryList: Map<number, buildPanelData> = new Map([]);
+  const buildArryList: Map<number, buildItemData> = new Map([]);
   BuildInfoList.forEach(function (value, index) {
     buildArryList.set(value.ID, {
       buildName: value.Name,
@@ -132,6 +130,8 @@ interface ISaveGameData {
   buildArryList: ISaveBuildPanelData[]; //所有建筑
   acgProgressData: object; //acg全局进度条
   influenceLevel: number; //当前影响力的等级
+  researchUnLockList:number[]//已经解锁的研究
+  researchComplete:number[]//已经完成的研究
 }
 
 interface ISaveBuildPanelData {
@@ -140,9 +140,53 @@ interface ISaveBuildPanelData {
   ID: number;
 }
 
-export interface ISaveResourcePanelData {
+interface ISaveResourcePanelData {
   cacheValue: number;
   cacheMaxValue: number;
   unlock: boolean;
   ID: number; //
+}
+
+export interface buildItemData {
+  buildName: string;
+  curValue: number;
+  unlock: boolean;
+  cityName: number;
+  click: BuildClickType;
+  ID: number;
+  baseTips: string;
+  upgradeCostRatio: number;
+}
+
+export interface resourceItemData {
+  resourceName: string;
+  cacheValue: number;
+  cacheSpeed: number;
+  cacheMaxValue: number;
+
+  curValue: string;
+  maxValue: string;
+  speed: string;
+
+  unlock: boolean;
+  ID: number; //
+  tip_title: string;
+  tip_content: string;
+}
+
+
+export interface GameDataPayLoad {
+  index: number;
+  value: string;
+}
+
+export interface GameData {
+  cityUnlock: boolean[]; //解锁进度
+  sourceArr: Map<number, resourceItemData>; //所有资源
+  buildArryList: Map<number, buildItemData>; //所有建筑
+  acgProgressData: object; //acg全局进度条
+  influenceLevel: number; //当前影响力的等级
+  newsID: number[][];//随机的新闻ID
+  researchUnLockList:number[]//已经解锁的研究
+  researchComplete:number[]//已经完成的研究
 }

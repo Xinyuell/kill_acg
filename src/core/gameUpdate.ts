@@ -1,4 +1,4 @@
-import { buildPanelData, resourcePanelData } from "./game";
+import { buildItemData, resourceItemData } from "./gameSave";
 import {
   ModifyResourceCurValue,
   SetResourceSpeed,
@@ -8,9 +8,9 @@ import {
 import { intToString } from "./utils";
 
 export function resourceUnpate(deltaTime: number) {
-  const sourceArr: Map<number, resourcePanelData> =
+  const sourceArr: Map<number, resourceItemData> =
     store.state.gameData.sourceArr;
-  const buildArryList: Map<number, buildPanelData> =
+  const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;
   //第二个循环算值
 
@@ -26,7 +26,7 @@ export function resourceUnpate(deltaTime: number) {
 
 //根据速度更新资源的值
 function updateResourceValue(
-  data: resourcePanelData,
+  data: resourceItemData,
   deltaTime: number,
   ID: number
 ) {
@@ -43,9 +43,9 @@ function updateResourceValue(
 
 //设置各个资源的速率
 function setResourceSpeed(
-  data: resourcePanelData,
-  sourceArr: Map<number, resourcePanelData>,
-  buildArryList: Map<number, buildPanelData>
+  data: resourceItemData,
+  sourceArr: Map<number, resourceItemData>,
+  buildArryList: Map<number, buildItemData>
 ) {
   if (!data.unlock) return;
   switch (data.ID) {
@@ -76,9 +76,9 @@ function setResourceSpeed(
 
 //建筑的解锁，城市的解锁是单独通过影响力等级决定的
 function checkBuildUnlock(
-  data: buildPanelData,
-  sourceArr: Map<number, resourcePanelData>,
-  buildArryList: Map<number, buildPanelData>
+  data: buildItemData,
+  sourceArr: Map<number, resourceItemData>,
+  buildArryList: Map<number, buildItemData>
 ) {
   if (data.unlock) return;
   switch (data.ID) {
@@ -99,8 +99,8 @@ function checkBuildUnlock(
 
 //资源的解锁检查
 function checkResourceUnlock(
-  data: resourcePanelData,
-  sourceArr: Map<number, resourcePanelData>
+  data: resourceItemData,
+  sourceArr: Map<number, resourceItemData>
 ) {
   if (data.unlock) return;
   switch (data.ID) {

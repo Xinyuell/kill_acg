@@ -28,14 +28,9 @@ export class GameControl {
     this.totalTime = 0;
   }
 
-
-
   public Start(): GameData {
     const {gameData, success} = getGameDataByBase64(window.localStorage[SaveLocalStorageKey])
-    if(success){
-      store.state.haslog = true;
-    }
-   
+    store.state.haslog = success;
     this.timer = setInterval(() => {
       this.update();
     }, GameControl.updateTime);

@@ -30,7 +30,6 @@ const news_1 = computed(() => {
   }, 2000);
   return language.news[newIDs[0]][newIDs[1]];
 });
-
 const news_2 = computed(() => {
   const newIDs = store.state.gameData.newID[1];
   if (
@@ -48,6 +47,17 @@ const news_2 = computed(() => {
     show2.value = false;
   }, 2000);
   return language.news[newIDs[0]][newIDs[1]];
+});
+
+const drawer = ref(true);
+const guideTips = computed(() => {
+  const guideID = store.state.guideTipsID
+  if (guideID < 0) {
+    drawer.value = false;
+    return;
+  }
+  drawer.value = true;
+  return language.guideTips[guideID];
 });
 </script>
 
@@ -97,6 +107,16 @@ const news_2 = computed(() => {
       </el-container>
     </el-container>
   </el-container>
+
+  <el-drawer
+    v-model="drawer"
+    title="引导"
+    direction="ttb"
+    :close-delay="500"
+    size="20%"
+  >
+    <span>{{guideTips}}</span>
+  </el-drawer>
 </template>
 
 <style scoped>

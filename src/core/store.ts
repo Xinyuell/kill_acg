@@ -8,12 +8,15 @@ export const SetResourceSpeed = "modifyResourceCurValue";
 export const SetGameRunning = "setGameRunning";
 export const ReplaceGameData = "replaceGameData";
 export const UpdateNews = "updateNews";
+export const UpdateGuideTips = "updateGuideTips";
+
 
 
 export const store = createStore({
     state:{
         running:false,
         haslog:false,
+        guideTipsID:-1,
     },
     mutations:{
         modifyResourceCurValue(state:any,payload:GameDataPayLoad){
@@ -40,6 +43,9 @@ export const store = createStore({
         updateNews(state:any,paload:any){
             const data:GameData = state.gameData;
             data.newID[paload.newsIndex] = paload.news;
+        },
+        updateGuideTips(state:any,paload:number){
+            state.guideTipsID = paload;
         }
     }
 })

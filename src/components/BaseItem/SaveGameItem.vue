@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Base64 } from "js-base64";
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
-import { buildPanelData, resourcePanelData } from "../../core/game";
 import { ReplaceGameData, store } from "../../core/store";
 import useClipboard from "vue-clipboard3";
 import { ElMessage } from "element-plus";

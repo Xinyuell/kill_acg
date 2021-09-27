@@ -23,9 +23,9 @@ const getData = computed(() => {
       :stripe="true"
       tooltip-effect="dark"
     >
-      <el-table-column width="90">
+      <el-table-column width="110">
         <template #default="{ row }">
-          <el-popover placement="bottom" trigger="hover" :width="400">
+          <el-popover placement="bottom" trigger="hover" :width="200">
             <span style="font-size: 10px"
               >{{ row.tip_title }} <br />
               {{ row.tip_content }}</span
@@ -37,31 +37,31 @@ const getData = computed(() => {
         </template>
       </el-table-column>
 
-      <el-table-column min-width="120">
-        <template #default="{ row }">
-          <el-popover placement="bottom" trigger="hover" :width="400">
+      <el-table-column  >
+        <template #default="{ row }" >
+          <el-popover placement="bottom" trigger="hover" :width="200" >
             <span style="font-size: 10px"
               >{{ row.tip_title }} <br />
               {{ row.tip_content }}</span
             >
             <template #reference>
-              <span>{{
+              <p style="text-align:center">{{
                 row.maxValue > 0
                   ? row.curValue + "/" + row.maxValue
                   : row.curValue
-              }}</span>
+              }}</p>
             </template>
           </el-popover>
         </template>
       </el-table-column>
 
-      <el-table-column width="80" style="text-align: right">
+      <el-table-column width="80" >
         <template #default="{ row }">
-          <el-popover placement="bottom" trigger="hover" :width="400">
+          <el-popover placement="bottom" trigger="hover" :width="200">
             <template #reference>
               <span>{{ row.speed + "/s" }}</span></template
             >
-            <span style="font-size: 10px"
+            <span style="font-size: 10px;text-align: right"
               >{{ row.tip_title }} <br />
               {{ row.tip_content }}</span
             >
@@ -77,7 +77,11 @@ const getData = computed(() => {
 <style>
 .leftTable {
   width: 90%;
-  margin: 2%;
+  margin-left: 10px;
+  margin-right: 0;
+  margin-top: 10px;
+  margin-bottom: 0%;
+  float:inline-start;
 }
 
 </style>

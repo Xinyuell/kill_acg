@@ -18,7 +18,8 @@ const news_1 = computed(() => {
   if (
     newsID === undefined ||
     newsID[0] === undefined ||
-    newsID[1] === undefined || newsID[1] < 0
+    newsID[1] === undefined ||
+    newsID[1] < 0
   ) {
     show1.value = false;
     return "";
@@ -36,7 +37,8 @@ const news_2 = computed(() => {
   if (
     newsID === undefined ||
     newsID[0] === undefined ||
-    newsID[1] === undefined || newsID[1] < 0
+    newsID[1] === undefined ||
+    newsID[1] < 0
   ) {
     show2.value = false;
     return "";
@@ -70,21 +72,21 @@ const headerHeight = computed(() => {
 });
 
 const activeIndex = ref("/game/build");
-function handleSelect(key, keyPath){
-  console.log(key,keyPath)
+function handleSelect(key: string, keyPath: any) {
+  console.log(key, keyPath);
 }
 </script>
 
 <template>
-  <el-container>
-    <el-header :height="headerHeight">
+  <el-row>
+    <el-col :height="headerHeight" :span="24">
       <el-popover
         placement="bottom"
         title="Title"
         :width="400"
         trigger="hover"
         content="详细的速度来源信息，总值和当前值"
-        v-if="store.state.gameData.influenceLevel >= 2"
+        v-if="store.state.gameData.influenceLevel >= 0"
       >
         <template #reference>
           <el-progress
@@ -110,38 +112,40 @@ function handleSelect(key, keyPath){
           </template>
         </el-alert>
       </div>
-    </el-header>
-    <el-container>
-      <el-aside width="360px">
-        <ResourcePanel />
-        <WorkPanel/>
-      </el-aside>
-      <el-container>
-        <el-main>
-          <el-menu
-            :default-active="activeIndex"
-            class="el-menu-demo"
-            mode="horizontal"
-            background-color="#F2F6FC"
-            text-color="#000"
-            active-text-color="#E6A23C"
-            @select="handleSelect"
-            router
-            style="margin-bottom:0.5rem"
-          >
-            <el-menu-item index="/game/build">家园</el-menu-item>
-            <el-menu-item index="/game/research">
-              <template #title>研究</template>
-            </el-menu-item>
-            <el-menu-item index="/game/build">政治</el-menu-item>
-            <el-menu-item index="/game/build">统计</el-menu-item>
-          </el-menu>
-          <router-view></router-view>
-        </el-main>
-        <!-- <el-footer height="100px">Footer</el-footer> -->
-      </el-container>
-    </el-container>
-  </el-container>
+    </el-col>
+  </el-row>
+  <el-row :gutter="40">
+    <el-col width="360px" :span="6" class="leftPanel" style="padding-right: 0px;">
+      <ResourcePanel />
+      <WorkPanel />
+    </el-col>
+    <el-col width="360px" :span="12" >
+      <el-menu
+        :default-active="activeIndex"
+        class="el-menu-demo"
+        mode="horizontal"
+        background-color="#F2F6FC"
+        text-color="#000"
+        active-text-color="#E6A23C"
+        @select="handleSelect"
+        router
+        style="margin-bottom: 0.5rem"
+      >
+        <el-menu-item index="/game/build">家园</el-menu-item>
+        <el-menu-item index="/game/research">
+          <template #title>研究</template>
+        </el-menu-item>
+        <el-menu-item index="/game/build">政治</el-menu-item>
+        <el-menu-item index="/game/build">统计</el-menu-item>
+      </el-menu>
+      <router-view></router-view>
+    </el-col>
+    <el-col>
+     
+      
+    </el-col>
+    <!-- <el-footer height="100px">Footer</el-footer> -->
+  </el-row>
 
   <el-drawer
     v-model="drawer"
@@ -171,12 +175,10 @@ function handleSelect(key, keyPath){
   line-height: 30px;
 }
 
-.el-aside {
+.leftPanel {
   background-color: #d3dce6;
-  color: var(--el-text-color-primary);
-  text-align: center;
-  padding: 0px;
   line-height: 10px;
+  
 }
 
 .el-main {

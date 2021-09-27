@@ -18,15 +18,18 @@ export const store = createStore({
     mutations:{
         modifyResourceCurValue(state:any,payload:GameDataPayLoad){
             const data:GameData = state.gameData;
-            data.sourceArr[payload.index].curValue = payload.value;
+            if(data.sourceArr.has(payload.index))
+                data.sourceArr.get(payload.index)!.curValue = payload.value;
         },
         modifyResourceMaxValue(state:any,payload:any){
             const data:GameData = state.gameData;
-            data.sourceArr[payload.index].maxValue += payload.value;
+            if(data.sourceArr.has(payload.index))
+                data.sourceArr.get(payload.index)!.maxValue += payload.value;
         },
         setResourceSpeed(state:any,payload:any){
             const data:GameData = state.gameData;
-            data.sourceArr[payload.index].speed = payload.value;
+            if(data.sourceArr.has(payload.index))
+            data.sourceArr.get(payload.index)!.speed = payload.value;
         },
         setGameRunning(state:any,payload){
             state.running = payload;

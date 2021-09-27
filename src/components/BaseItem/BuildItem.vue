@@ -18,13 +18,13 @@ export default {
           //TODO 建筑的升级检查
           break;
         case BuildClickType.AddInfluence:
-          store.state.gameData.sourceArr[0].cacheValue++;
+          store.state.gameData.sourceArr.get(1).cacheValue++;
           break;
         case BuildClickType.AddMoeny:
-           store.state.gameData.sourceArr[1].cacheValue++;
+           store.state.gameData.sourceArr.get(2).cacheValue++;
           break;
         case BuildClickType.AddResearch:
-           store.state.gameData.sourceArr[2].cacheValue++;
+           store.state.gameData.sourceArr.get(3).cacheValue++;
           break;
       }
     },

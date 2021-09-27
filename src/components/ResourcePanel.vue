@@ -1,15 +1,24 @@
 <script setup lang="ts">
-import { PropType, reactive, ref } from "vue";
+import { computed, PropType, reactive, ref } from "vue";
 import { resourcePanelData } from "../core/game";
 import { ReplaceGameData, store } from "../core/store";
 
-
+const getData = computed(() => {
+  const sourceArr: Map<number, resourcePanelData> =
+    store.state.gameData.sourceArr;
+    const data:resourcePanelData[] = [];
+    sourceArr.forEach(function(value,key){
+      if(value.unlock)
+      data.push(value);
+    });
+    return data;
+});
 </script>
 
 <template>
   <div class="resourcePanel">
     <el-table
-      :data="store.state.gameData.sourceArr.filter((data) => data.unlock)"
+      :data="getData"
       :show-header="false"
       :stripe="true"
       tooltip-effect="dark"
@@ -36,13 +45,17 @@ import { ReplaceGameData, store } from "../core/store";
               {{ row.tip_content }}</span
             >
             <template #reference>
-              <span>{{row.maxValue > 0 ? row.curValue + "/" + row.maxValue : row.curValue}}</span>
+              <span>{{
+                row.maxValue > 0
+                  ? row.curValue + "/" + row.maxValue
+                  : row.curValue
+              }}</span>
             </template>
           </el-popover>
         </template>
       </el-table-column>
 
-      <el-table-column width="80" style="text-align:right">
+      <el-table-column width="80" style="text-align: right">
         <template #default="{ row }">
           <el-popover placement="bottom" trigger="hover" :width="400">
             <template #reference>

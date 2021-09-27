@@ -13,8 +13,17 @@ let timeID1 = 0;
 let timeID2 = 0;
 //新闻词，根据当前影响力的等级决定，这个是一个全局数据，在game那边随机更新ID，然后这里去取
 const news_1 = computed(() => {
-  clearTimeout(timeID1);
   const newIDs = store.state.gameData.newID[0];
+  if (
+    newIDs === undefined ||
+    newIDs[0] === undefined ||
+    newIDs[1] === undefined
+  ) {
+    show1.value = false;
+    return "";
+  }
+
+  clearTimeout(timeID1);
   show1.value = true;
   timeID1 = setTimeout(() => {
     show1.value = false;
@@ -23,8 +32,17 @@ const news_1 = computed(() => {
 });
 
 const news_2 = computed(() => {
-  clearTimeout(timeID2);
   const newIDs = store.state.gameData.newID[1];
+  if (
+    newIDs === undefined ||
+    newIDs[0] === undefined ||
+    newIDs[1] === undefined
+  ) {
+    show2.value = false;
+    return "";
+  }
+
+  clearTimeout(timeID2);
   show2.value = true;
   timeID2 = setTimeout(() => {
     show2.value = false;

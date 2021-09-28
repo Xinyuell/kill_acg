@@ -7,6 +7,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@adamdehaven/vue-custom-tooltip": "^2.5.1",
+    "@element-plus/icons": "^0.0.11",
     "base64-js": "^1.5.1",
     "element-plus": "^1.1.0-beta.16",
     "js-base64": "^3.7.2",

@@ -271,7 +271,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       ID: EnumResourceItem.Believer,
       Name: "信徒",
       Desc: "信徒是一群彻底追随你消灭ACG的助手，会帮你扩大影响力。",
-      BaseMax: -1,
+      BaseMax: 10,
       TipsContent:
         "每个信徒提供1点基础的影响力速度，受各项研究和建筑的加成。安排信徒工作，每个信徒提升0.5%的效率。",
       Type: ItemType.ShowPanel,

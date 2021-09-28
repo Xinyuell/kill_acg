@@ -86,13 +86,13 @@ function initGameData() {
     ],
     researchUnLockList: [1], //第一个研究默认解锁
     researchComplete: [],
-    workConfig: [0,0,0,0],
+    workConfig: [10,10,10,10],
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
     sourceArr.set(value.ID, {
       resourceName: value.Name,
-      cacheValue: 0,
+      cacheValue: 50,
       cacheSpeed: 0,
       cacheMaxValue: value.BaseMax,
       curValue: "0",

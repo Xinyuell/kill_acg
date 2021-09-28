@@ -2,6 +2,7 @@
 import { computed, PropType, reactive, ref } from "vue";
 import { resourceItemData } from "../../core/gameSave";
 import { ReplaceGameData, store } from "../../core/store";
+import Tips from "../BaseItem/Tips.vue";
 
 const getData = computed(() => {
   const sourceArr: Map<number, resourceItemData> =
@@ -13,7 +14,6 @@ const getData = computed(() => {
     });
     return data;
 });
-
 </script>
 
 <template>
@@ -26,47 +26,23 @@ const getData = computed(() => {
     >
       <el-table-column width="110">
         <template #default="{ row }">
-          <el-popover placement="bottom" trigger="hover" :width="200" transition="">
-            <span style="font-size: 10px"
-              >{{ row.tip_title }} <br />
-              {{ row.tip_content }}</span
-            >
-            <template #reference>
-              <span>{{ row.resourceName }}</span>
-            </template>
-          </el-popover>
+            <span>{{ row.resourceName }}</span>
         </template>
       </el-table-column>
 
       <el-table-column  >
         <template #default="{ row }" >
-          <el-popover placement="bottom" trigger="hover" :width="200" transition="">
-            <span style="font-size: 10px"
-              >{{ row.tip_title }} <br />
-              {{ row.tip_content }}</span
-            >
-            <template #reference>
-              <p style="text-align:center">{{
+           <p style="text-align:center">{{
                 row.maxValue > 0
                   ? row.curValue + "/" + row.maxValue
                   : row.curValue
               }}</p>
-            </template>
-          </el-popover>
         </template>
       </el-table-column>
 
       <el-table-column width="80" >
         <template #default="{ row }">
-          <el-popover placement="bottom" trigger="hover" :width="200" transition="">
-            <template #reference>
-              <span>{{ row.speed + "/s" }}</span></template
-            >
-            <span style="font-size: 10px;text-align: right"
-              >{{ row.tip_title }} <br />
-              {{ row.tip_content }}</span
-            >
-          </el-popover>
+           <span>{{ row.speed + "/s" }}</span>
         </template>
       </el-table-column>
     </el-table>

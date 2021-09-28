@@ -17,6 +17,7 @@ export const CompleteResearch = "completeResearch";
 export const UnlockResearch = "unlockResearch";
 export const UnlockBuild = "unlockBuild";
 export const UnlockResource = "unlockResource"
+export const UpdateWorkConfig = "updateWorkConfig"
 
 export const store = createStore({
   state: {
@@ -73,6 +74,10 @@ export const store = createStore({
       if(data.sourceArr.has(paload))
         data.sourceArr.get(paload)!.unlock = true;
     },
+    updateWorkConfig(state:any,paload){
+      const data: GameData = state.gameData;
+      data.workConfig[paload.index] += paload.value;
+    }
   },
 });
 

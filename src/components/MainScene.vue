@@ -2,11 +2,13 @@
 <script setup lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import { mapGetters } from "vuex";
-import ResourcePanel from "./Panel/ResourcePanel.vue";
 import BuildPanel from "./Panel/BuildPanel.vue";
 import { ReplaceGameData, store } from "../core/store";
 import { language } from "../core/language";
 import WorkPanel from "./Panel/WorkPanel.vue";
+import ResourcePanelNoTips from "./Panel/ResourcePanelNoTips.vue";
+import ResourcePanel from "./Panel/ResourcePanel.vue";
+import ResourcePanel1 from "./Panel/ResourcePanel.vue";
 
 const show1 = ref(false);
 const show2 = ref(false);
@@ -80,6 +82,7 @@ function handleSelect(key: string, keyPath: any) {
 <template>
   <el-row>
     <el-col :height="headerHeight" :span="24">
+     
       <el-popover
         placement="bottom"
         title="Title"
@@ -116,7 +119,7 @@ function handleSelect(key: string, keyPath: any) {
   </el-row>
   <el-row :gutter="40">
     <el-col width="360px" :span="6" class="leftPanel" style="padding-right: 0px;">
-      <ResourcePanel />
+      <ResourcePanel1 />
       <WorkPanel />
     </el-col>
     <el-col width="360px" :span="12" >

@@ -4,6 +4,8 @@ import {
   SetResourceSpeed,
   store,
   UnlockBuild,
+  UnlockResearch,
+  UnlockResource,
   UpdateGuideTips,
 } from "./store";
 import {
@@ -174,14 +176,17 @@ function setResourceSpeed(
       data.cacheSpeed = num6;
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
-      data.cacheSpeed = data.cacheValue * GlobalConfig.BaseBelieverRatio;
+      data.cacheSpeed =
+        data.cacheValue * GlobalConfig.BaseBelieverRatio +
+        GlobalConfig.BaseBelieverRatio;
       break;
     case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
       if (isDebts) data.cacheSpeed = 0;
       else {
         const dataBeliever = sourceArr.get(EnumResourceItem.Believer)!;
         data.cacheSpeed =
-          dataBeliever.cacheValue * GlobalConfig.BaseBelieverRatio;
+          dataBeliever.cacheValue * GlobalConfig.BaseBelieverRatio +
+          GlobalConfig.BaseBelieverRatio;
         if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
           //信徒达到最大值
           data.cacheSpeed *= 2;
@@ -219,7 +224,8 @@ function checkBuildUnlock(
         store.commit(UpdateGuideTips, 1);
       }
       break;
-    default://其他全走require科技的逻辑
+    default:
+      //其他全走require科技的逻辑
       const Require = BuildInfoList.get(data.ID)!.Require;
       if (researchComplete.indexOf(Require) > 0) {
         store.commit(UnlockBuild, data.ID);
@@ -242,10 +248,12 @@ function checkResourceUnlock(
   if (data.unlock) return;
   switch (data.ID) {
     case EnumResourceItem.Money: //解锁金钱，需要影响力大于10
-      if (sourceArr.get(1)!.cacheValue >= 10) data.unlock = true;
+      if (sourceArr.get(1)!.cacheValue >= 10)
+        store.commit(UnlockResource, EnumResourceItem.Money);
       break;
     case EnumResourceItem.Cost1: //解锁知识，影响力大于20
-      if (sourceArr.get(1)!.cacheValue >= 20) data.unlock = true;
+      if (sourceArr.get(1)!.cacheValue >= 20)
+        store.commit(UnlockResource, EnumResourceItem.Cost1);
       break;
   }
 }

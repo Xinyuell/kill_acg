@@ -1,6 +1,6 @@
 <script lang="ts">
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
-import { ModifyResourceCurValue, store } from "../../core/store";
+import { ModifyResourceCurValue, store, UnlockResearch, UnlockResource } from "../../core/store";
 import {
   BuildClickType,
   EnumBuildItem,
@@ -32,18 +32,23 @@ export default {
           if (cost <= sourceArr.get(EnumResourceItem.Money)!.cacheValue) {
             sourceArr.get(EnumResourceItem.Money)!.cacheValue -= cost;
             data.curValue++;
+            //建筑第一次升级的额外处理
+            if(data.ID === EnumBuildItem.InfluenceLevel1 && data.curValue === 1){
+              store.commit(ModifyResourceCurValue,{index:EnumResourceItem.Believer,value:1})
+              store.commit(UnlockResource, EnumResourceItem.Believer);
+            }
           }
           break;
         case BuildClickType.AddInfluence:
-          sourceArr.get(EnumResourceItem.Influence)!.cacheValue++;
+          sourceArr.get(EnumResourceItem.Influence)!.cacheValue += GlobalConfig.ClickAddBase;
           break;
         case BuildClickType.AddMoeny:
-          sourceArr.get(EnumResourceItem.Money)!.cacheValue += 2;
+          sourceArr.get(EnumResourceItem.Money)!.cacheValue += GlobalConfig.ClickAddBase * GlobalConfig.GetMoneyRatio;
           break;
         case BuildClickType.AddResearch:
-          if (sourceArr.get(EnumResourceItem.Money)!.cacheValue >= 2) {
-            sourceArr.get(EnumResourceItem.Cost1)!.cacheValue += 1;
-            sourceArr.get(EnumResourceItem.Money)!.cacheValue -= 2;
+          if (sourceArr.get(EnumResourceItem.Money)!.cacheValue >= GlobalConfig.Cost1MoneyRatio) {
+            sourceArr.get(EnumResourceItem.Cost1)!.cacheValue += GlobalConfig.ClickAddBase;
+            sourceArr.get(EnumResourceItem.Money)!.cacheValue -= GlobalConfig.Cost1MoneyRatio;
           }
           break;
       }
@@ -72,6 +77,7 @@ export default {
 .count{
   float:right;
   text-align: right;
+  color: #409EFF;
 }
 .buildItem {
   width: 160px;

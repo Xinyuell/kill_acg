@@ -1,5 +1,9 @@
 export const GlobalConfig = {
   /**
+   * 每次点击获得资源基础值
+   */
+   ClickAddBase : 100,
+  /**
    * 每次点击、信徒获得金钱基础值
    */
   GetMoneyRatio: 2,
@@ -658,7 +662,7 @@ export const WorkInfoList: Map<number, IWorkInfo> = new Map([
     EnumWorkType.InfluenceWork,
     {
       ID: EnumWorkType.InfluenceWork,
-      Name: "扩大影响力",
+      Name: "扩大影响",
       Desc: "每个信徒/从众提升1点影响力每秒",
     },
   ],

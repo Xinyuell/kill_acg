@@ -13,7 +13,7 @@ const getData = computed(() => {
   const data: IWorkConfig[] = [];
   WorkInfoList.forEach(function (value, key) {
     data.push({
-      count: workConfig[key - 1] ? workConfig[key - 1] : 0,
+      count: workConfig[key] ? workConfig[key] : 0,
       Name: value.Name,
       ID: value.ID,
       Desc: value.Desc,
@@ -52,7 +52,7 @@ const step = ref(1);
       <el-table-column width="160"  >
         <template #default="{ row }">
           <el-input-number
-            v-model="store.state.gameData.workConfig[row.ID - 1]"
+            v-model="store.state.gameData.workConfig[row.ID]"
             size="mini"
             :step="step"
             align="right"

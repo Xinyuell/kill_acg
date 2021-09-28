@@ -11,13 +11,11 @@ export function getGameDataByBase64(code: string | undefined) {
   const saveGameData: ISaveGameData = JSON.parse(str);
   if (
     saveGameData === undefined ||
-    saveGameData.cityUnlock === undefined ||
     saveGameData.sourceArr === undefined ||
     saveGameData.buildArryList === undefined
   ) {
     return { gameData, success: false };
   }
-  gameData.cityUnlock = saveGameData.cityUnlock;
   gameData.acgProgressData = saveGameData.acgProgressData;
   gameData.influenceLevel = saveGameData.influenceLevel;
   gameData.researchUnLockList = saveGameData.researchUnLockList;
@@ -45,7 +43,6 @@ export function getCurrentSaveGameData() {
   if (!store.state.running) return;
   const gameData: GameData = store.state.gameData;
   const saveGameData: ISaveGameData = {
-    cityUnlock: gameData.cityUnlock,
     sourceArr: [],
     buildArryList: [],
     acgProgressData: gameData.acgProgressData,
@@ -75,7 +72,6 @@ export function getCurrentSaveGameData() {
 //初始化数据
 function initGameData() {
   const gameData: GameData = {
-    cityUnlock: [true, false, false, false, false, false],
     sourceArr: new Map([]),
     buildArryList: new Map([]),
     acgProgressData: {
@@ -90,7 +86,7 @@ function initGameData() {
     ],
     researchUnLockList: [1], //第一个研究默认解锁
     researchComplete: [],
-    workConfig: [],
+    workConfig: [0,0,0,0],
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
@@ -119,6 +115,7 @@ function initGameData() {
       click: value.OnClickType,
       baseTips: value.Desc,
       upgradeCostRatio: value.UpgradeCostRatio,
+      upgradeCostPower:value.UpgradeCostPower,
     });
   });
 
@@ -128,7 +125,6 @@ function initGameData() {
 }
 
 interface ISaveGameData {
-  cityUnlock: boolean[]; 
   sourceArr: ISaveResourcePanelData[]; 
   buildArryList: ISaveBuildPanelData[]; 
   acgProgressData: object; 
@@ -160,6 +156,7 @@ export interface buildItemData {
   ID: number;
   baseTips: string;
   upgradeCostRatio: number;
+  upgradeCostPower:number;
 }
 
 export interface resourceItemData {
@@ -181,10 +178,6 @@ export interface resourceItemData {
 
 export interface GameData {
   /**
-   * 建筑面板城市大分类是否解锁的布尔值数组
-   */
-  cityUnlock: boolean[]; //解锁进度
-  /**
    * 所有资源的信息
    */
   sourceArr: Map<number, resourceItemData>;
@@ -197,7 +190,7 @@ export interface GameData {
    */
   acgProgressData: object;
   /**
-   * 当前影响力的等级,同样决定城市等级
+   * 当前影响力的等级,主要决定新闻随机出现的水平和各种事件
    */
   influenceLevel: number;
   /**

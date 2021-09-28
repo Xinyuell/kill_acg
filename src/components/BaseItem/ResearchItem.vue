@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     buildItemClick: function () {
-      //消耗cost 解锁研究
+      //消耗cost 解锁研究。还需要考虑影响力的因素
       const data: IResearchInfo = this.researchData;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
@@ -27,9 +27,14 @@ export default {
       const cost2Data = sourceArr.get(
         EnumResourceItem.Cost2
       ) as resourceItemData;
+      const influenceData = sourceArr.get(
+        EnumResourceItem.Influence
+      ) as resourceItemData;
 
+      if(data.Condition > influenceData.cacheValue) return;
       if (data.Cost1 > cost1Data.cacheValue) return;
       if (data.Cost2 > cost2Data.cacheValue) return;
+
       cost1Data.cacheValue -= data.Cost1;
       cost2Data.cacheValue -= data.Cost2;
 

@@ -12,6 +12,7 @@ export const UpdateNews = "updateNews";
 export const UpdateGuideTips = "updateGuideTips";
 export const CompleteResearch = "completeResearch";
 export const UnlockResearch = "unlockResearch";
+export const UnlockBuild = "unlockBuild";
 
 export const store = createStore({
   state: {
@@ -57,6 +58,11 @@ export const store = createStore({
       paload.forEach(function(id){
         data.researchUnLockList.push(id);
       })
+    },
+    unlockBuild(state:any,paload:any){
+      const data: GameData = state.gameData;
+      if(data.buildArryList.has(paload))
+        data.buildArryList.get(paload)!.unlock = true;
     }
   },
 });

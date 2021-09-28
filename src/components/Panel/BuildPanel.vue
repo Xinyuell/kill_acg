@@ -19,7 +19,7 @@ const buildArry1 = computed(() => {
     store.state.gameData.buildArryList;
   const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
-    if (value.unlock && value.cityName === 0) data.push(value);
+    if (value.unlock && value.cityName === 1) data.push(value);
   });
   return data;
 });
@@ -28,7 +28,7 @@ const buildArry2 = computed(() => {
     store.state.gameData.buildArryList;
   const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
-    if (value.unlock && value.cityName === 0) data.push(value);
+    if (value.unlock && value.cityName === 2) data.push(value);
   });
   return data;
 });
@@ -37,7 +37,7 @@ const buildArry3 = computed(() => {
     store.state.gameData.buildArryList;
   const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
-    if (value.unlock && value.cityName === 0) data.push(value);
+    if (value.unlock && value.cityName === 3) data.push(value);
   });
   return data;
 });
@@ -46,16 +46,18 @@ const buildArry4 = computed(() => {
     store.state.gameData.buildArryList;
   const data: buildItemData[] = [];
   buildArryList.forEach(function (value, key) {
-    if (value.unlock && value.cityName === 0) data.push(value);
+    if (value.unlock && value.cityName === 4) data.push(value);
   });
   return data;
 });
+
+
 </script>
 
 <template>
   <div>
     <el-collapse v-model="activeNames">
-      <el-collapse-item name="0" v-if="store.state.gameData.cityUnlock[0]">
+      <el-collapse-item name="0" >
         <template #title>
           <h3 class="title">村口</h3>
         </template>
@@ -65,7 +67,7 @@ const buildArry4 = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item class="title" title="小镇" name="1" v-if="store.state.gameData.cityUnlock[1]">
+      <el-collapse-item class="title" title="小镇" name="1" v-if="buildArry1 && buildArry1.length>0">
         <template #title>
           <h3 class="title">小镇</h3>
         </template>
@@ -75,7 +77,7 @@ const buildArry4 = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item class="title" title="县城" name="2" v-if="store.state.gameData.cityUnlock[2]">
+      <el-collapse-item class="title" title="县城" name="2" v-if="buildArry2 && buildArry2.length>0">
         <template #title>
           <h3 class="title">县城</h3>
         </template>
@@ -85,7 +87,7 @@ const buildArry4 = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item class="title" title="城市" name="3" v-if="store.state.gameData.cityUnlock[3]">
+      <el-collapse-item class="title" title="城市" name="3" v-if="buildArry3 && buildArry3.length>0">
         <template #title>
           <h3 class="title">城市</h3>
         </template>
@@ -95,7 +97,7 @@ const buildArry4 = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item class="title" title="都市" name="4" v-if="store.state.gameData.cityUnlock[4]">
+      <el-collapse-item class="title" title="都市" name="4" v-if="buildArry4 && buildArry4.length>0">
         <template #title>
           <h3 class="title">都市</h3>
         </template>

@@ -4,7 +4,7 @@ import { ModifyResourceCurValue, UpdateNews } from "./store";
 import { BuildClickType, BuildInfoList, ItemInfoList, ItemType } from "./table";
 import { intToString } from "./utils";
 import { store } from "./store";
-import { resourceUnpate } from "./gameUpdate";
+import { resourceUpdate } from "./gameUpdate";
 import { GameData, getCurrentSaveGameData, getGameDataByBase64, SaveLocalStorageKey } from "./gameSave";
 
 export class GameControl {
@@ -75,6 +75,6 @@ export class GameControl {
     }
     const pass = (Date.now() - this.now)/1000;
     this.now = Date.now();
-    resourceUnpate(pass);
+    resourceUpdate(pass);
   }
 }

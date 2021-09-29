@@ -62,5 +62,8 @@ export default {
 .researchItem {
   width: 160px;
   height: 60px;
+  margin-left: 0px;
+  margin-top: 10px;
+  margin-right: 10px;
 }
 </style>

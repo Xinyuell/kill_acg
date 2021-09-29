@@ -3,93 +3,39 @@
 import { computed, defineComponent, ref } from "vue";
 import { mapGetters } from "vuex";
 import BuildPanel from "./Panel/BuildPanel.vue";
-import { ReplaceGameData, store } from "../core/store";
+import { ReplaceGameData, store, UpdateGuideTips } from "../core/store";
 import { language } from "../core/language";
 import WorkPanel from "./Panel/WorkPanel.vue";
-import ResourcePanelNoTips from "./Panel/ResourcePanelNoTips.vue";
 import ResourcePanel from "./Panel/ResourcePanel.vue";
-import ResourcePanel1 from "./Panel/ResourcePanel.vue";
-
-const show1 = ref(false);
-const show2 = ref(false);
-let timeID1 = 0;
-let timeID2 = 0;
-//新闻词，根据当前影响力的等级决定，这个是一个全局数据，在game那边随机更新ID，然后这里去取
-const news_1 = computed(() => {
-  const newsID = store.state.gameData.newsID[0];
-  if (
-    newsID === undefined ||
-    newsID[0] === undefined ||
-    newsID[1] === undefined ||
-    newsID[1] < 0
-  ) {
-    show1.value = false;
-    return "";
-  }
-
-  clearTimeout(timeID1);
-  show1.value = true;
-  timeID1 = setTimeout(() => {
-    show1.value = false;
-  }, 2000);
-  return language.news[newsID[0]][newsID[1]];
-});
-const news_2 = computed(() => {
-  const newsID = store.state.gameData.newsID[1];
-  if (
-    newsID === undefined ||
-    newsID[0] === undefined ||
-    newsID[1] === undefined ||
-    newsID[1] < 0
-  ) {
-    show2.value = false;
-    return "";
-  }
-
-  clearTimeout(timeID2);
-  show2.value = true;
-  timeID2 = setTimeout(() => {
-    show2.value = false;
-  }, 2000);
-  return language.news[newsID[0]][newsID[1]];
-});
-
-const drawer = ref(false);
-const guideTips = computed(() => {
-  const guideID = store.state.guideTipsID;
-  if (guideID < 0) {
-    drawer.value = false;
-    return;
-  }
-  drawer.value = true;
-  return language.guideTips[guideID];
-});
+import { TimeLineLog } from "../core/complain";
+import { EnumTimeLineLogType } from "../core/complain";
 
 const headerHeight = computed(() => {
   let base = 50;
-  if (show1.value) base += 60;
-  if (show2.value) base += 60;
   if (store.state.gameData.influenceLevel >= 2) base += 60;
   return base + "px";
 });
-
 const activeIndex = ref("/game/build");
 function handleSelect(key: string, keyPath: any) {
   console.log(key, keyPath);
+}
+
+function testclick() {
+  store.commit(UpdateGuideTips, Math.floor(Math.random() * 10));
+  store.state.openGuide = true;
 }
 </script>
 
 <template>
   <el-row>
     <el-col :height="headerHeight" :span="24">
-     
       <el-popover
         placement="bottom"
         title="Title"
         :width="400"
         trigger="hover"
         content="详细的速度来源信息，总值和当前值"
-        v-if="store.state.gameData.influenceLevel >= 0"
+        v-if="store.state.gameData.influenceLevel >= 2"
       >
         <template #reference>
           <el-progress
@@ -101,35 +47,19 @@ function handleSelect(key: string, keyPath: any) {
           />
         </template>
       </el-popover>
-      <div v-show="show1">
-        <el-alert type="success" center class="head" :closable="false">
-          <template #title>
-            <p>{{ news_1 }}</p>
-          </template>
-        </el-alert>
-      </div>
-      <div v-show="show2">
-        <el-alert type="success" center class="head" :closable="false">
-          <template #title>
-            <p>{{ news_2 }}</p>
-          </template>
-        </el-alert>
-      </div>
     </el-col>
   </el-row>
   <el-row :gutter="40">
-    <el-col width="360px" :span="6" class="leftPanel" style="padding-right: 0px;">
-      <ResourcePanel1 />
+    <el-col :span="1"> </el-col>
+    <el-col :span="6" class="leftPanel" style="padding: 5px">
+      <ResourcePanel />
       <WorkPanel />
     </el-col>
-    <el-col width="360px" :span="12" >
+    <el-col :span="9">
       <el-menu
         :default-active="activeIndex"
         class="el-menu-demo"
         mode="horizontal"
-        background-color="#F2F6FC"
-        text-color="#000"
-        active-text-color="#E6A23C"
         @select="handleSelect"
         router
         style="margin-bottom: 0.5rem"
@@ -138,36 +68,56 @@ function handleSelect(key: string, keyPath: any) {
         <el-menu-item index="/game/research">
           <template #title>研究</template>
         </el-menu-item>
-        <el-menu-item index="/game/build">政治</el-menu-item>
-        <el-menu-item index="/game/build">统计</el-menu-item>
+        <el-menu-item index="/game/policy" v-if="false">政治</el-menu-item>
+        <el-menu-item index="/game/stats" v-if="false">统计</el-menu-item>
       </el-menu>
       <router-view></router-view>
     </el-col>
-    <el-col>
-     
-      
+    <el-col :span="6" class="leftPanel" style="padding: 40px 10px 10px 0px">
+      <el-scrollbar height="600px" >
+        <el-timeline>
+          <el-timeline-item
+            v-for="(log, index) in store.state.timelineLogs"
+            :key="index"
+            :type="log.iconType"
+            :color="log.color"
+            :timestamp="log.timestamp"
+            :hide-timestamp="log.logType === EnumTimeLineLogType.ComplainState"
+            class="timelineItem"
+          >
+            {{ log.content }}
+          </el-timeline-item>
+        </el-timeline>
+      </el-scrollbar>
     </el-col>
+    <el-col :span="1"> </el-col>
     <!-- <el-footer height="100px">Footer</el-footer> -->
   </el-row>
 
   <el-drawer
-    v-model="drawer"
-    title="引导"
-    direction="ttb"
-    :close-delay="500"
+    v-model="store.state.openGuide"
+    title="指引"
+    direction="rtl"
     size="20%"
   >
-    <span>{{ guideTips }}</span>
+    <span>{{ language.guideTips[store.state.guideTipsID] }}</span>
   </el-drawer>
 </template>
 
 <style scoped>
+.timelineItem {
+  line-height: 15px;
+}
 .head {
   width: 60%;
   margin-left: 10%;
   margin-right: 10%;
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.news {
+  margin-top: 10px;
 }
 
 .el-header,
@@ -181,7 +131,6 @@ function handleSelect(key: string, keyPath: any) {
 .leftPanel {
   background-color: #d3dce6;
   line-height: 10px;
-  
 }
 
 .el-main {

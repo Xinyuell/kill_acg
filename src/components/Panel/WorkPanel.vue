@@ -74,7 +74,7 @@ function clickAdd(e: MouseEvent, index: number) {
   max /= GlobalConfig.Cost2MoneyRatio;
   max = Math.floor(max);
   if (max < 0) return;
-  value = Math.min(value, max);//取更小的，如果钱不够了最大能加的人则有限
+  value = Math.min(value, max); //取更小的，如果钱不够了最大能加的人则有限
   let people = GetTotalPeople();
   let total = GetTotalWorks();
   if (people >= total + value) {
@@ -125,27 +125,31 @@ function clickAdd4(e: any) {
 function clickSub4(e: any) {
   clickSub(e, 3);
 }
-
-function cancelAuto() {
-  radio.value = -1;
-  store.commit(UpdateAutoWorkIndex, -1);
+const switchValue = ref(false);
+let old = -1;
+function cancelAuto(value: boolean) {
+  if (value === false) {
+    old = radio.value;
+    radio.value = -1;
+  } else {
+    if (old < 0) old = 0;
+    radio.value = old;
+  }
+  store.commit(UpdateAutoWorkIndex, radio.value);
 }
 </script>
 
 <template>
   <div class="leftTable workTable">
     <div class="titlep">
-      <span >剩余人数：{{ notWork }}</span>
-      <span style="margin-left: 40px">停止自动分配</span>
-      <el-button
-        type="info"
-        icon="el-icon-remove"
-        color="#F56C6C"
-        size="mini"
-        circle
-        @click="cancelAuto"
-        style="margin-left: 20px"
-      ></el-button>
+      <span>剩余人数：{{ notWork }}</span>
+      <el-switch
+        v-model="switchValue"
+        @change="cancelAuto"
+        active-text="自动分配"
+        inactive-text="关闭"
+        style="margin-left: 15px"
+      />
     </div>
     <ul id="workDataul">
       <li class="worktab">
@@ -279,10 +283,11 @@ function cancelAuto() {
 }
 .workTable {
   margin-top: 4rem;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
 }
 #workDataul {
   padding-inline-start: 1px;
+  margin-block-end: 0;
 }
 
 span.title {

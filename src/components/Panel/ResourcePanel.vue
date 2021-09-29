@@ -47,7 +47,7 @@ const getData = computed(() => {
             >
             <template #reference>
               <p style="text-align:center">{{
-                row.maxValue > 0
+                row.cacheMaxValue > 0
                   ? row.curValue + "/" + row.maxValue
                   : row.curValue
               }}</p>
@@ -56,7 +56,7 @@ const getData = computed(() => {
         </template>
       </el-table-column>
 
-      <el-table-column width="80" >
+      <el-table-column width="90" >
         <template #default="{ row }">
           <el-popover placement="bottom" trigger="hover" :width="200" transition="">
             <template #reference>
@@ -77,11 +77,8 @@ const getData = computed(() => {
 
 <style>
 .leftTable {
-  width: 90%;
-  margin-left: 10px;
-  margin-right: 0;
-  margin-top: 10px;
-  margin-bottom: 0%;
+  width: 100%;
+  margin-bottom: 0;
   float:inline-start;
 }
 

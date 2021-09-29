@@ -2,7 +2,7 @@ export const GlobalConfig = {
   /**
    * 每次点击获得资源基础值
    */
-   ClickAddBase : 100,
+  ClickAddBase: 100,
   /**
    * 每次点击、信徒获得金钱基础值
    */
@@ -18,15 +18,31 @@ export const GlobalConfig = {
   /**
    * 基础的出生率
    */
-  BaseBelieverRatio:0.01,
+  BaseBelieverRatio: 0.002,
   /**
    * 信徒满人数后，从众的额外出生率倍率
    */
-   PeopleBelieverMaxRatio:2,
+  PeopleBelieverMaxRatio: 2,
   /**
    * 全局建筑基础消耗
    */
-   BuildUpgradeBase:10,
+  BuildUpgradeBase: 10,
+  /**
+   * 游戏时间,找一个有意义时间
+   */
+  StartData : Date.UTC(2016, 7, 1, 0, 0, 0, 0),
+  /**
+   * 自动存档时间
+   */
+   SaveTime : 20000,
+   /**
+    * 刷新毫秒数,每秒20帧
+    */
+   UpdateTime : 50,
+   /**
+    * 虚拟时间放大倍数，2秒=1天
+    */
+   VrtulTimeRatio:43200,
 };
 
 export enum ItemType {
@@ -79,15 +95,15 @@ export interface IBuildInfo extends IBaseInfo {
   /**成本公式 指数倍率*/
   UpgradeCostPower: number;
   /**解锁需要完成科技*/
-  Require:EnumResearchItem;
+  Require: EnumResearchItem;
   /**提供属性，乘以数量 */
   ResearchProp: Map<EnumResearchProp, number>;
 }
 
 export interface IResearchInfo extends IBaseInfo {
-   /**动漫知识消耗 */
+  /**动漫知识消耗 */
   Cost1: number;
-    /**游戏知识消耗 */
+  /**游戏知识消耗 */
   Cost2: number;
   /**
    * 解锁下一步研究ID
@@ -110,7 +126,7 @@ export enum EnumResourceItem {
   /**影响力 */
   Influence,
   Money,
-   /**动漫知识 */
+  /**动漫知识 */
   Cost1,
   /**游戏知识 */
   Cost2,
@@ -182,6 +198,18 @@ export enum EnumResearchItem {
    * 解锁举报
    */
   ComplainUnLock,
+  /**
+   * 信徒自动举报国内
+   */
+  AutoComplainLevel1,
+  /**
+   * 信徒自动举报国外
+   */
+  AutoComplainLevel2,
+  /**
+   * 信徒自动举报外太空
+   */
+  AutoComplainLevel3,
 }
 
 /**
@@ -325,8 +353,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 0,
       OnClickType: BuildClickType.AddInfluence,
       UpgradeCostRatio: 0,
-      Require:EnumResearchItem.None,
-      UpgradeCostPower:0,
+      Require: EnumResearchItem.None,
+      UpgradeCostPower: 0,
       ResearchProp: new Map(),
     },
   ],
@@ -340,8 +368,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 0,
       OnClickType: BuildClickType.AddMoeny,
       UpgradeCostRatio: 0,
-      UpgradeCostPower:0,
-      Require:EnumResearchItem.None,
+      UpgradeCostPower: 0,
+      Require: EnumResearchItem.None,
       ResearchProp: new Map(),
     },
   ],
@@ -355,8 +383,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 0,
       OnClickType: BuildClickType.AddResearch,
       UpgradeCostRatio: 0,
-      UpgradeCostPower:0,
-      Require:EnumResearchItem.None,
+      UpgradeCostPower: 0,
+      Require: EnumResearchItem.None,
       ResearchProp: new Map(),
     },
   ],
@@ -370,8 +398,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 1,
       OnClickType: BuildClickType.Upgrade,
       UpgradeCostRatio: 3,
-      UpgradeCostPower:2,
-      Require:EnumResearchItem.BelieverBuildLevel1,
+      UpgradeCostPower: 2,
+      Require: EnumResearchItem.BelieverBuildLevel1,
       ResearchProp: new Map([[EnumResearchProp.BelieverMax, 10]]),
     },
   ],
@@ -385,8 +413,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 1,
       OnClickType: BuildClickType.Upgrade,
       UpgradeCostRatio: 4,
-      UpgradeCostPower:2,
-      Require:EnumResearchItem.MoneyBuildLevel1,
+      UpgradeCostPower: 2,
+      Require: EnumResearchItem.MoneyBuildLevel1,
       ResearchProp: new Map([[EnumResearchProp.MoneyRatio, 0.1]]),
     },
   ],
@@ -400,8 +428,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 1,
       OnClickType: BuildClickType.Upgrade,
       UpgradeCostRatio: 4,
-      UpgradeCostPower:2.2,
-      Require:EnumResearchItem.ResearchBuildLevel1,
+      UpgradeCostPower: 2.2,
+      Require: EnumResearchItem.ResearchBuildLevel1,
       ResearchProp: new Map([[EnumResearchProp.Cost1Ratio, 0.1]]),
     },
   ],
@@ -415,8 +443,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 2,
       OnClickType: BuildClickType.Upgrade,
       UpgradeCostRatio: 6,
-      UpgradeCostPower:2.05,
-      Require:EnumResearchItem.BelieverBuildLevel2,
+      UpgradeCostPower: 2.05,
+      Require: EnumResearchItem.BelieverBuildLevel2,
       ResearchProp: new Map([[EnumResearchProp.PeopleMax, 100]]),
     },
   ],
@@ -430,8 +458,8 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 2,
       OnClickType: BuildClickType.Upgrade,
       UpgradeCostRatio: 8,
-      UpgradeCostPower:2.05,
-      Require:EnumResearchItem.MoneyBuildLevel2,
+      UpgradeCostPower: 2.05,
+      Require: EnumResearchItem.MoneyBuildLevel2,
       ResearchProp: new Map([[EnumResearchProp.MoneyRatio, 0.2]]),
     },
   ],
@@ -445,14 +473,12 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       cityName: 2,
       OnClickType: BuildClickType.Upgrade,
       UpgradeCostRatio: 8,
-      UpgradeCostPower:2.1,
-      Require:EnumResearchItem.ResearchBuildLevel2,
+      UpgradeCostPower: 2.1,
+      Require: EnumResearchItem.ResearchBuildLevel2,
       ResearchProp: new Map([[EnumResearchProp.Cost2Ratio, 0.05]]),
     },
   ],
 ]);
-
-
 
 export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
   [

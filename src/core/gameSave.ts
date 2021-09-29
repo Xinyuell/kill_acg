@@ -1,7 +1,13 @@
 import { Base64 } from "js-base64";
 import { State } from "vue";
 import { store } from "./store";
-import { BuildClickType, BuildInfoList, EnumResearchProp, ItemInfoList, ItemType } from "./table";
+import {
+  BuildClickType,
+  BuildInfoList,
+  EnumResearchProp,
+  ItemInfoList,
+  ItemType,
+} from "./table";
 
 export const SaveLocalStorageKey = "kill_acg_game";
 
@@ -30,6 +36,8 @@ export function setStoreGameDataByBase64(
   gameData.researchComplete = saveGameData.researchComplete;
   gameData.workConfig = saveGameData.workConfig;
   gameData.autoWorkIndex = saveGameData.autoWorkIndex;
+  gameData.newsID = new Set(saveGameData.newsID);
+  gameData.totalTime = saveGameData.totalTime;
 
   saveGameData.sourceArr.forEach(function (value) {
     if (gameData.sourceArr.has(value.ID)) {
@@ -59,6 +67,8 @@ export function getCurrentSaveGameData() {
     researchComplete: gameData.researchComplete,
     workConfig: gameData.workConfig,
     autoWorkIndex: gameData.autoWorkIndex,
+    newsID:Array.from(gameData.newsID),
+    totalTime:gameData.totalTime,
   };
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
@@ -88,14 +98,12 @@ export function initGameData() {
       cur: 5000000000, //50亿
     },
     influenceLevel: 0,
-    newsID: [
-      [0, -1],
-      [1, -1],
-    ],
+    newsID: new Set(),
     researchUnLockList: [1], //第一个研究默认解锁
     researchComplete: [],
     workConfig: [0, 0, 0, 0],
     autoWorkIndex: -1,
+    totalTime:0,
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
@@ -104,7 +112,7 @@ export function initGameData() {
       cacheValue: 0,
       cacheSpeed: 0,
       cacheMaxValue: value.BaseMax,
-      baseMaxValue:value.BaseMax,
+      baseMaxValue: value.BaseMax,
       curValue: "0",
       maxValue: value.BaseMax.toString(),
       speed: "0",
@@ -126,7 +134,7 @@ export function initGameData() {
       baseTips: value.Desc,
       upgradeCostRatio: value.UpgradeCostRatio,
       upgradeCostPower: value.UpgradeCostPower,
-      ResearchProp:value.ResearchProp,
+      ResearchProp: value.ResearchProp,
     });
   });
 
@@ -144,6 +152,14 @@ interface ISaveGameData {
   researchComplete: number[];
   workConfig: number[];
   autoWorkIndex: number;
+  /**
+   * 已获得新闻的ID（加属性的才记录）
+   */
+  newsID: number[];
+    /**
+   * 游戏的总时间
+   */
+  totalTime:number;
 }
 
 interface ISaveBuildPanelData {
@@ -181,7 +197,7 @@ export interface resourceItemData {
   /**当前最大值：真实数值 */
   cacheMaxValue: number;
   /**基础最大值：填表 */
-  baseMaxValue:number;
+  baseMaxValue: number;
 
   /**当前值：显示值，字符串，有变化的才更新，忽视较小的数 */
   curValue: string;
@@ -214,9 +230,9 @@ export interface GameData {
    */
   influenceLevel: number;
   /**
-   * 随机的新闻ID
+   * 已获得新闻的ID（加属性的才记录）
    */
-  newsID: number[][];
+  newsID: Set<number>;
   /**
    * 已经解锁的研究,里面也包含已经完成的研究
    */
@@ -230,4 +246,8 @@ export interface GameData {
    */
   workConfig: number[];
   autoWorkIndex: number;
+     /**
+   * 游戏的总时间
+   */
+  totalTime:number;
 }

@@ -1,16 +1,23 @@
 import { Base64 } from "js-base64";
 import { router } from "../router";
 import { ModifyResourceCurValue, UpdateNews } from "./store";
-import { BuildClickType, BuildInfoList, ItemInfoList, ItemType } from "./table";
+import { BuildClickType, BuildInfoList, GlobalConfig, ItemInfoList, ItemType } from "./table";
 import { intToString } from "./utils";
 import { store } from "./store";
 import { resourceUpdate } from "./gameUpdate";
-import { GameData, getCurrentSaveGameData, setStoreGameDataByBase64, SaveLocalStorageKey } from "./gameSave";
+import {
+  GameData,
+  getCurrentSaveGameData,
+  setStoreGameDataByBase64,
+  SaveLocalStorageKey,
+} from "./gameSave";
 import { State } from "@vue/runtime-core";
+import { language } from "./language";
+import { ElMessage, ElNotification, NotificationHandle, NotificationParamsTyped } from "element-plus";
+import { randomComplain } from "./complain";
 
 export class GameControl {
-  static saveTime = 20000;
-  static updateTime = 50;
+
   timer: number;
   resourceIDMap: Map<number, number>;
   buildIDMap: Map<number, [number, number]>;
@@ -18,53 +25,58 @@ export class GameControl {
   static buildLevelMax: number = 4;
   static theme: number = 0;
   private now: number;
-  public totalTime:number;
+  public totalTime: number;
 
   constructor() {
     this.resourceIDMap = new Map<number, number>();
     this.buildIDMap = new Map<number, [number, number]>();
     this.timer = 0;
-  
+
     this.now = Date.now();
     this.totalTime = 0;
   }
 
-  public Start(state:State){
-    setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey])
+  public Start(state: State) {
+    setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey]);
     this.timer = setInterval(() => {
       this.update();
-    }, GameControl.updateTime);
+    }, GlobalConfig.UpdateTime);
 
     setInterval(() => {
       this.saveGame();
-    }, GameControl.saveTime);
+    }, GlobalConfig.SaveTime);
 
     setTimeout(() => {
-      this.randomNews()
-    }, 5000);
+      this.randomNews();
+    }, 30000);
+
+    setTimeout(()=>{
+      randomComplain()
+    },1000);
 
     this.now = Date.now();
   }
 
-  private randomNews(){
-    //TODO 新闻的随机算法
-    // store.commit(UpdateNews,{
-    //   newsIndex:0,
-    //   news:[0,3]
-    // })
-    // store.commit(UpdateNews,{
-    //   newsIndex:1,
-    //   news:[0,2]
-    // })
+  private randomNews() {
     setTimeout(() => {
-      this.randomNews()
-    }, Math.random()*5000+50000);
+      this.randomNews();
+    }, Math.random() * 120000 + 20000);
+    if(store.state.gameData.influenceLevel <= 0)
+      return;
+    const curNews = language.news[store.state.gameData.influenceLevel - 1];
+    const newsIndex = Math.floor(Math.random() * curNews.length);
+    ElMessage.success({
+      message:curNews[newsIndex],
+      duration:10000,
+      showClose:true,
+      center:true,
+      iconClass:"info"
+    })
   }
-
-  private saveGame(){
-      const saveGameData = getCurrentSaveGameData();
-      const code = Base64.encode(JSON.stringify(saveGameData));
-      window.localStorage.setItem(SaveLocalStorageKey, code);
+  private saveGame() {
+    const saveGameData = getCurrentSaveGameData();
+    const code = Base64.encode(JSON.stringify(saveGameData));
+    window.localStorage.setItem(SaveLocalStorageKey, code);
   }
 
   private update() {
@@ -72,8 +84,11 @@ export class GameControl {
       this.now = Date.now();
       return;
     }
-    const pass = (Date.now() - this.now)/1000;
+    //正式开始游戏才会计时
+    const pass = (Date.now() - this.now) ;
+    store.state.gameData.totalTime += pass;
     this.now = Date.now();
-    resourceUpdate(pass);
+    resourceUpdate(pass/1000);
   }
 }
+

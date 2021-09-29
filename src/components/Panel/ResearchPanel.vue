@@ -30,9 +30,9 @@ const complete = computed(() => {
 <template>
   <div>
     <el-collapse v-model="activeNames">
-      <el-collapse-item name="0">
+      <el-collapse-item name="0" class="Collapsetitle">
         <template #title>
-          <h3>未完成</h3>
+          <h3 class="CollapsetitleText">未完成</h3>
         </template>
         <ul>
           <template v-for="data in unlock" :key="data.ID">
@@ -40,9 +40,9 @@ const complete = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item name="1">
+      <el-collapse-item name="1" class="Collapsetitle">
         <template #title>
-          <h3>已完成</h3>
+          <h3 class="CollapsetitleText">已完成</h3>
         </template>
         <ul>
           <template v-for="data in complete" :key="data.ID">

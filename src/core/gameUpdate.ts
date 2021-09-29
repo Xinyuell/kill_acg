@@ -196,6 +196,20 @@ function updateResourceValue(
   if (data.cacheValue < 0) {
     data.cacheValue = 0; //金钱小于0，上面会设置停工了；影响力小于0游戏结束，TODO 影响力扣的逻辑
   }
+  if(data.ID === EnumResourceItem.Influence){
+    if(data.cacheValue > 1000000000){
+      store.state.gameData.influenceLevel = 4;
+    }
+    else if(data.cacheValue > 10000000){
+      store.state.gameData.influenceLevel = 3;
+    }
+    else if(data.cacheValue > 10000){
+      store.state.gameData.influenceLevel = 2;
+    }
+    else if(data.cacheValue > 100){
+      store.state.gameData.influenceLevel = 1;
+    }
+  }
   const strValue = intToString(data.cacheValue);
   if (strValue !== data.curValue) {
     store.commit(ModifyResourceCurValue, {
@@ -290,7 +304,7 @@ function setResourceSpeed(
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
       data.cacheSpeed =
         data.cacheValue * GlobalConfig.BaseBelieverRatio +
-        GlobalConfig.BaseBelieverRatio;
+        GlobalConfig.BaseBelieverRatio*5;
       break;
     case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
       if (isDebts) data.cacheSpeed = 0;
@@ -298,7 +312,7 @@ function setResourceSpeed(
         const dataBeliever = sourceArr.get(EnumResourceItem.Believer)!;
         data.cacheSpeed =
           dataBeliever.cacheValue * GlobalConfig.BaseBelieverRatio +
-          GlobalConfig.BaseBelieverRatio;
+          GlobalConfig.BaseBelieverRatio*5;
         if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
           //信徒达到最大值
           data.cacheSpeed *= 2;
@@ -315,6 +329,11 @@ function setResourceSpeed(
   }
 }
 
+export function StartGuideByID(ID:number){
+  store.commit(UpdateGuideTips, ID)
+  store.state.openGuide = true;
+}
+
 //建筑的解锁
 function checkBuildUnlock(
   data: buildItemData,
@@ -327,13 +346,13 @@ function checkBuildUnlock(
     case EnumBuildItem.AddMoney: //解锁获得金钱按钮
       if (sourceArr.get(1)!.cacheValue >= 10) {
         store.commit(UnlockBuild, data.ID);
-        store.commit(UpdateGuideTips, 0);
+        StartGuideByID(0);
       }
       break;
     case EnumBuildItem.AddResearch: //解锁获得知识按钮
       if (sourceArr.get(1)!.cacheValue >= 20) {
         store.commit(UnlockBuild, data.ID);
-        store.commit(UpdateGuideTips, 1);
+        StartGuideByID(1);
       }
       break;
     default:

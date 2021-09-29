@@ -4,7 +4,7 @@ import BuildItem from "../BaseItem/BuildItem.vue";
 import { ReplaceGameData, store } from "../../core/store";
 import { buildItemData } from "../../core/gameSave";
 
-const activeNames = ref(["0"]);
+const activeNames = ref(["0","1","2","3","4"]);
 const buildArry0 = computed(() => {
   const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;
@@ -57,9 +57,9 @@ const buildArry4 = computed(() => {
 <template>
   <div>
     <el-collapse v-model="activeNames">
-      <el-collapse-item name="0" >
+      <el-collapse-item name="0" class="Collapsetitle" >
         <template #title>
-          <h3 class="title">村口</h3>
+          <h3 class="CollapsetitleText">村口</h3>
         </template>
         <ul>
           <template v-for="buildData in buildArry0" :key="buildData.ID">
@@ -67,9 +67,9 @@ const buildArry4 = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item class="title" title="小镇" name="1" v-if="buildArry1 && buildArry1.length>0">
+      <el-collapse-item class="Collapsetitle"  name="1" v-if="buildArry1 && buildArry1.length>0">
         <template #title>
-          <h3 class="title">小镇</h3>
+          <h3 class="CollapsetitleText">小镇</h3>
         </template>
         <ul>
           <template v-for="buildData in buildArry1" :key="buildData.ID">
@@ -77,9 +77,9 @@ const buildArry4 = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item class="title" title="县城" name="2" v-if="buildArry2 && buildArry2.length>0">
+      <el-collapse-item class="Collapsetitle"  name="2" v-if="buildArry2 && buildArry2.length>0">
         <template #title>
-          <h3 class="title">县城</h3>
+          <h3 class="CollapsetitleText">县城</h3>
         </template>
         <ul>
           <template v-for="buildData in buildArry2" :key="buildData.ID">
@@ -87,9 +87,9 @@ const buildArry4 = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item class="title" title="城市" name="3" v-if="buildArry3 && buildArry3.length>0">
+      <el-collapse-item class="Collapsetitle"  name="3" v-if="buildArry3 && buildArry3.length>0">
         <template #title>
-          <h3 class="title">城市</h3>
+          <h3 class="CollapsetitleText">城市</h3>
         </template>
         <ul>
           <template v-for="buildData in buildArry3" :key="buildData.ID">
@@ -97,9 +97,9 @@ const buildArry4 = computed(() => {
           </template>
         </ul>
       </el-collapse-item>
-      <el-collapse-item class="title" title="都市" name="4" v-if="buildArry4 && buildArry4.length>0">
+      <el-collapse-item class="Collapsetitle"  name="4" v-if="buildArry4 && buildArry4.length>0">
         <template #title>
-          <h3 class="title">都市</h3>
+          <h3 class="CollapsetitleText">都市</h3>
         </template>
         <ul>
           <template v-for="buildData in buildArry4" :key="buildData.ID">
@@ -111,9 +111,13 @@ const buildArry4 = computed(() => {
   </div>
 </template>
 
-<style scoped>
-.title {
-  margin: 1rem;
+<style>
+.Collapsetitle {
+  margin-top: 0.5rem;
+}
+
+.CollapsetitleText{
+  margin: 1rem 1rem 0rem 1rem;
   font-size: 1rem;
 }
 
@@ -121,7 +125,5 @@ const buildArry4 = computed(() => {
   width: 450px;
   margin: 20px;
 }
-.buildItem {
-  display: inline;
-}
+
 </style>

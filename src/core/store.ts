@@ -1,8 +1,7 @@
 import { App, State } from "@vue/runtime-core";
 import { createStore } from "vuex";
 import { GameControl } from "./game";
-import { GameData, initGameData } from "./gameSave";
-
+import {  initGameData } from "./gameSave";
 /**
  * 参数，资源enum：index， 值：value
  */
@@ -26,6 +25,8 @@ export const store = createStore({
     haslog: false,
     guideTipsID: -1,
     gameData: initGameData(),
+    openGuide:false,
+    timelineLogs:[],
   },
   mutations: {
     modifyResourceCurValue(state: State, payload: any) {
@@ -46,8 +47,8 @@ export const store = createStore({
     replaceGameData(state: State, paload: any) {
       state.gameData = paload;
     },
-    updateNews(state: State, paload: any) {
-      state.gameData.newsID[paload.newsIndex] = paload.news;
+    updateNews(state: State, paload: number) {
+      state.gameData.newsID.add(paload);
     },
     updateGuideTips(state: State, paload: number) {
       state.guideTipsID = paload;

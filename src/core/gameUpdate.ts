@@ -203,7 +203,7 @@ function updateResourceValue(
     else if(data.cacheValue > 10000000){
       store.state.gameData.influenceLevel = 3;
     }
-    else if(data.cacheValue > 10000){
+    else if(data.cacheValue > 3000){
       store.state.gameData.influenceLevel = 2;
     }
     else if(data.cacheValue > 100){
@@ -303,16 +303,14 @@ function setResourceSpeed(
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
       data.cacheSpeed =
-        data.cacheValue * GlobalConfig.BaseBelieverRatio +
-        GlobalConfig.BaseBelieverRatio*5;
+        Math.max(0.1, Math.pow(data.cacheValue,0.5) * GlobalConfig.BaseBelieverRatio)
       break;
     case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
       if (isDebts) data.cacheSpeed = 0;
       else {
         const dataBeliever = sourceArr.get(EnumResourceItem.Believer)!;
         data.cacheSpeed =
-          dataBeliever.cacheValue * GlobalConfig.BaseBelieverRatio +
-          GlobalConfig.BaseBelieverRatio*5;
+          Math.max(0.1, Math.pow(data.cacheValue,0.5) * GlobalConfig.BaseBelieverRatio)
         if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
           //信徒达到最大值
           data.cacheSpeed *= 2;
@@ -371,10 +369,6 @@ function checkResourceUnlock(
   sourceArr: Map<number, resourceItemData>
 ) {
   //影响力提升等级和各种解锁
-  if (data.ID === EnumResourceItem.Influence) {
-    if (data.cacheValue >= 100) {
-    }
-  }
 
   if (data.unlock) return;
   switch (data.ID) {

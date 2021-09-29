@@ -52,6 +52,7 @@ export function setStoreGameDataByBase64(
       gameData.buildArryList.get(value.ID)!.unlock = value.unlock;
     }
   });
+  state.haslog = true;
   return true;
 }
 

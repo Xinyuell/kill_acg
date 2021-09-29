@@ -14,6 +14,7 @@ import {
   IBuildInfo,
 } from "../../core/table";
 import { buildItemData, resourceItemData } from "../../core/gameSave";
+import { StartGuideByID } from "../../core/gameUpdate";
 
 export default {
   props: {
@@ -34,20 +35,35 @@ export default {
             GlobalConfig.BuildUpgradeBase *
             (data.curValue * data.upgradeCostRatio +
               Math.pow(data.upgradeCostPower, data.curValue));
-          if (cost <= sourceArr.get(EnumResourceItem.Money)!.cacheValue) {
-            sourceArr.get(EnumResourceItem.Money)!.cacheValue -= cost;
-            data.curValue++;
-            //建筑第一次升级的额外处理
-            if (
-              data.ID === EnumBuildItem.InfluenceLevel1 &&
-              data.curValue === 1
-            ) {
-              store.commit(ModifyResourceCurValue, {
-                index: EnumResourceItem.Believer,
-                value: 1,
-              });
-              store.commit(UnlockResource, EnumResourceItem.Believer);
-            }
+          if (cost > sourceArr.get(EnumResourceItem.Money)!.cacheValue) return;
+          sourceArr.get(EnumResourceItem.Money)!.cacheValue -= cost;
+          data.curValue++;
+          //建筑第一次升级的额外处理
+          if (
+            data.ID === EnumBuildItem.InfluenceLevel1 &&
+            data.curValue === 1
+          ) {
+            store.commit(UnlockResource, EnumResourceItem.Believer);
+            store.commit(ModifyResourceCurValue, {
+              index: EnumResourceItem.Believer,
+              value: 1,
+            });
+            StartGuideByID(3);
+          }
+          if (data.ID === EnumBuildItem.MoneyLevel1 && data.curValue === 1) {
+            StartGuideByID(4);
+          }
+          if (data.ID === EnumBuildItem.ResearchLevel1 && data.curValue === 1) {
+            StartGuideByID(5);
+          }
+          if (
+            data.ID === EnumBuildItem.InfulenceLevel2 &&
+            data.curValue === 1
+          ) {
+            StartGuideByID(6);
+          }
+          if (data.ID === EnumBuildItem.ResearchLevel2 && data.curValue === 1) {
+            StartGuideByID(7);
           }
           break;
         case BuildClickType.AddInfluence:

@@ -9,6 +9,7 @@ import WorkPanel from "./Panel/WorkPanel.vue";
 import ResourcePanel from "./Panel/ResourcePanel.vue";
 import { TimeLineLog } from "../core/complain";
 import { EnumTimeLineLogType } from "../core/complain";
+import { EnumBuildItem } from "../core/table";
 
 const headerHeight = computed(() => {
   let base = 50;
@@ -24,6 +25,14 @@ function testclick() {
   store.commit(UpdateGuideTips, Math.floor(Math.random() * 10));
   store.state.openGuide = true;
 }
+const workShow = computed(() => {
+  const buildItemData = store.state.gameData.buildArryList.get(EnumBuildItem.InfluenceLevel1)
+  if (buildItemData !== undefined) {
+    if(buildItemData.curValue > 0)
+      return true;
+  }
+  return false;
+});
 </script>
 
 <template>
@@ -41,7 +50,7 @@ function testclick() {
           <el-progress
             :text-inside="true"
             :stroke-width="24"
-            :percentage="store.state.gameData.acgProgressData.value"
+            :percentage="50"
             status="exception"
             class="head"
           />
@@ -49,13 +58,13 @@ function testclick() {
       </el-popover>
     </el-col>
   </el-row>
-  <el-row :gutter="40">
+  <el-row :gutter="40" >
     <el-col :span="1"> </el-col>
-    <el-col :span="6" class="leftPanel" style="padding: 5px">
+    <el-col :span="6" class="mainCol" style="line-height: 10px">
       <ResourcePanel />
-      <WorkPanel />
+      <WorkPanel v-if="workShow" />
     </el-col>
-    <el-col :span="9">
+    <el-col :span="9" class="mainCol" >
       <el-menu
         :default-active="activeIndex"
         class="el-menu-demo"
@@ -73,9 +82,9 @@ function testclick() {
       </el-menu>
       <router-view></router-view>
     </el-col>
-    <el-col :span="6" class="leftPanel" style="padding: 40px 10px 10px 0px">
+    <el-col :span="6" class="mainCol">
       <el-scrollbar height="600px" >
-        <el-timeline>
+        <el-timeline style="padding: 20px 10px 10px 10px">
           <el-timeline-item
             v-for="(log, index) in store.state.timelineLogs"
             :key="index"
@@ -105,6 +114,11 @@ function testclick() {
 </template>
 
 <style scoped>
+.mainCol{
+  padding: 10px 10px 10px 10px;
+  background-color: #DCDFE6;
+  margin:10px
+}
 .timelineItem {
   line-height: 15px;
 }
@@ -129,7 +143,6 @@ function testclick() {
 }
 
 .leftPanel {
-  background-color: #d3dce6;
   line-height: 10px;
 }
 

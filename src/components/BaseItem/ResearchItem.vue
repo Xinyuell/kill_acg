@@ -1,12 +1,20 @@
 <script lang="ts">
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
-import { CompleteResearch, ModifyResourceCurValue, store, UnlockResearch } from "../../core/store";
+import {
+  CompleteResearch,
+  ModifyResourceCurValue,
+  store,
+  UnlockResearch,
+  UnlockResource,
+} from "../../core/store";
 import {
   BuildClickType,
+  EnumResearchItem,
   EnumResourceItem,
   IResearchInfo,
 } from "../../core/table";
 import { buildItemData, resourceItemData } from "../../core/gameSave";
+import { StartGuideByID } from "../../core/gameUpdate";
 
 export default {
   props: {
@@ -16,7 +24,7 @@ export default {
     },
   },
   methods: {
-    buildItemClick: function () {
+    researchItemClick: function () {
       //消耗cost 解锁研究。还需要考虑影响力的因素
       const data: IResearchInfo = (this as any).researchData;
       const sourceArr: Map<number, resourceItemData> =
@@ -31,16 +39,22 @@ export default {
         EnumResourceItem.Influence
       ) as resourceItemData;
 
-      if(data.Condition > influenceData.cacheValue) return;
+      if (data.Condition > influenceData.cacheValue) return;
       if (data.Cost1 > cost1Data.cacheValue) return;
       if (data.Cost2 > cost2Data.cacheValue) return;
 
       cost1Data.cacheValue -= data.Cost1;
       cost2Data.cacheValue -= data.Cost2;
 
-      store.commit(CompleteResearch,data.ID);
-      if(data.UnLock.length > 0){
-          store.commit(UnlockResearch,data.UnLock)
+      store.commit(CompleteResearch, data.ID);
+      if (data.UnLock.length > 0) {
+        store.commit(UnlockResearch, data.UnLock);
+      }
+      if (data.ID == EnumResearchItem.BelieverBuildLevel1) {
+        StartGuideByID(2); //解锁第一个信徒建筑
+      }
+      if (data.ID === EnumResearchItem.ComplainUnLock) {
+        StartGuideByID(8);
       }
     },
   },
@@ -50,7 +64,11 @@ export default {
 <template>
   <el-popover placement="bottom" trigger="hover" :width="200">
     <template #reference>
-      <el-button class="researchItem" type="info" plain @click="buildItemClick"
+      <el-button
+        class="researchItem"
+        type="info"
+        plain
+        @click="researchItemClick"
         >{{ researchData.Name }}
       </el-button>
     </template>

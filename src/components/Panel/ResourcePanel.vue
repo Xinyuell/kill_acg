@@ -6,14 +6,12 @@ import { ReplaceGameData, store } from "../../core/store";
 const getData = computed(() => {
   const sourceArr: Map<number, resourceItemData> =
     store.state.gameData.sourceArr;
-    const data:resourceItemData[] = [];
-    sourceArr.forEach(function(value,key){
-      if(value.unlock)
-      data.push(value);
-    });
-    return data;
+  const data: resourceItemData[] = [];
+  sourceArr.forEach(function (value, key) {
+    if (value.unlock) data.push(value);
+  });
+  return data;
 });
-
 </script>
 
 <template>
@@ -26,7 +24,12 @@ const getData = computed(() => {
     >
       <el-table-column width="110">
         <template #default="{ row }">
-          <el-popover placement="bottom" trigger="hover" :width="200" transition="">
+          <el-popover
+            placement="bottom"
+            trigger="hover"
+            :width="200"
+            transition=""
+          >
             <span style="font-size: 10px"
               >{{ row.tip_title }} <br />
               {{ row.tip_content }}</span
@@ -38,40 +41,24 @@ const getData = computed(() => {
         </template>
       </el-table-column>
 
-      <el-table-column  >
-        <template #default="{ row }" >
-          <el-popover placement="bottom" trigger="hover" :width="200" transition="">
-            <span style="font-size: 10px"
-              >{{ row.tip_title }} <br />
-              {{ row.tip_content }}</span
-            >
-            <template #reference>
-              <p style="text-align:center">{{
-                row.cacheMaxValue > 0
-                  ? row.curValue + "/" + row.maxValue
-                  : row.curValue
-              }}</p>
-            </template>
-          </el-popover>
+      <el-table-column>
+        <template #default="{ row }">
+          <p style="text-align: center">
+            {{
+              row.cacheMaxValue > 0
+                ? row.curValue + "/" + row.maxValue
+                : row.curValue
+            }}
+          </p>
         </template>
       </el-table-column>
 
-      <el-table-column width="90" >
+      <el-table-column width="90">
         <template #default="{ row }">
-          <el-popover placement="bottom" trigger="hover" :width="200" transition="">
-            <template #reference>
-              <span>{{ row.speed + "/s" }}</span></template
-            >
-            <span style="font-size: 10px;text-align: right"
-              >{{ row.tip_title }} <br />
-              {{ row.tip_content }}</span
-            >
-          </el-popover>
+              <span>{{ row.speed + "/s" }}</span>
         </template>
       </el-table-column>
     </el-table>
-
-     
   </div>
 </template>
 
@@ -79,7 +66,6 @@ const getData = computed(() => {
 .leftTable {
   width: 100%;
   margin-bottom: 0;
-  float:inline-start;
+  float: inline-start;
 }
-
 </style>

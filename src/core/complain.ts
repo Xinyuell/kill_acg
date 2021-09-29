@@ -35,8 +35,7 @@ const posType: ["top-left", "top-right", "bottom-right", "bottom-left"] = [
 /**增加一条log，默认最多十条，举报信息会合并，其他信息会丢弃 */
 export function AddTimeLineLog(log: TimeLineLog) {
   const timelineLog = store.state.timelineLogs;
-  if (timelineLog.length >= 10) {
-    //只保留0-8条
+  if (timelineLog.length >= 6) {
     //举报合并log初始化
     let stateIndex = -1;
     timelineLog.forEach((value, index) => {
@@ -57,23 +56,31 @@ export function AddTimeLineLog(log: TimeLineLog) {
     }
     let length = timelineLog.length - 1;
     let stateLog = timelineLog[stateIndex];
-    for (let i = 9; i < length; i++) {
-      const popLog = timelineLog.pop();
-      if (popLog?.logType === EnumTimeLineLogType.Complain) {
-        if (popLog.iconType === "warning") stateLog.wrongCount!++;
-        else stateLog.rightCount!++;
+    store.state.timelineLogs = timelineLog.filter(
+      function(value){
+        if (value.logType === EnumTimeLineLogType.Complain) {
+        
+         if (value.iconType === "warning") stateLog.wrongCount!++;
+         else stateLog.rightCount!++;
+         return false;
       }
-    }
+      return true;
+    })
     stateLog.content = "你一共举报成功: " + stateLog.rightCount! + "次；失败：" + stateLog.wrongCount + "次";
-    if(stateIndex >= 9)
-      timelineLog.unshift(stateLog);
-    
+    //如果此时删完所有的举报log还大于6条，就删完除统计外的log
+    if(timelineLog.length >= 6){
+      store.state.timelineLogs = timelineLog.filter(
+        function(value){
+        return value.logType === EnumTimeLineLogType.ComplainState;
+      })
+    }
   }
-  timelineLog.unshift(log);
+  store.state.timelineLogs.unshift(log);
 }
 
-function onNotiClick(this: NotificationParamsTyped, ...a: any) {
-  console.log(a, this as any);
+function onNotiClick(this: NotificationParamsTyped) {
+  if((this as any).logd)
+    return;
   let logstr = (this as any).message;
   const classIndex = parseInt((this as any).title);
   logstr += language.comlainLogTips[classIndex];
@@ -86,19 +93,23 @@ function onNotiClick(this: NotificationParamsTyped, ...a: any) {
   };
   //TODO 有一个是否保留log的选项
   AddTimeLineLog(log);
+  (this as any).logd = true;
 }
 
 export function randomComplain() {
   setTimeout(() => {
     randomComplain();
-  }, Math.random() * 1000 + 1000);
+  }, Math.random() * 5000 + 5000);
+  if (!store.state.running) {
+    return;
+  }
   //检查举报科技是否解锁
-  //   if (
-  //     store.state.gameData.researchComplete.indexOf(
-  //       EnumResearchItem.ComplainUnLock
-  //     ) < 0
-  //   )
-  //     return;
+    if (
+      store.state.gameData.researchComplete.indexOf(
+        EnumResearchItem.ComplainUnLock
+      ) < 0
+    )
+      return;
   //检查自动举报科技是否解锁
   // 随机10%概率出错误的举报；60%国内 25%国外 5%外太空
   const random1 = Math.random() * 100; //大类
@@ -111,15 +122,15 @@ export function randomComplain() {
   } else if (random1 < 70) {
     //  国内1，2，3
     classIndex = random2 + 1;
-    duration = 1000;
+    duration = 800;
   } else if (random1 < 95) {
     //  国外4，5，6
     classIndex = random2 + 4;
-    duration = 800;
+    duration = 600;
   } else {
     //  外太空7 8 9
     classIndex = random2 + 7;
-    duration = 600;
+    duration = 400;
   }
   const complainContent = language.complain[classIndex];
   const index = Math.floor(Math.random() * complainContent.length);

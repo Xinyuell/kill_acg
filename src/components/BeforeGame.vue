@@ -16,7 +16,7 @@ const onClick = function () {
     beforeGameTitle[0] = language.startGame.enterTitle2[0];
     beforeGameTitle[1] = language.startGame.enterTitle2[1];
   } else if (click == 2) {
-    router.push("/game");
+    router.push("/game/build");
   }
   click++;
 };

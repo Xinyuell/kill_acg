@@ -5,7 +5,8 @@ import { BuildClickType, BuildInfoList, ItemInfoList, ItemType } from "./table";
 import { intToString } from "./utils";
 import { store } from "./store";
 import { resourceUpdate } from "./gameUpdate";
-import { GameData, getCurrentSaveGameData, getGameDataByBase64, SaveLocalStorageKey } from "./gameSave";
+import { GameData, getCurrentSaveGameData, setStoreGameDataByBase64, SaveLocalStorageKey } from "./gameSave";
+import { State } from "@vue/runtime-core";
 
 export class GameControl {
   static saveTime = 20000;
@@ -28,9 +29,8 @@ export class GameControl {
     this.totalTime = 0;
   }
 
-  public Start(): GameData {
-    const {gameData, success} = getGameDataByBase64(window.localStorage[SaveLocalStorageKey])
-    store.state.haslog = success;
+  public Start(state:State){
+    setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey])
     this.timer = setInterval(() => {
       this.update();
     }, GameControl.updateTime);
@@ -44,7 +44,6 @@ export class GameControl {
     }, 5000);
 
     this.now = Date.now();
-    return gameData;
   }
 
   private randomNews(){

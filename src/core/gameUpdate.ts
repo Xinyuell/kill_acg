@@ -7,6 +7,7 @@ import {
   UnlockResearch,
   UnlockResource,
   UpdateGuideTips,
+  UpdateWorkConfig,
 } from "./store";
 import {
   BuildInfoList,
@@ -21,6 +22,8 @@ import {
 } from "./table";
 import { intToString } from "./utils";
 
+let oldPeople = 0;
+let currentPeople = 0;
 export function resourceUpdate(deltaTime: number) {
   const sourceArr: Map<number, resourceItemData> =
     store.state.gameData.sourceArr;
@@ -29,7 +32,7 @@ export function resourceUpdate(deltaTime: number) {
   const workConfig: number[] = store.state.gameData.workConfig;
   const researchComplete: number[] = store.state.gameData.researchComplete;
   const props: Map<EnumResearchProp, number> = new Map();
-  //属性是动态算的，消耗不大
+  //属性是动态算的
   researchComplete.forEach(function (id) {
     const researchProp = ResearchInfoList.get(id)!.ResearchProp;
     if (researchProp !== undefined) {
@@ -62,9 +65,72 @@ export function resourceUpdate(deltaTime: number) {
     checkResourceUnlock(data, sourceArr);
     updateResourceValue(data, deltaTime, ID);
   });
+
   buildArryList.forEach(function (data, ID) {
     checkBuildUnlock(data, sourceArr, buildArryList, researchComplete);
   });
+  autoWork( workConfig);
+}
+
+/**
+ * 获取正在工作的总人数
+ */
+export function GetTotalWorks() {
+  let result = 0; //总工人数量
+  store.state.gameData.workConfig.forEach(function (value) {
+    result += value;
+  });
+  return result;
+}
+
+/**
+ * 获取总信徒/从众数量
+ */
+export function GetTotalPeople() {
+  let result = 0;
+  if (store.state.gameData.sourceArr.has(EnumResourceItem.Believer))
+    result += store.state.gameData.sourceArr.get(
+      EnumResourceItem.Believer
+    )!.cacheValue;
+  if (store.state.gameData.sourceArr.has(EnumResourceItem.People))
+    result += store.state.gameData.sourceArr.get(
+      EnumResourceItem.People
+    )!.cacheValue;
+  return result;
+}
+
+/**
+ * 安排自动工作
+ */
+function autoWork(
+  workConfig: number[]
+) {
+  currentPeople = GetTotalPeople();
+  let addPeople = Math.floor(currentPeople - oldPeople + 0.000001);
+  if(addPeople < 0)//增加的人数取整不到一人直接返回
+    return;
+  
+  let total = GetTotalWorks();
+   //异常处理，当前工人数小于已工作数
+  if(currentPeople < total)
+  {
+   
+    let isClear =false;
+    store.state.gameData.workConfig = workConfig.map(function(value){
+      if(isClear) return 0;
+      if(currentPeople < value){
+        isClear = true;
+        return -currentPeople;
+      }
+      currentPeople -= value;
+      return 0;
+    })
+    return;
+  }
+  else if(currentPeople > total && store.state.gameData.autoWorkIndex >= 0){
+      store.commit(UpdateWorkConfig, { index:store.state.gameData.autoWorkIndex, value:1 });
+      oldPeople++;//没有异常了，每帧最多分配一给人
+  }
 }
 
 //根据速度更新资源的值
@@ -76,7 +142,7 @@ function updateResourceValue(
   if (!data.unlock) return 0;
   const add = data.cacheSpeed * deltaTime;
   data.cacheValue += add;
-  if (data.cacheMaxValue > 0 && data.cacheValue > data.cacheMaxValue)
+  if (data.cacheMaxValue >= 0 && data.cacheValue > data.cacheMaxValue)
     data.cacheValue = data.cacheMaxValue;
   if (data.cacheValue < 0) {
     data.cacheValue = 0; //金钱小于0，上面会设置停工了；影响力小于0游戏结束，TODO 影响力扣的逻辑
@@ -88,6 +154,7 @@ function updateResourceValue(
       value: strValue,
     });
   }
+  //自动工人的计算逻辑
 }
 
 /**
@@ -104,11 +171,8 @@ function calculateMoneySpeed(
   let num1 = workConfig[EnumWorkType.Cost1Work]; //动漫知识工人
   let num2 = workConfig[EnumWorkType.Cost2Work]; //游戏知识工人
   let num3 = sourceArr.get(EnumResourceItem.Believer)!.cacheValue; //信徒数量
-  let num4 = 0; //总工人数量
-  workConfig.forEach(function (value) {
-    num4 += value;
-  });
-  let num5 = num4 - num3; //从众正在工作的数量
+  let num4 = GetTotalWorks(); //正在工作的工人数量
+  let num5 = Math.max(0, num4 - num3); //从众正在工作的数量,至少0，说明信徒没安排买
   let num6 = num5 * 1; //之后用分段函数
   //工人数量 * 效率加成 * 金钱消耗倍率 = 最终消耗金钱
   num1 *=

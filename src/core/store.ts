@@ -1,7 +1,7 @@
-import { App } from "@vue/runtime-core";
+import { App, State } from "@vue/runtime-core";
 import { createStore } from "vuex";
-import { GameControl} from "./game";
-import {  GameData } from "./gameSave";
+import { GameControl } from "./game";
+import { GameData, initGameData } from "./gameSave";
 
 /**
  * 参数，资源enum：index， 值：value
@@ -16,75 +16,73 @@ export const UpdateGuideTips = "updateGuideTips";
 export const CompleteResearch = "completeResearch";
 export const UnlockResearch = "unlockResearch";
 export const UnlockBuild = "unlockBuild";
-export const UnlockResource = "unlockResource"
-export const UpdateWorkConfig = "updateWorkConfig"
+export const UnlockResource = "unlockResource";
+export const UpdateWorkConfig = "updateWorkConfig";
+export const UpdateAutoWorkIndex = "updateAutoWorkIndex";
 
 export const store = createStore({
   state: {
     running: false,
     haslog: false,
     guideTipsID: -1,
+    gameData:initGameData()
   },
   mutations: {
-    modifyResourceCurValue(state: any, payload: any) {
-      const data: GameData = state.gameData;
-      if (data.sourceArr.has(payload.index))
-        data.sourceArr.get(payload.index)!.curValue = payload.value;
+    modifyResourceCurValue(state: State, payload: any) {
+      if (state.gameData.sourceArr.has(payload.index))
+        state.gameData.sourceArr.get(payload.index)!.curValue = payload.value;
     },
-    modifyResourceMaxValue(state: any, payload: any) {
-      const data: GameData = state.gameData;
-      if (data.sourceArr.has(payload.index))
-        data.sourceArr.get(payload.index)!.maxValue += payload.value;
+    modifyResourceMaxValue(state: State, payload: any) {
+      if (state.gameData.sourceArr.has(payload.index))
+        state.gameData.sourceArr.get(payload.index)!.maxValue += payload.value;
     },
-    setResourceSpeed(state: any, payload: any) {
-      const data: GameData = state.gameData;
-      if (data.sourceArr.has(payload.index))
-        data.sourceArr.get(payload.index)!.speed = payload.value;
+    setResourceSpeed(state: State, payload: any) {
+      if (state.gameData.sourceArr.has(payload.index))
+        state.gameData.sourceArr.get(payload.index)!.speed = payload.value;
     },
-    setGameRunning(state: any, payload) {
+    setGameRunning(state: State, payload) {
       state.running = payload;
     },
-    replaceGameData(state: any, paload: any) {
+    replaceGameData(state: State, paload: any) {
       state.gameData = paload;
     },
-    updateNews(state: any, paload: any) {
-      const data: GameData = state.gameData;
-      data.newsID[paload.newsIndex] = paload.news;
+    updateNews(state: State, paload: any) {
+      state.gameData.newsID[paload.newsIndex] = paload.news;
     },
-    updateGuideTips(state: any, paload: number) {
+    updateGuideTips(state: State, paload: number) {
       state.guideTipsID = paload;
     },
-    completeResearch(state:any,paload:any){
-      const data: GameData = state.gameData;
-      data.researchComplete.push(paload);
+    completeResearch(state: State, paload: any) {
+      state.gameData.researchComplete.push(paload);
     },
-    unlockResearch(state:any,paload:number[]){
-      const data: GameData = state.gameData;
-      paload.forEach(function(id){
-        data.researchUnLockList.push(id);
-      })
+    unlockResearch(state: State, paload: number[]) {
+      paload.forEach(function (id) {
+        state.gameData.researchUnLockList.push(id);
+      });
     },
-    unlockBuild(state:any,paload:any){
-      const data: GameData = state.gameData;
-      if(data.buildArryList.has(paload))
-        data.buildArryList.get(paload)!.unlock = true;
+    unlockBuild(state: State, paload: any) {
+      if (state.gameData.buildArryList.has(paload))
+        state.gameData.buildArryList.get(paload)!.unlock = true;
     },
-    unlockResource(state:any,paload:any){
-      const data: GameData = state.gameData;
-      if(data.sourceArr.has(paload))
-        data.sourceArr.get(paload)!.unlock = true;
+    unlockResource(state: State, paload: any) {
+      if (state.gameData.sourceArr.has(paload))
+        state.gameData.sourceArr.get(paload)!.unlock = true;
     },
-    updateWorkConfig(state:any,paload){
-      const data: GameData = state.gameData;
-      data.workConfig[paload.index] += paload.value;
-    }
+    updateWorkConfig(state: State, paload) {
+      state.gameData.workConfig[paload.index] += paload.value;
+    },
+    updateAutoWorkIndex(state: State, paload: number) {
+      state.gameData.autoWorkIndex = paload;
+    },
   },
 });
 
 //玩家数据初始化的地方
 export function initGameStore(app: App) {
   const gameControl = new GameControl();
-  const gameData: GameData = gameControl.Start();
-  store.state.gameData = gameData;
+  gameControl.Start(store.state);
   app.use(store);
 }
+
+
+

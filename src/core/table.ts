@@ -80,6 +80,8 @@ export interface IBuildInfo extends IBaseInfo {
   UpgradeCostPower: number;
   /**解锁需要完成科技*/
   Require:EnumResearchItem;
+  /**提供属性，乘以数量 */
+  ResearchProp: Map<EnumResearchProp, number>;
 }
 
 export interface IResearchInfo extends IBaseInfo {
@@ -187,7 +189,7 @@ export enum EnumResearchItem {
  */
 export enum EnumResearchProp {
   /**
-   * 影响力转化金钱速率
+   * 影响力转化金钱百分比
    */
   InfluenceMoney,
   /**
@@ -195,29 +197,37 @@ export enum EnumResearchProp {
    */
   BelieverAddInfluenceMax,
   /**
-   * 影响力建筑成本降低
+   * 影响力类型的建筑成本蠕变
    */
   InfluenceBuildCost,
   /**
-   * 金钱建筑成本降低
+   * 金钱类型的建筑成本蠕变
    */
   MoneyBuildCost,
   /**
-   * 研究建筑成本降低
+   * 研究类型的建筑成本蠕变
    */
   ResearchBuildCost,
   /**
-   * 金钱建筑金钱效率提升
+   * 提升工人金钱效率
    */
   MoneyRatio,
   /**
-   * 研究建筑漫画知识效率提升
+   * 提升工人漫画知识效率
    */
   Cost1Ratio,
   /**
-   * 研究建筑游戏知识效率提升
+   * 提升工人游戏知识效率
    */
   Cost2Ratio,
+  /**
+   * 信徒的上限
+   */
+  BelieverMax,
+  /**
+   * 从众的上限
+   */
+  PeopleMax,
 }
 
 export const ItemInfoList: Map<number, IItemInfo> = new Map([
@@ -317,6 +327,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 0,
       Require:EnumResearchItem.None,
       UpgradeCostPower:0,
+      ResearchProp: new Map(),
     },
   ],
   [
@@ -331,6 +342,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 0,
       UpgradeCostPower:0,
       Require:EnumResearchItem.None,
+      ResearchProp: new Map(),
     },
   ],
   [
@@ -345,6 +357,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 0,
       UpgradeCostPower:0,
       Require:EnumResearchItem.None,
+      ResearchProp: new Map(),
     },
   ],
   [
@@ -359,6 +372,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 1.5,
       UpgradeCostPower:3,
       Require:EnumResearchItem.BelieverBuildLevel1,
+      ResearchProp: new Map([[EnumResearchProp.BelieverMax, 10]]),
     },
   ],
   [
@@ -373,6 +387,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 3,
       UpgradeCostPower:2,
       Require:EnumResearchItem.MoneyBuildLevel1,
+      ResearchProp: new Map([[EnumResearchProp.MoneyRatio, 0.1]]),
     },
   ],
   [
@@ -387,6 +402,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 2.5,
       UpgradeCostPower:2.5,
       Require:EnumResearchItem.ResearchBuildLevel1,
+      ResearchProp: new Map([[EnumResearchProp.Cost1Ratio, 0.1]]),
     },
   ],
   [
@@ -401,6 +417,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 4,
       UpgradeCostPower:3.05,
       Require:EnumResearchItem.BelieverBuildLevel2,
+      ResearchProp: new Map([[EnumResearchProp.PeopleMax, 100]]),
     },
   ],
   [
@@ -415,6 +432,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 6,
       UpgradeCostPower:2.2,
       Require:EnumResearchItem.MoneyBuildLevel2,
+      ResearchProp: new Map([[EnumResearchProp.MoneyRatio, 0.2]]),
     },
   ],
   [
@@ -429,6 +447,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
       UpgradeCostRatio: 5,
       UpgradeCostPower:2.7,
       Require:EnumResearchItem.ResearchBuildLevel2,
+      ResearchProp: new Map([[EnumResearchProp.Cost2Ratio, 0.05]]),
     },
   ],
 ]);
@@ -474,7 +493,6 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Cost2: 0,
       UnLock: [],
       Condition: 0,
-      ResearchProp: new Map([[EnumResearchProp.MoneyRatio, 0.1]]),
     },
   ],
   [
@@ -491,7 +509,6 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
         EnumResearchItem.BelieverBuildLevel2,
       ],
       Condition: 0,
-      ResearchProp: new Map([[EnumResearchProp.Cost1Ratio, 0.1]]),
     },
   ],
   [
@@ -545,7 +562,6 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Cost2: 0,
       UnLock: [],
       Condition: 0,
-      ResearchProp: new Map([[EnumResearchProp.MoneyRatio, 0.2]]),
     },
   ],
   [
@@ -561,7 +577,6 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
         EnumResearchItem.BelieverInfluenceMax2,
       ],
       Condition: 0,
-      ResearchProp: new Map([[EnumResearchProp.Cost2Ratio, 0.1]]),
     },
   ],
   [

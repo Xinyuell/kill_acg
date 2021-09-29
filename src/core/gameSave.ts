@@ -1,12 +1,16 @@
 import { Base64 } from "js-base64";
+import { State } from "vue";
 import { store } from "./store";
 import { BuildClickType, BuildInfoList, ItemInfoList, ItemType } from "./table";
 
 export const SaveLocalStorageKey = "kill_acg_game";
 
-export function getGameDataByBase64(code: string | undefined) {
-  const gameData = initGameData();
-  if (code === undefined) return { gameData, success: false };
+export function setStoreGameDataByBase64(state:State,code: string | undefined) {
+  const gameData = state.gameData;
+  if (code === undefined) {
+    state.haslog = false;
+    return false;
+  }
   const str = Base64.decode(code);
   const saveGameData: ISaveGameData = JSON.parse(str);
   if (
@@ -14,18 +18,19 @@ export function getGameDataByBase64(code: string | undefined) {
     saveGameData.sourceArr === undefined ||
     saveGameData.buildArryList === undefined
   ) {
-    return { gameData, success: false };
+    state.haslog = false;
+    return false;
   }
   gameData.acgProgressData = saveGameData.acgProgressData;
   gameData.influenceLevel = saveGameData.influenceLevel;
   gameData.researchUnLockList = saveGameData.researchUnLockList;
   gameData.researchComplete = saveGameData.researchComplete;
   gameData.workConfig = saveGameData.workConfig;
+  gameData.autoWorkIndex = saveGameData.autoWorkIndex;
 
   saveGameData.sourceArr.forEach(function (value) {
     if (gameData.sourceArr.has(value.ID)) {
       gameData.sourceArr.get(value.ID)!.cacheValue = value.cacheValue;
-      gameData.sourceArr.get(value.ID)!.cacheMaxValue = value.cacheMaxValue;
       gameData.sourceArr.get(value.ID)!.unlock = value.unlock;
     }
   });
@@ -36,7 +41,7 @@ export function getGameDataByBase64(code: string | undefined) {
       gameData.buildArryList.get(value.ID)!.unlock = value.unlock;
     }
   });
-  return { gameData, success: true };
+  return true;
 }
 
 export function getCurrentSaveGameData() {
@@ -50,11 +55,11 @@ export function getCurrentSaveGameData() {
     researchUnLockList: gameData.researchUnLockList, 
     researchComplete: gameData.researchComplete, 
     workConfig:gameData.workConfig,
+    autoWorkIndex:gameData.autoWorkIndex,
   };
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
       cacheValue: value.cacheValue,
-      cacheMaxValue: value.cacheMaxValue,
       unlock: value.unlock,
       ID: value.ID,
     });
@@ -70,7 +75,7 @@ export function getCurrentSaveGameData() {
 }
 
 //初始化数据
-function initGameData() {
+export function initGameData() {
   const gameData: GameData = {
     sourceArr: new Map([]),
     buildArryList: new Map([]),
@@ -86,14 +91,15 @@ function initGameData() {
     ],
     researchUnLockList: [1], //第一个研究默认解锁
     researchComplete: [],
-    workConfig: [10,10,10,10],
+    workConfig: [0,0,0,0],
+    autoWorkIndex:-1
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
     sourceArr.set(value.ID, {
       resourceName: value.Name,
-      cacheValue: 10,
-      cacheSpeed: 0.1,
+      cacheValue: 0,
+      cacheSpeed: 0,
       cacheMaxValue: value.BaseMax,
       curValue: "0",
       maxValue: value.BaseMax.toString(),
@@ -132,6 +138,7 @@ interface ISaveGameData {
   researchUnLockList: number[]; 
   researchComplete: number[]; 
   workConfig:number[];
+  autoWorkIndex:number;
 }
 
 interface ISaveBuildPanelData {
@@ -142,7 +149,6 @@ interface ISaveBuildPanelData {
 
 interface ISaveResourcePanelData {
   cacheValue: number;
-  cacheMaxValue: number;
   unlock: boolean;
   ID: number; //
 }
@@ -209,4 +215,5 @@ export interface GameData {
    * 工作配置，每个工作安排了多少人
    */
   workConfig: number[];
+  autoWorkIndex:number;
 }

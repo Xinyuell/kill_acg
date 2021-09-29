@@ -1,6 +1,7 @@
 import { buildItemData, resourceItemData } from "./gameSave";
 import {
   ModifyResourceCurValue,
+  ModifyResourceMaxValue,
   SetResourceSpeed,
   store,
   UnlockBuild,
@@ -44,7 +45,20 @@ export function resourceUpdate(deltaTime: number) {
       });
     }
   });
-
+  //建筑增加的属性
+  buildArryList.forEach(function (buildData, key) {
+    const researchProp = buildData.ResearchProp;
+    if (researchProp !== undefined) {
+      researchProp.forEach(function (value, key) {
+        props.set(
+          key,
+          value * buildData.curValue +
+            (props.get(key) === undefined ? 0 : props.get(key)!)
+        );
+      });
+    }
+  });
+  updateResourceMaxValue(props,sourceArr);
   //金钱部分先算,如果金钱会扣到零以下则所有工人全部停工
   const isDebts = calculateMoneySpeed(
     sourceArr,
@@ -69,7 +83,43 @@ export function resourceUpdate(deltaTime: number) {
   buildArryList.forEach(function (data, ID) {
     checkBuildUnlock(data, sourceArr, buildArryList, researchComplete);
   });
-  autoWork( workConfig);
+  autoWork(workConfig);
+}
+
+/**
+ * 更新最大值
+ */
+function updateResourceMaxValue(
+  props: Map<EnumResearchProp, number>,
+  sourceArr: Map<number, resourceItemData>
+) {
+  props.forEach(function (prop, enumKey) {
+    let data: resourceItemData | undefined = undefined;
+    if (enumKey === EnumResearchProp.BelieverMax) {
+      data = sourceArr.get(EnumResourceItem.Believer)!;
+      data.cacheMaxValue = data.baseMaxValue + prop;
+    }
+    if (enumKey === EnumResearchProp.PeopleMax) {
+      data = sourceArr.get(EnumResourceItem.People)!;
+      data.cacheMaxValue =
+        sourceArr.get(EnumResourceItem.People)!.baseMaxValue + prop;
+    }
+    if (enumKey === EnumResearchProp.BelieverAddInfluenceMax) {
+      //影响力上限等于基础值+信徒属性加成*当前信徒总数
+      data = sourceArr.get(EnumResourceItem.Influence)!;
+      data.cacheMaxValue =
+        sourceArr.get(EnumResourceItem.People)!.baseMaxValue +
+        prop * sourceArr.get(EnumResourceItem.Believer)!.cacheValue;
+    }
+    if (data === undefined) return;
+    const strValue = intToString(data.cacheMaxValue);
+    if (strValue !== data.maxValue) {
+      store.commit(ModifyResourceMaxValue, {
+        index: data.ID,
+        value: strValue,
+      });
+    }
+  });
 }
 
 /**
@@ -102,34 +152,33 @@ export function GetTotalPeople() {
 /**
  * 安排自动工作
  */
-function autoWork(
-  workConfig: number[]
-) {
+function autoWork(workConfig: number[]) {
   currentPeople = GetTotalPeople();
   let addPeople = Math.floor(currentPeople - oldPeople + 0.000001);
-  if(addPeople < 0)//增加的人数取整不到一人直接返回
+  if (addPeople < 0)
+    //增加的人数取整不到一人直接返回
     return;
-  
+
   let total = GetTotalWorks();
-   //异常处理，当前工人数小于已工作数
-  if(currentPeople < total)
-  {
-   
-    let isClear =false;
-    store.state.gameData.workConfig = workConfig.map(function(value){
-      if(isClear) return 0;
-      if(currentPeople < value){
+  //异常处理，当前工人数小于已工作数
+  if (currentPeople < total) {
+    let isClear = false;
+    store.state.gameData.workConfig = workConfig.map(function (value) {
+      if (isClear) return 0;
+      if (currentPeople < value) {
         isClear = true;
         return -currentPeople;
       }
       currentPeople -= value;
       return 0;
-    })
+    });
     return;
-  }
-  else if(currentPeople > total && store.state.gameData.autoWorkIndex >= 0){
-      store.commit(UpdateWorkConfig, { index:store.state.gameData.autoWorkIndex, value:1 });
-      oldPeople++;//没有异常了，每帧最多分配一给人
+  } else if (currentPeople > total && store.state.gameData.autoWorkIndex >= 0) {
+    store.commit(UpdateWorkConfig, {
+      index: store.state.gameData.autoWorkIndex,
+      value: 1,
+    });
+    oldPeople++; //没有异常了，每帧最多分配一给人
   }
 }
 
@@ -173,7 +222,7 @@ function calculateMoneySpeed(
   let num3 = sourceArr.get(EnumResourceItem.Believer)!.cacheValue; //信徒数量
   let num4 = GetTotalWorks(); //正在工作的工人数量
   let num5 = Math.max(0, num4 - num3); //从众正在工作的数量,至少0，说明信徒没安排买
-  let num6 = num5 * 1; //之后用分段函数
+  let num6 = num5 * 1; //TODO 每个从众额外消耗多少金钱用分段函数
   //工人数量 * 效率加成 * 金钱消耗倍率 = 最终消耗金钱
   num1 *=
     (1 +
@@ -257,7 +306,7 @@ function setResourceSpeed(
       }
       break;
   }
-  const strValue = intToString(data.cacheSpeed);
+  const strValue = intToString(data.cacheSpeed, 2);
   if (strValue !== data.speed) {
     store.commit(SetResourceSpeed, {
       index: data.ID,

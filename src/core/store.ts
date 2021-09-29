@@ -25,7 +25,7 @@ export const store = createStore({
     running: false,
     haslog: false,
     guideTipsID: -1,
-    gameData:initGameData()
+    gameData: initGameData(),
   },
   mutations: {
     modifyResourceCurValue(state: State, payload: any) {
@@ -34,7 +34,7 @@ export const store = createStore({
     },
     modifyResourceMaxValue(state: State, payload: any) {
       if (state.gameData.sourceArr.has(payload.index))
-        state.gameData.sourceArr.get(payload.index)!.maxValue += payload.value;
+        state.gameData.sourceArr.get(payload.index)!.maxValue = payload.value;
     },
     setResourceSpeed(state: State, payload: any) {
       if (state.gameData.sourceArr.has(payload.index))
@@ -70,6 +70,8 @@ export const store = createStore({
     },
     updateWorkConfig(state: State, paload) {
       state.gameData.workConfig[paload.index] += paload.value;
+      if (state.gameData.workConfig[paload.index] < 0)
+        state.gameData.workConfig[paload.index] = 0;
     },
     updateAutoWorkIndex(state: State, paload: number) {
       state.gameData.autoWorkIndex = paload;
@@ -83,6 +85,3 @@ export function initGameStore(app: App) {
   gameControl.Start(store.state);
   app.use(store);
 }
-
-
-

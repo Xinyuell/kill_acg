@@ -1,11 +1,14 @@
 import { Base64 } from "js-base64";
 import { State } from "vue";
 import { store } from "./store";
-import { BuildClickType, BuildInfoList, ItemInfoList, ItemType } from "./table";
+import { BuildClickType, BuildInfoList, EnumResearchProp, ItemInfoList, ItemType } from "./table";
 
 export const SaveLocalStorageKey = "kill_acg_game";
 
-export function setStoreGameDataByBase64(state:State,code: string | undefined) {
+export function setStoreGameDataByBase64(
+  state: State,
+  code: string | undefined
+) {
   const gameData = state.gameData;
   if (code === undefined) {
     state.haslog = false;
@@ -52,10 +55,10 @@ export function getCurrentSaveGameData() {
     buildArryList: [],
     acgProgressData: gameData.acgProgressData,
     influenceLevel: gameData.influenceLevel,
-    researchUnLockList: gameData.researchUnLockList, 
-    researchComplete: gameData.researchComplete, 
-    workConfig:gameData.workConfig,
-    autoWorkIndex:gameData.autoWorkIndex,
+    researchUnLockList: gameData.researchUnLockList,
+    researchComplete: gameData.researchComplete,
+    workConfig: gameData.workConfig,
+    autoWorkIndex: gameData.autoWorkIndex,
   };
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
@@ -91,8 +94,8 @@ export function initGameData() {
     ],
     researchUnLockList: [1], //第一个研究默认解锁
     researchComplete: [],
-    workConfig: [0,0,0,0],
-    autoWorkIndex:-1
+    workConfig: [0, 0, 0, 0],
+    autoWorkIndex: -1,
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
@@ -101,6 +104,7 @@ export function initGameData() {
       cacheValue: 0,
       cacheSpeed: 0,
       cacheMaxValue: value.BaseMax,
+      baseMaxValue:value.BaseMax,
       curValue: "0",
       maxValue: value.BaseMax.toString(),
       speed: "0",
@@ -121,7 +125,8 @@ export function initGameData() {
       click: value.OnClickType,
       baseTips: value.Desc,
       upgradeCostRatio: value.UpgradeCostRatio,
-      upgradeCostPower:value.UpgradeCostPower,
+      upgradeCostPower: value.UpgradeCostPower,
+      ResearchProp:value.ResearchProp,
     });
   });
 
@@ -131,14 +136,14 @@ export function initGameData() {
 }
 
 interface ISaveGameData {
-  sourceArr: ISaveResourcePanelData[]; 
-  buildArryList: ISaveBuildPanelData[]; 
-  acgProgressData: object; 
-  influenceLevel: number; 
-  researchUnLockList: number[]; 
-  researchComplete: number[]; 
-  workConfig:number[];
-  autoWorkIndex:number;
+  sourceArr: ISaveResourcePanelData[];
+  buildArryList: ISaveBuildPanelData[];
+  acgProgressData: object;
+  influenceLevel: number;
+  researchUnLockList: number[];
+  researchComplete: number[];
+  workConfig: number[];
+  autoWorkIndex: number;
 }
 
 interface ISaveBuildPanelData {
@@ -162,17 +167,27 @@ export interface buildItemData {
   ID: number;
   baseTips: string;
   upgradeCostRatio: number;
-  upgradeCostPower:number;
+  upgradeCostPower: number;
+  /**提供属性，乘以数量 */
+  ResearchProp: Map<EnumResearchProp, number>;
 }
 
 export interface resourceItemData {
   resourceName: string;
+  /**当前值：真实数值 */
   cacheValue: number;
+  /**当前增长速度：真实数值 */
   cacheSpeed: number;
+  /**当前最大值：真实数值 */
   cacheMaxValue: number;
+  /**基础最大值：填表 */
+  baseMaxValue:number;
 
+  /**当前值：显示值，字符串，有变化的才更新，忽视较小的数 */
   curValue: string;
+  /**当前值：显示值，字符串，有变化的才更新，忽视较小的数 */
   maxValue: string;
+  /**当前值：显示值，字符串，有变化的才更新，忽视较小的数 */
   speed: string;
 
   unlock: boolean;
@@ -180,7 +195,6 @@ export interface resourceItemData {
   tip_title: string;
   tip_content: string;
 }
-
 
 export interface GameData {
   /**
@@ -215,5 +229,5 @@ export interface GameData {
    * 工作配置，每个工作安排了多少人
    */
   workConfig: number[];
-  autoWorkIndex:number;
+  autoWorkIndex: number;
 }

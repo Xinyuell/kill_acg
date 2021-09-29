@@ -61,13 +61,10 @@ export default {
 <template>
   <el-popover placement="bottom" trigger="hover" transition="" :width="200">
     <template #reference>
-      <div>
         <el-button class="buildItem" type="info" plain @click="buildItemClick"
           >{{ buildData.buildName }}
           <span class="count" v-show="buildData.curValue > 0">{{buildData.curValue}}</span>
         </el-button>
-        
-      </div>
     </template>
     <span style="font-size: 10px">{{ buildData.baseTips }}</span>
   </el-popover>
@@ -82,5 +79,6 @@ export default {
 .buildItem {
   width: 160px;
   height: 60px;
+  display: inline-block;
 }
 </style>

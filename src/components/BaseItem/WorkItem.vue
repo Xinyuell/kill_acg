@@ -36,7 +36,7 @@ export default {
 
     }
   },
-  setup(props) {
+  setup(props:any) {
     const step = ref(1);
     const inputNumber = ref(0);
     return {

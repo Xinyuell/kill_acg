@@ -21,7 +21,7 @@ export default {
     buildItemClick: function () {
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
-      const data: buildItemData = this.buildData;
+      const data: buildItemData = (this as any).buildData;
       switch (data.click) {
         case BuildClickType.Upgrade:
           //TODO 建筑的升级检查

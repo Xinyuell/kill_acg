@@ -92,8 +92,8 @@ function initGameData() {
   ItemInfoList.forEach(function (value, index) {
     sourceArr.set(value.ID, {
       resourceName: value.Name,
-      cacheValue: 50,
-      cacheSpeed: 0,
+      cacheValue: 10,
+      cacheSpeed: 0.1,
       cacheMaxValue: value.BaseMax,
       curValue: "0",
       maxValue: value.BaseMax.toString(),

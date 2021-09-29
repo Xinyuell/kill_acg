@@ -89,28 +89,28 @@ function clickSub(e: MouseEvent, index: number) {
   }
 }
 
-function clickAdd1(e) {
+function clickAdd1(e:any) {
   clickAdd(e, 0);
 }
-function clickSub1(e) {
+function clickSub1(e:any) {
   clickSub(e, 0);
 }
-function clickAdd2(e) {
+function clickAdd2(e:any) {
   clickAdd(e, 1);
 }
-function clickSub2(e) {
+function clickSub2(e:any) {
   clickSub(e, 1);
 }
-function clickAdd3(e) {
+function clickAdd3(e:any) {
   clickAdd(e, 2);
 }
-function clickSub3(e) {
+function clickSub3(e:any) {
   clickSub(e, 2);
 }
-function clickAdd4(e) {
+function clickAdd4(e:any) {
   clickAdd(e, 3);
 }
-function clickSub4(e) {
+function clickSub4(e:any) {
   clickSub(e, 3);
 }
 </script>

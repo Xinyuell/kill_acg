@@ -18,7 +18,7 @@ export default {
   methods: {
     buildItemClick: function () {
       //消耗cost 解锁研究。还需要考虑影响力的因素
-      const data: IResearchInfo = this.researchData;
+      const data: IResearchInfo = (this as any).researchData;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const cost1Data = sourceArr.get(

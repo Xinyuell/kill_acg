@@ -3,7 +3,6 @@
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import { ElButton, ElRow } from "element-plus";
 import { reactive, ref } from "vue";
-import { resourcePanelData } from "./core/game";
 import { language } from "./core/language";
 
 </script>

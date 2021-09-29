@@ -240,7 +240,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       Desc: "钱不是目的，只是手段，金钱对你来说如同粪土",
       TipsContent: "你只是为了消灭ACG文化才收集了一点点钱",
       BaseMax: -1,
-      Type: ItemType.ShowPanel,
+      Type: ItemType.ShowPanel | ItemType.AutoUnLock,
     },
   ],
   [
@@ -251,7 +251,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       Desc: "知己知彼百战百胜，我不入地狱谁入地狱。",
       TipsContent: "在研究分页解锁各项研究",
       BaseMax: -1,
-      Type: ItemType.ShowPanel | ItemType.Research,
+      Type: ItemType.ShowPanel | ItemType.Research | ItemType.AutoUnLock,
     },
   ],
   [
@@ -262,7 +262,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       Desc: "知己知彼百战百胜，我不入地狱谁入地狱。",
       BaseMax: -1,
       TipsContent: "在研究分页解锁各项研究",
-      Type: ItemType.ShowPanel | ItemType.Research,
+      Type: ItemType.ShowPanel | ItemType.Research | ItemType.AutoUnLock,
     },
   ],
   [
@@ -271,10 +271,10 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       ID: EnumResourceItem.Believer,
       Name: "信徒",
       Desc: "信徒是一群彻底追随你消灭ACG的助手，会帮你扩大影响力。",
-      BaseMax: 10,
+      BaseMax: 100,
       TipsContent:
         "每个信徒提供1点基础的影响力速度，受各项研究和建筑的加成。安排信徒工作，每个信徒提升0.5%的效率。",
-      Type: ItemType.ShowPanel,
+      Type: ItemType.ShowPanel | ItemType.AutoUnLock,
     },
   ],
   [
@@ -283,10 +283,10 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       ID: EnumResourceItem.People,
       Name: "从众",
       Desc: "从众是一群伪信徒，他们暂时性的追随你，但你需要付出一些金钱",
-      BaseMax: -1,
+      BaseMax: 10000,
       TipsContent:
         "每个从众提供1点额外的影响力速度。安排从众工作，每个从众也提升0.5%的效率。从众每秒消耗自身平方的金钱",
-      Type: ItemType.ShowPanel,
+      Type: ItemType.ShowPanel | ItemType.AutoUnLock,
     },
   ],
 ]);

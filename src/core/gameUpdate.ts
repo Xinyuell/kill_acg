@@ -22,7 +22,6 @@ import {
 import { intToString } from "./utils";
 
 export function resourceUpdate(deltaTime: number) {
-  deltaTime *= 100;
   const sourceArr: Map<number, resourceItemData> =
     store.state.gameData.sourceArr;
   const buildArryList: Map<number, buildItemData> =

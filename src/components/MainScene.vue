@@ -20,8 +20,7 @@ const headerHeight = computed(() => {
   return base + "rem";
 });
 const activeIndex = ref("/game/build");
-function handleSelect(key: string, keyPath: any) {
-}
+function handleSelect(key: string, keyPath: any) {}
 
 function testclick() {
   store.commit(UpdateGuideTips, Math.floor(Math.random() * 10));
@@ -36,21 +35,31 @@ const workShow = computed(() => {
   }
   return false;
 });
+const dialogVisible = ref(false);
 </script>
 
 <template>
   <el-row>
-     <el-link href="https://github.com/Xinyuell/xinyuell.github.io" target="_blank" type="danger" >反馈BUG</el-link>
-    <el-col :span="6" class="hidden-sm-and-down"> </el-col>
+    <el-col :span="2" class="hidden-sm-and-down">
+      <el-link
+        href="https://github.com/Xinyuell/xinyuell.github.io"
+        target="_blank"
+        type="danger"
+        >反馈BUG</el-link
+      >
+      <el-button @click="() => (dialogVisible = true)">导入/导出存档</el-button>
+    </el-col>
+
+    <el-col :span="4" class="hidden-sm-and-down"> </el-col>
     <el-col :height="headerHeight" :span="12" class="hidden-sm-and-down">
       <AcgProgress />
     </el-col>
-      <el-col :height="headerHeight" :span="24" class="hidden-md-and-up">
+    <el-col :height="headerHeight" :span="24" class="hidden-md-and-up">
       <AcgProgress />
     </el-col>
   </el-row>
   <el-row style="margin-top: 1rem" class="hidden-sm-and-down">
-    <el-col :span="4" > </el-col>
+    <el-col :span="4"> </el-col>
     <el-col :span="5" class="mainCol" style="line-height: 0.1rem">
       <ResourcePanel />
       <WorkPanel v-if="workShow" />
@@ -64,7 +73,7 @@ const workShow = computed(() => {
     </el-col>
   </el-row>
 
-  <el-row style="margin-top: 1rem"  class="hidden-md-and-up">
+  <el-row style="margin-top: 1rem" class="hidden-md-and-up">
     <el-col :span="24" class="mainCol" style="line-height: 0.1rem">
       <ResourcePanel />
       <WorkPanel v-if="workShow" />
@@ -86,17 +95,28 @@ const workShow = computed(() => {
     :close-on-click-modal="false"
     :show-close="true"
   >
-  <template #title>
-     <span style="font-size: 0.4rem;line-height:0.5rem;display:inline-block;">指引【ESC关闭】</span>
-  </template>
-    <span style="font-size: 0.3rem;line-height:0.5rem;display:inline-block;white-space:pre-line">{{
-      language.guideTips[store.state.guideTipsID]
-    }}</span>
+    <template #title>
+      <span
+        style="font-size: 0.4rem; line-height: 0.5rem; display: inline-block"
+        >指引【ESC关闭】</span
+      >
+    </template>
+    <el-scrollbar height="8rem">
+      <span
+        style="
+          font-size: 0.3rem;
+          line-height: 0.5rem;
+          display: inline-block;
+          white-space: pre-line;
+        "
+        >{{ language.guideTips[store.state.guideTipsID] }}</span
+      >
+    </el-scrollbar>
   </el-drawer>
 </template>
 
 <style>
-.el-drawer__header{
+.el-drawer__header {
   margin-bottom: 0 !important;
 }
 @media only screen and (max-width: 767px) {

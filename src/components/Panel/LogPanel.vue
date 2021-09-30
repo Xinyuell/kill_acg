@@ -4,7 +4,7 @@ import { EnumTimeLineLogType } from "../../core/complain";
 </script>
 
 <template>
-  <el-scrollbar height="6rem">
+  <el-scrollbar height="8rem">
     <el-timeline style="padding: 0.2rem 0.1rem 0.1rem 0.1rem">
       <el-timeline-item
         v-for="(log, index) in store.state.timelineLogs"

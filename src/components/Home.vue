@@ -29,40 +29,8 @@ function GetGameName() {
 </script>
 
 <template>
-  <!-- <el-row class="hidden-sm-and-down">
-    <el-col :span="8"></el-col>
-    <el-col :span="8">
-      <div class="home">
-        <div>
-          <el-button
-            class="elButton"
-            type="success"
-            @click="OnNewGameClick"
-            round
-            >{{ GetGameName() }}</el-button
-          >
-        </div>
-        <div>
-          <el-button class="elButton" type="success" @click="OnLoadClick" round
-            >载入/导出存档</el-button
-          >
-        </div>
-        <div>
-          <el-button
-            class="elButton"
-            type="success"
-            @click="OnAchievementClick"
-            round
-            >成就</el-button
-          >
-        </div>
-      </div>
-    </el-col>
-    <el-col :span="8"></el-col>
-  </el-row> -->
-
   <el-row>
-    <el-link href="https://github.com/Xinyuell/xinyuell.github.io" target="_blank" type="danger" >反馈BUG</el-link>
+   
     <el-col :span="24" >
       <div class="home">
         <div>

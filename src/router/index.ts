@@ -7,6 +7,7 @@ import MainSceneVue from "../components/MainScene.vue";
 import { SetGameRunning, store } from "../core/store";
 import BuildPanelVue from "../components/Panel/BuildPanel.vue";
 import ResearchPanelVue from "../components/Panel/ResearchPanel.vue";
+import SettingPanelVue from "../components/Panel/SettingPanel.vue";
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -39,6 +40,12 @@ export const router = createRouter({
           path: "research",
           name: "research",
           component: ResearchPanelVue,
+          meta:{isGame:true},
+        },
+        {
+          path: "set",
+          name: "set",
+          component: SettingPanelVue,
           meta:{isGame:true},
         },
       ]

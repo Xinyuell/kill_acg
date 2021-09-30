@@ -277,7 +277,7 @@ export function autoRandomComplain() {
 export function GetAutoComplainCD() {
   const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
   if (workPeople <= 0) return -1;
-  return 100 / Math.pow(workPeople + 10, 0.5);
+  return 200 / Math.pow(workPeople + 50, 0.4);
 }
 
 export function GetCurrentLocalDateTime(time: number): string;

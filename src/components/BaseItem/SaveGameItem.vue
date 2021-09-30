@@ -3,7 +3,9 @@ import { Base64 } from "js-base64";
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
 import { ReplaceGameData, store } from "../../core/store";
 import useClipboard from "vue-clipboard3";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { SaveLocalStorageKey } from "../../core/gameSave";
+import { router } from "../../router";
 
 const textarea = ref("");
 function onImportClick() {
@@ -48,7 +50,7 @@ async function onExportClick() {
   textarea.value = str;
   try {
     await toClipboard(textarea.value);
-     ElMessage.success({
+    ElMessage.success({
       message: "内容已经成功复制到剪切板",
       type: "success",
     });
@@ -59,34 +61,52 @@ async function onExportClick() {
     });
   }
 }
-function onExportFileClick() {}
+function onClearClick() {
+  ElMessageBox.alert("清除存档，重置你的所有进度", "危险操作！", {
+    confirmButtonText: "OK",
+    callback: (action: string) => {
+      if(action === "confirm"){
+        window.localStorage.clear();
+        router.push("/");
+      }
+    },
+  });
+}
 
 const { toClipboard } = useClipboard();
-const onCopy = async () => {
-  try {
-    await toClipboard(textarea.value);
-     ElMessage.success({
-      message: "内容已经成功复制到剪切板",
-      type: "success",
-    });
-  } catch (e) {
-    ElMessage.error({
-      showClose: true,
-      message: "失败了",
-    });
-  }
-};
 </script>
 
 <template>
-  <el-input v-model="textarea" :rows="5" type="textarea" />
-  <el-button type="primary" @click="onImportClick" plain>导入存档</el-button>
-  <el-button type="primary" @click="onExportClick" plain>导出存档</el-button>
-  <el-button type="info" @click="onCopy" size="mini" plain>复制</el-button>
+  <div>
+    <el-input v-model="textarea" :rows="5" type="textarea" />
+    <el-button class="button" type="primary" @click="onImportClick" plain
+      >导入存档</el-button
+    >
+    <el-button class="button" type="primary" @click="onExportClick" plain
+      >导出存档</el-button
+    >
+    <el-button class="button" type="danger" @click="onClearClick" plain
+      >重置游戏</el-button
+    >
+    <el-link
+      href="https://github.com/Xinyuell/xinyuell.github.io"
+      target="_blank"
+      type="danger"
+      class="href"
+      >反馈BUG</el-link
+    >
+  </div>
 </template>
 
 <style scoped>
-.el-button {
-  margin-top: 2%;
+.button {
+  margin-left: 0.2rem;
+  margin-top: 0rem;
+  margin-bottom: 0.2rem;
+}
+.href {
+  margin-left: 0.2rem;
+  display: inline-block;
+  vertical-align: baseline;
 }
 </style>

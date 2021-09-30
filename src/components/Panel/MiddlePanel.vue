@@ -20,7 +20,7 @@ const activeIndex = ref("/game/build");
         <el-menu-item index="/game/research">
           <template #title>研究</template>
         </el-menu-item>
-        <el-menu-item index="/game/policy" v-if="false">政治</el-menu-item>
+        <el-menu-item index="/game/set">设置</el-menu-item>
         <el-menu-item index="/game/stats" v-if="false">统计</el-menu-item>
       </el-menu>
 </template>

@@ -16,7 +16,6 @@ import {
   WorkInfoList,
 } from "../../core/table";
 import { intToString } from "../../core/utils";
-import WorkItem from "../BaseItem/WorkItem.vue";
 /**
  * 我也不想这样的，有空研究清楚了再改
  * 太菜了 搞不定了

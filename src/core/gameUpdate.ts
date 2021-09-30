@@ -40,7 +40,7 @@ export function acgProgressUpdate(deltaTime: number) {
     setTimeout(() => {
       ElMessage.warning({
         showClose: true,
-        message: "不过此功能暂未开放！目前游戏内容你已经体验完了",
+        message: "不过此功能暂未开放！试玩的游戏内容你已经体验完了，谢谢！节后见！",
       });
     }, 4000);
     store.state.gameFail = true;
@@ -52,6 +52,12 @@ export function acgProgressUpdate(deltaTime: number) {
       message:
         "世界各地都的ACG文化都被你消灭了，这个世界回归平静。你的心里充满了感恩和光明。游戏胜利了！",
     });
+    setTimeout(() => {
+      ElMessage.warning({
+        showClose: true,
+        message: "试玩的游戏内容你已经体验完了，谢谢！节后见！",
+      });
+    }, 4000);
     store.state.gameFail = true;
   }
 }

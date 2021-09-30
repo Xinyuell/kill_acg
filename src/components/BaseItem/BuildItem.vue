@@ -152,7 +152,7 @@ export default {
 
 <style>
 .el-button.buildItem {
-  width: 2.8rem;
+  width: 3rem;
   height: 1rem;
   display: inline-block;
   margin-left: 0.2rem;

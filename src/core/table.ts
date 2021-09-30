@@ -54,7 +54,7 @@ export const GlobalConfig = {
   /**
    * acg进度的速度，2百万
    */
-  AcgProgressSpeed: import.meta.env.DEV ? 20000000 : 2000000,
+  AcgProgressSpeed: import.meta.env.DEV ? 20000000 : 5000000,
   /**
    * 举报失败降低影响力百分比
    */
@@ -62,15 +62,15 @@ export const GlobalConfig = {
   /**
    * 1级举报降低ACG影响力
    */
-  ComplainAcgLevel1: import.meta.env.DEV ? 200000000 : 10000,
+  ComplainAcgLevel1: import.meta.env.DEV ? 200000000 : 1000000,
   /**
    * 2级举报降低ACG影响力
    */
-  ComplainAcgLevel2: import.meta.env.DEV ? 200000000 : 50000,
+  ComplainAcgLevel2: import.meta.env.DEV ? 200000000 : 5000000,
   /**
    * 3级举报降低ACG影响力
    */
-  ComplainAcgLevel3: import.meta.env.DEV ? 200000000 : 200000,
+  ComplainAcgLevel3: import.meta.env.DEV ? 200000000 : 10000000,
 };
 
 export enum ItemType {
@@ -696,7 +696,9 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "消耗200K的动漫知识和100K的游戏知识。\n你开始发展海外的信徒，信徒将会自动举报海外的ACG事件了。",
       Cost1: 200000,
       Cost2: 100000,
-      UnLock: [],
+      UnLock: [
+        EnumResearchItem.AutoComplainLevel2,
+      ],
       Condition: 0,
     },
   ],
@@ -708,7 +710,9 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "消耗200K的动漫知识和100K的游戏知识。\n降低50%信徒错误举报的概率。",
       Cost1: 200000,
       Cost2: 100000,
-      UnLock: [],
+      UnLock: [
+        EnumResearchItem.AutoComplainWrongLevel2,
+      ],
       Condition: 0,
     },
   ],

@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
       guideTipsID: number;
       openGuide:boolean;
       timelineLogs:TimeLineLog[];
+      gameFail:boolean;
     }
 }
 

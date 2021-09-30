@@ -10,7 +10,7 @@ import {
 } from "./table";
 import { intToString } from "./utils";
 import { store } from "./store";
-import { resourceUpdate } from "./gameUpdate";
+import { acgProgressUpdate, resourceUpdate } from "./gameUpdate";
 import {
   GameData,
   getCurrentSaveGameData,
@@ -25,7 +25,8 @@ import {
   NotificationHandle,
   NotificationParamsTyped,
 } from "element-plus";
-import { randomComplain } from "./complain";
+import { autoRandomComplain, randomComplain } from "./complain";
+import { updateHistory } from "./history";
 
 export class GameControl {
   timer: number;
@@ -64,29 +65,37 @@ export class GameControl {
       randomComplain();
     }, 1000);
 
+    setTimeout(() => {
+      autoRandomComplain();
+    }, 1000);
+
     this.now = Date.now();
   }
 
   private randomNews() {
     setTimeout(() => {
       this.randomNews();
-    }, Math.random() * 120000 + 20000);
-    if (store.state.gameData.influenceLevel <= 0) return;
+    }, Math.random() * 60000 + 30000);
     if (!store.state.running) {
       return;
     }
-
-    const curNews = language.news[store.state.gameData.influenceLevel - 1];
-    const newsIndex = Math.floor(Math.random() * curNews.length);
+    if (store.state.gameFail) {
+      return;
+    }
+    const newsIndex = Math.floor(Math.random() * language.news.length);
     ElMessage.success({
-      message: curNews[newsIndex],
+      message: language.news[newsIndex],
       duration: 10000,
       showClose: true,
       center: true,
-      iconClass: "info",
+      iconClass: "success",
     });
   }
   private saveGame() {
+    if (!store.state.running) return;
+    if (store.state.gameFail) {
+      return;
+    }
     const saveGameData = getCurrentSaveGameData();
     const code = Base64.encode(JSON.stringify(saveGameData));
     window.localStorage.setItem(SaveLocalStorageKey, code);
@@ -97,10 +106,16 @@ export class GameControl {
       this.now = Date.now();
       return;
     }
+    if (store.state.gameFail) {
+      this.now = Date.now();
+      return;
+    }
     //正式开始游戏才会计时
     const pass = Date.now() - this.now;
     store.state.gameData.totalTime += pass;
+    updateHistory();
     this.now = Date.now();
     resourceUpdate(pass / 1000);
+    acgProgressUpdate(pass / 1000);
   }
 }

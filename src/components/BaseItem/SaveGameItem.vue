@@ -18,7 +18,7 @@ function onImportClick() {
     ) {
       store.commit(ReplaceGameData, storage);
       store.state.haslog = true;
-      ElMessage.error({
+      ElMessage.success({
         showClose: true,
         message: "导入成功，继续游戏吧！",
       });
@@ -48,7 +48,7 @@ async function onExportClick() {
   textarea.value = str;
   try {
     await toClipboard(textarea.value);
-     ElMessage.error({
+     ElMessage.success({
       message: "内容已经成功复制到剪切板",
       type: "success",
     });
@@ -65,7 +65,7 @@ const { toClipboard } = useClipboard();
 const onCopy = async () => {
   try {
     await toClipboard(textarea.value);
-     ElMessage.error({
+     ElMessage.success({
       message: "内容已经成功复制到剪切板",
       type: "success",
     });

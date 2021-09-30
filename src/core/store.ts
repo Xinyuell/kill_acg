@@ -18,6 +18,7 @@ export const UnlockBuild = "unlockBuild";
 export const UnlockResource = "unlockResource";
 export const UpdateWorkConfig = "updateWorkConfig";
 export const UpdateAutoWorkIndex = "updateAutoWorkIndex";
+export const UpdateAcgProgressValue = "updateAcgProgressValue";
 
 export const store = createStore({
   state: {
@@ -27,6 +28,7 @@ export const store = createStore({
     gameData: initGameData(),
     openGuide:false,
     timelineLogs:[],
+    gameFail:false,
   },
   mutations: {
     modifyResourceCurValue(state: State, payload: any) {
@@ -77,6 +79,9 @@ export const store = createStore({
     updateAutoWorkIndex(state: State, paload: number) {
       state.gameData.autoWorkIndex = paload;
     },
+    updateAcgProgressValue(state:State,paload:number){
+      state.gameData.acgProgressValue += paload;
+    }
   },
 });
 

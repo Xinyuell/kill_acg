@@ -63,7 +63,7 @@ const buildArry4 = computed(() => {
         </template>
         <ul>
           <template v-for="buildData in buildArry0" :key="buildData.ID">
-            <BuildItem class="buildItem" :build-data="buildData"></BuildItem>
+            <BuildItem  :build-data="buildData"></BuildItem>
           </template>
         </ul>
       </el-collapse-item>
@@ -73,7 +73,7 @@ const buildArry4 = computed(() => {
         </template>
         <ul>
           <template v-for="buildData in buildArry1" :key="buildData.ID">
-            <BuildItem class="buildItem" :build-data="buildData"></BuildItem>
+            <BuildItem :build-data="buildData"></BuildItem>
           </template>
         </ul>
       </el-collapse-item>
@@ -83,7 +83,7 @@ const buildArry4 = computed(() => {
         </template>
         <ul>
           <template v-for="buildData in buildArry2" :key="buildData.ID">
-            <BuildItem class="buildItem" :build-data="buildData"></BuildItem>
+            <BuildItem  :build-data="buildData"></BuildItem>
           </template>
         </ul>
       </el-collapse-item>
@@ -93,7 +93,7 @@ const buildArry4 = computed(() => {
         </template>
         <ul>
           <template v-for="buildData in buildArry3" :key="buildData.ID">
-            <BuildItem class="buildItem" :build-data="buildData"></BuildItem>
+            <BuildItem  :build-data="buildData"></BuildItem>
           </template>
         </ul>
       </el-collapse-item>
@@ -103,7 +103,7 @@ const buildArry4 = computed(() => {
         </template>
         <ul>
           <template v-for="buildData in buildArry4" :key="buildData.ID">
-            <BuildItem class="buildItem" :build-data="buildData"></BuildItem>
+            <BuildItem  :build-data="buildData"></BuildItem>
           </template>
         </ul>
       </el-collapse-item>
@@ -112,18 +112,10 @@ const buildArry4 = computed(() => {
 </template>
 
 <style>
-.Collapsetitle {
-  margin-top: 0.5rem;
-}
+ul {
+  padding: 0.1rem;
+  margin-block-start: 0;
+  margin-block-end: 0;
 
-.CollapsetitleText{
-  margin: 1rem 1rem 0rem 1rem;
-  font-size: 1rem;
 }
-
-.resourcePanel {
-  width: 450px;
-  margin: 20px;
-}
-
 </style>

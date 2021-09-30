@@ -2,7 +2,7 @@ export const GlobalConfig = {
   /**
    * 每次点击获得资源基础值
    */
-  ClickAddBase: 1,
+  ClickAddBase: import.meta.env.DEV ? 1000 : 1,
   /**
    * 每次点击、信徒获得金钱基础值
    */
@@ -18,31 +18,59 @@ export const GlobalConfig = {
   /**
    * 基础的出生率0.05
    */
-  BaseBelieverRatio: 0.05,
+  BaseBelieverRatio: import.meta.env.DEV ? 1 : 0.05,
   /**
    * 信徒满人数后，从众的额外出生率倍率
    */
   PeopleBelieverMaxRatio: 2,
   /**
-   * 全局建筑基础消耗
+   * 全局建筑基础消耗10
    */
-  BuildUpgradeBase: 10,
+  BuildUpgradeBase: import.meta.env.DEV ? 0.1 : 10,
   /**
    * 游戏时间,找一个有意义时间
    */
-  StartData : Date.UTC(2016, 7, 1, 0, 0, 0, 0),
+  StartData: Date.UTC(2007, 7, 16),
   /**
    * 自动存档时间
    */
-   SaveTime : 20000,
-   /**
-    * 刷新毫秒数,每秒20帧
-    */
-   UpdateTime : 50,
-   /**
-    * 虚拟时间放大倍数，2秒=1天
-    */
-   VrtulTimeRatio:43200,
+  SaveTime: 20000,
+  /**
+   * 刷新毫秒数,每秒20帧
+   */
+  UpdateTime: 50,
+  /**
+   * 虚拟时间放大倍数，1秒=1天
+   */
+  VrtulTimeRatio: 86400,
+  /**
+   * acg进度的上限，100亿
+   */
+  AcgProgressMax: 10000000000,
+  /**
+   * acg进度的基础值，1千万
+   */
+  AcgProgressBae: 100000000,
+  /**
+   * acg进度的速度，2百万
+   */
+  AcgProgressSpeed: import.meta.env.DEV ? 20000000 : 2000000,
+  /**
+   * 举报失败降低影响力百分比
+   */
+  ComplainWrongValueRatio: 0.05,
+  /**
+   * 1级举报降低ACG影响力
+   */
+  ComplainAcgLevel1: import.meta.env.DEV ? 200000000 : 10000,
+  /**
+   * 2级举报降低ACG影响力
+   */
+  ComplainAcgLevel2: import.meta.env.DEV ? 200000000 : 50000,
+  /**
+   * 3级举报降低ACG影响力
+   */
+  ComplainAcgLevel3: import.meta.env.DEV ? 200000000 : 200000,
 };
 
 export enum ItemType {
@@ -201,17 +229,21 @@ export enum EnumResearchItem {
    */
   ComplainUnLock,
   /**
-   * 信徒自动举报国内
+   * 信徒自动举报国外
    */
   AutoComplainLevel1,
   /**
-   * 信徒自动举报国外
+   * 信徒自动举报外太空
    */
   AutoComplainLevel2,
   /**
-   * 信徒自动举报外太空
+   * 信徒自动举报错误率降低50%
    */
-  AutoComplainLevel3,
+  AutoComplainWrongLevel1,
+  /**
+   * 信徒自动举报不会进行错误举报了
+   */
+  AutoComplainWrongLevel2,
 }
 
 /**
@@ -266,7 +298,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Influence,
       Name: "影响力",
-      Desc: "你对这个社会的影响力，很多事情都需要扩大影响力之后才能办到",
+      Desc: "你对这个社会的影响力，很多事情都需要扩大影响力之后才能办到。\n影响力解锁游戏进程，通过各种研究提高影响力上限",
       TipsContent: "",
       BaseMax: 100,
       Type: ItemType.ShowPanel | ItemType.AutoUnLock,
@@ -277,10 +309,10 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Money,
       Name: "金钱",
-      Desc: "钱不是目的，只是手段，金钱对你来说如同粪土",
-      TipsContent: "你只是为了消灭ACG文化才收集了一点点钱",
+      Desc: "钱不是目的，只是手段，金钱对你来说如同粪土。\n你只是为了消灭ACG文化才收集了一点点钱",
+      TipsContent: "",
       BaseMax: -1,
-      Type: ItemType.ShowPanel ,
+      Type: ItemType.ShowPanel,
     },
   ],
   [
@@ -288,8 +320,8 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Cost1,
       Name: "动漫知识",
-      Desc: "知己知彼百战百胜，我不入地狱谁入地狱。",
-      TipsContent: "在研究分页解锁各项研究",
+      Desc: "知己知彼百战百胜，我不入地狱谁入地狱。\n每2点金钱转化1点动漫知识，需要买漫画书或者安排信徒研究\n在研究分页解锁各项研究",
+      TipsContent: "",
       BaseMax: -1,
       Type: ItemType.ShowPanel | ItemType.Research,
     },
@@ -299,9 +331,9 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Cost2,
       Name: "游戏知识",
-      Desc: "知己知彼百战百胜，我不入地狱谁入地狱。",
+      Desc: "游戏的荼毒更深，所以需要更多的氪金才能获得游戏知识。\n每10点金钱转化1点动漫知识，仅靠信徒研究获得\n在研究分页解锁各项研究",
       BaseMax: -1,
-      TipsContent: "在研究分页解锁各项研究",
+      TipsContent: "",
       Type: ItemType.ShowPanel | ItemType.Research,
     },
   ],
@@ -310,10 +342,9 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Believer,
       Name: "信徒",
-      Desc: "信徒是一群彻底追随你消灭ACG的助手，会帮你扩大影响力。",
+      Desc: "信徒是一群彻底追随你消灭ACG的助手，会帮你扩大影响力。\n每个信徒提供1点影响力、2点金钱或1点动漫/游戏知识，且研究会按比例消耗金钱，可通过各种建筑提升效率\n信徒的增长速度和自身的人数相关，由于聚众效应，人越多增长越快",
       BaseMax: 10,
-      TipsContent:
-        "每个信徒提供1点基础的影响力速度，受各项研究和建筑的加成。安排信徒工作，每个信徒提升0.5%的效率。",
+      TipsContent: "",
       Type: ItemType.ShowPanel,
     },
   ],
@@ -322,10 +353,9 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.People,
       Name: "从众",
-      Desc: "从众是一群伪信徒，他们暂时性的追随你，但你需要付出一些金钱",
+      Desc: "从众是一群伪信徒，他们暂时性的追随你，但你需要付出一些金钱。\n从众与信徒工作能力一样，但每人消耗1点金钱。\n从众和信徒的增长速度一样，信徒达到上限后，从众增加速度翻倍。",
       BaseMax: 10,
-      TipsContent:
-        "每个从众提供1点额外的影响力速度。安排从众工作，每个从众也提升0.5%的效率。从众每秒消耗1的金钱",
+      TipsContent: "",
       Type: ItemType.ShowPanel,
     },
   ],
@@ -333,14 +363,23 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
 
 export enum EnumBuildItem {
   None,
+  /**点击获得影响力 */
   AddInfluence,
+  /**点击获得金钱 */
   AddMoney,
+  /**点击获得动漫知识 */
   AddResearch,
+  /**点击升级心理诊所 */
   InfluenceLevel1,
+  /**点击升级印刷店 */
   MoneyLevel1,
+  /**点击升级书店 */
   ResearchLevel1,
+  /**点击升级网瘾治疗中心 */
   InfulenceLevel2,
+  /**点击升级广告公司*/
   MoneyLevel2,
+  /**点击升级运营中心 */
   ResearchLevel2,
 }
 
@@ -350,7 +389,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
     {
       ID: EnumBuildItem.AddInfluence,
       Name: "街头闲聊",
-      Desc: "在街边闲聊，宣传ACG文化的坏处，扩大你的影响力。点击获得1点影响力",
+      Desc: "点击获得1点影响力\n在街边闲聊，宣传ACG文化的坏处，扩大你的影响力",
       Type: ItemType.AutoUnLock,
       cityName: 0,
       OnClickType: BuildClickType.AddInfluence,
@@ -365,7 +404,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
     {
       ID: EnumBuildItem.AddMoney,
       Name: "家教服务",
-      Desc: "为小镇居民提供家教服务，收取不菲的酬劳。点击获得2点金钱",
+      Desc: "点击获得2点金钱\n为小镇居民提供家教服务，收取不菲的酬劳",
       Type: ItemType.None,
       cityName: 0,
       OnClickType: BuildClickType.AddMoeny,
@@ -380,7 +419,7 @@ export const BuildInfoList: Map<number, IBuildInfo> = new Map([
     {
       ID: EnumBuildItem.AddResearch,
       Name: "买漫画书",
-      Desc: "在业余时间你了解动漫知识，为伟大的计划奠定良好的基础。消耗2点金钱获得1点动漫知识",
+      Desc: "点击获得1点动漫知识（消耗2点金钱）\n在业余时间你了解动漫知识，为伟大的计划奠定良好的基础",
       Type: ItemType.None,
       cityName: 0,
       OnClickType: BuildClickType.AddResearch,
@@ -573,11 +612,23 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "进入下一级城市，需要影响力达到3000点。消耗5000点动漫知识。你来到了电力时代，解锁新的建筑，这将获得一大批从众。",
       Cost1: 5000,
       Cost2: 0,
+      UnLock: [EnumResearchItem.ComplainUnLock],
+      Condition: 3000,
+    },
+  ],
+  [
+    EnumResearchItem.ComplainUnLock,
+    {
+      ID: EnumResearchItem.ComplainUnLock,
+      Name: "举报",
+      Desc: "消耗10K的动漫知识和1000的游戏知识。举报是一项划时代的发明，从此你可以真正打击ACG的发展了。",
+      Cost1: 10000,
+      Cost2: 0,
       UnLock: [
         EnumResearchItem.MoneyBuildLevel2,
         EnumResearchItem.ResearchBuildLevel2,
       ],
-      Condition: 3000,
+      Condition: 0,
     },
   ],
   [
@@ -585,8 +636,8 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.MoneyBuildLevel2,
       Name: "广告公司",
-      Desc: "消耗10K点动漫知识。解锁广告公司，进一步提高信徒/从众的工作效率",
-      Cost1: 10000,
+      Desc: "消耗20K点动漫知识。解锁广告公司，进一步提高信徒/从众的工作效率",
+      Cost1: 20000,
       Cost2: 0,
       UnLock: [],
       Condition: 0,
@@ -600,13 +651,14 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "消耗20K点动漫知识。解锁运营公司，进一步提高信徒/从众的研究效率",
       Cost1: 20000,
       Cost2: 0,
+      Condition: 0,
       UnLock: [
         EnumResearchItem.InfluenceMoneyLevel3,
         EnumResearchItem.BelieverInfluenceMax2,
       ],
-      Condition: 0,
     },
   ],
+
   [
     EnumResearchItem.InfluenceMoneyLevel3,
     {
@@ -625,71 +677,65 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.BelieverInfluenceMax2,
       Name: "狂热信徒",
-      Desc: "消耗100K的动漫知识和10K的游戏知识。狂热的信徒四处宣传ACG的坏处，每名信徒额外提升500点影响力上限",
+      Desc: "消耗100K的动漫知识和10K的游戏知识。\n狂热的信徒四处宣传ACG的坏处，每名信徒额外提升500点影响力上限\n开启自动举报的工作，可以安排信徒去自动举报了",
       Cost1: 100000,
       Cost2: 10000,
       UnLock: [
-        EnumResearchItem.BelieverBuildCost1,
-        EnumResearchItem.MoneyBuildCost1,
-        EnumResearchItem.ResearchBuildCost1,
-        EnumResearchItem.ComplainUnLock,
+        EnumResearchItem.AutoComplainLevel1,
+        EnumResearchItem.AutoComplainWrongLevel1,
       ],
       Condition: 0,
       ResearchProp: new Map([[EnumResearchProp.BelieverAddInfluenceMax, 500]]),
     },
   ],
   [
-    EnumResearchItem.ComplainUnLock,
+    EnumResearchItem.AutoComplainLevel1,
     {
-      ID: EnumResearchItem.ComplainUnLock,
-      Name: "举报",
-      Desc: "消耗200K的动漫知识和20K的游戏知识。举报是一项划时代的发明，从此你可以真正打击ACG的发展了。",
+      ID: EnumResearchItem.AutoComplainLevel1,
+      Name: "海外信徒",
+      Desc: "消耗200K的动漫知识和100K的游戏知识。\n你开始发展海外的信徒，信徒将会自动举报海外的ACG事件了。",
       Cost1: 200000,
-      Cost2: 20000,
+      Cost2: 100000,
       UnLock: [],
       Condition: 0,
     },
   ],
-  // [
-  //   EnumResearchItem.BelieverBuildCost1,
-  //   {
-  //     ID: EnumResearchItem.BelieverBuildCost1,
-  //     Name: "地方扶持教育",
-  //     Desc: "I研究",
-  //     Cost1: 10000,
-  //     Cost2: 5000,
-  //     UnLock: [],
-  //     Condition: 0,
-  //     ResearchProp: new Map([[EnumResearchProp.InfluenceBuildCost, 0.1]]),
-  //   },
-  // ],
-  // [
-  //   EnumResearchItem.MoneyBuildCost1,
-  //   {
-  //     ID: EnumResearchItem.MoneyBuildCost1,
-  //     Name: "地方扶持发展",
-  //     Desc: "I研究",
-  //     Cost1: 10000,
-  //     Cost2: 5000,
-  //     UnLock: [],
-  //     Condition: 0,
-  //     ResearchProp: new Map([[EnumResearchProp.MoneyBuildCost, 0.1]]),
-  //   },
-  // ],
-  // [
-  //   EnumResearchItem.ResearchBuildCost1,
-  //   {
-  //     ID: EnumResearchItem.ResearchBuildCost1,
-  //     Name: "地方扶持文化",
-  //     Desc: "I研究",
-  //     Cost1: 10000,
-  //     Cost2: 5000,
-  //     UnLock: [],
-  //     Condition: 0,
-  //     ResearchProp: new Map([[EnumResearchProp.ResearchBuildCost, 0.1]]),
-  //   },
-  // ],
-
+  [
+    EnumResearchItem.AutoComplainWrongLevel1,
+    {
+      ID: EnumResearchItem.AutoComplainWrongLevel1,
+      Name: "精准打击",
+      Desc: "消耗200K的动漫知识和100K的游戏知识。\n降低50%信徒错误举报的概率。",
+      Cost1: 200000,
+      Cost2: 100000,
+      UnLock: [],
+      Condition: 0,
+    },
+  ],
+  [
+    EnumResearchItem.AutoComplainLevel2,
+    {
+      ID: EnumResearchItem.AutoComplainLevel2,
+      Name: "威慑银河系",
+      Desc: "消耗2M的动漫知识和1M的游戏知识。\n你在整个银河系都赫赫有名，没有人敢发展ACG文化了。\n信徒将会自动举报外太空的ACG事件了",
+      Cost1: 2000000,
+      Cost2: 1000000,
+      UnLock: [],
+      Condition: 0,
+    },
+  ],
+  [
+    EnumResearchItem.AutoComplainWrongLevel2,
+    {
+      ID: EnumResearchItem.AutoComplainWrongLevel2,
+      Name: "完美打击",
+      Desc: "消耗2M的动漫知识和1M的游戏知识。\n完美的打击ACG文化，再也不会有错误的举报了。",
+      Cost1: 2000000,
+      Cost2: 1000000,
+      UnLock: [],
+      Condition: 0,
+    },
+  ],
 ]);
 
 export enum EnumWorkType {
@@ -697,6 +743,7 @@ export enum EnumWorkType {
   MoneyWork,
   Cost1Work,
   Cost2Work,
+  ComplainWork,
 }
 /**
  * 工作默认信息，map索引从1开始
@@ -707,7 +754,7 @@ export const WorkInfoList: Map<number, IWorkInfo> = new Map([
     {
       ID: EnumWorkType.InfluenceWork,
       Name: "扩大影响",
-      Desc: "每个信徒/从众提升1点影响力每秒",
+      Desc: "每个信徒/从众提升1点影响力每秒。",
       Type: ItemType.ShowPanel | ItemType.AutoUnLock,
     },
   ],
@@ -735,6 +782,15 @@ export const WorkInfoList: Map<number, IWorkInfo> = new Map([
       ID: EnumWorkType.Cost2Work,
       Name: "研究游戏",
       Desc: "每个信徒/从众消耗10点金钱，提升1点游戏知识每秒。（提升效率后消耗同比增加）",
+      Type: ItemType.ShowPanel,
+    },
+  ],
+  [
+    EnumWorkType.ComplainWork,
+    {
+      ID: EnumWorkType.ComplainWork,
+      Name: "举报",
+      Desc: "信徒/从众替你完成自动举报，人数越多举报的间隔越快。",
       Type: ItemType.ShowPanel,
     },
   ],

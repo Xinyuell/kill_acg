@@ -54,9 +54,9 @@ const getData = computed(() => {
 <style>
 .leftTable {
   width: 90%;
-  margin-left: 10px;
+  margin-left: 0.1rem;
   margin-right: 0;
-  margin-top: 10px;
+  margin-top: 0.1rem;
   margin-bottom: 0%;
   float:inline-start;
 }

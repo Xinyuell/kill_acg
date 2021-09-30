@@ -1,5 +1,5 @@
 <script  setup lang="ts">
-import { computed, PropType, reactive, ref, State } from "vue";
+import { computed, ComputedRef, PropType, reactive, ref, State } from "vue";
 import { resourceItemData } from "../../core/gameSave";
 import {
   ReplaceGameData,
@@ -8,6 +8,7 @@ import {
   UpdateWorkConfig,
 } from "../../core/store";
 import {
+  EnumResearchItem,
   EnumResourceItem,
   EnumWorkType,
   GlobalConfig,
@@ -15,13 +16,75 @@ import {
   WorkInfoList,
 } from "../../core/table";
 import { intToString } from "../../core/utils";
-import { IWorkConfig } from "../BaseItem/WorkItem.vue";
 import WorkItem from "../BaseItem/WorkItem.vue";
-import { GetTotalPeople, GetTotalWorks } from "../../core/gameUpdate";
 /**
- * 我也不想这样的，实在是往组件传参了
+ * 我也不想这样的，有空研究清楚了再改
  * 太菜了 搞不定了
  */
+import { GetTotalPeople, GetTotalWorks } from "../../core/gameUpdate";
+import { GetAutoComplainCD } from "../../core/complain";
+
+export interface IWorkConfig extends IWorkInfo {
+  count: number;
+  clickAdd: Function;
+  clickSub: Function;
+}
+const IsShow = computed(function () {
+  return (id:number) => {
+    if (id < 3) return true;
+    const researchComplete = store.state.gameData.researchComplete;
+    if (
+      id == 3 &&
+      researchComplete.indexOf(EnumResearchItem.ResearchBuildLevel2) < 0
+    ) {
+      return false;
+    }
+    if (
+      id == 4 &&
+      researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) < 0
+    ) {
+      return false;
+    }
+    return true;
+  };
+});
+
+const GetTips = computed(function(){
+  return (data:IWorkConfig)=>{
+    let str = data.Desc;
+    if(data.ID === EnumWorkType.ComplainWork){
+      const researchComplete = store.state.gameData.researchComplete;
+      if( researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) > 0){
+        str += "\n当前信徒会自动举报国内、国外的ACG事件"
+      }
+      else if(researchComplete.indexOf(EnumResearchItem.AutoComplainLevel2) > 0){
+        str += "\n当前信徒会自动举报国内、国外和外太空的ACG事件"
+      }
+      else{
+          str += "\n当前信徒仅自动举报国内的ACG事件"
+      }
+      str += "\n当前举报一次的CD" + GetAutoComplainCD().toFixed(2);
+      str += ",增加人数CD会加速举报的进度"
+    }
+    return str;
+  }
+});
+
+const clickAddFunctions = [
+  clickAdd1,
+  clickAdd2,
+  clickAdd3,
+  clickAdd4,
+  clickAdd5,
+];
+const clickSubFunctions = [
+  clickSub1,
+  clickSub2,
+  clickSub3,
+  clickSub4,
+  clickSub5,
+];
+
 const getData = computed(() => {
   const workConfig: number[] = store.state.gameData.workConfig;
   const data: IWorkConfig[] = [];
@@ -31,6 +94,8 @@ const getData = computed(() => {
       Name: value.Name,
       ID: value.ID,
       Desc: value.Desc,
+      clickAdd: clickAddFunctions[key],
+      clickSub: clickSubFunctions[key],
     });
   });
 
@@ -53,11 +118,26 @@ const notWork = computed(() => {
   });
   return Math.floor(people - total + 0.00001);
 });
-const radio = ref(-1);
-
+const radio = ref(1);
+let old = 1;
 //选哪个自动，上传store
 function radioChange(curValue: number) {
+  if (curValue >= 0) {
+    switchValue.value = true;
+  }
   store.commit(UpdateAutoWorkIndex, curValue);
+}
+
+const switchValue = ref(true);
+function cancelAuto(value: boolean) {
+  if (value === false) {
+    old = radio.value;
+    radio.value = -1;
+  } else {
+    if (old < 0) old = 0;
+    radio.value = old;
+  }
+  store.commit(UpdateAutoWorkIndex, radio.value);
 }
 
 //根据按键来增加人数
@@ -125,34 +205,68 @@ function clickAdd4(e: any) {
 function clickSub4(e: any) {
   clickSub(e, 3);
 }
-const switchValue = ref(false);
-let old = -1;
-function cancelAuto(value: boolean) {
-  if (value === false) {
-    old = radio.value;
-    radio.value = -1;
-  } else {
-    if (old < 0) old = 0;
-    radio.value = old;
-  }
-  store.commit(UpdateAutoWorkIndex, radio.value);
+function clickAdd5(e: any) {
+  clickAdd(e, 4);
+}
+function clickSub5(e: any) {
+  clickSub(e, 4);
 }
 </script>
 
 <template>
   <div class="leftTable workTable">
-    <div class="titlep">
-      <span>剩余人数：{{ notWork }}</span>
+    <div style="margin-bottom: 0.2rem">
+      <span id="spantitle">剩余人数：{{ notWork }}</span>
       <el-switch
         v-model="switchValue"
         @change="cancelAuto"
         active-text="自动分配"
         inactive-text="关闭"
-        style="margin-left: 15px"
+        style="margin-left: 0.4rem; font-size: 0.4rem; display: inline-block"
       />
     </div>
     <ul id="workDataul">
-      <li class="worktab">
+      <template v-for="data in getData" :key="data.ID">
+        <li class="worktab" v-if="IsShow(data.ID)">
+          <el-popover
+            placement="bottom"
+            trigger="hover"
+            transition=""
+            :width="200"
+          >
+            <template #reference>
+              <span class="title"> {{ data.Name }}</span>
+            </template>
+            <span class="tips" style="font-size: 0.1rem">{{ GetTips(data) }}</span>
+          </el-popover>
+          <span class="number">
+            {{ intToString(store.state.gameData.workConfig[data.ID], 0) }}</span
+          >
+          <el-button
+            type="info"
+            @click="data.clickSub"
+            icon="el-icon-d-arrow-left"
+            size="mini"
+            circle
+          >
+          </el-button>
+          <el-button
+            type="info"
+            icon="el-icon-d-arrow-right"
+            size="mini"
+            circle
+            @click="data.clickAdd"
+          ></el-button>
+          <el-radio
+            style="margin-left: 0.2rem"
+            v-model="radio"
+            @change="radioChange"
+            :label="data.ID"
+            ><span></span
+          ></el-radio>
+        </li>
+      </template>
+      <!-- <li class="worktab">
         <span class="title"> {{ getData[0].Name }}</span>
         <span class="number">
           {{
@@ -175,7 +289,7 @@ function cancelAuto(value: boolean) {
           @click="clickAdd1"
         ></el-button>
         <el-radio
-          style="margin-left: 15px"
+          style="margin-left: 0.2rem"
           v-model="radio"
           @change="radioChange"
           :label="getData[0].ID"
@@ -205,7 +319,7 @@ function cancelAuto(value: boolean) {
           circle
         ></el-button>
         <el-radio
-          style="margin-left: 15px"
+          style="margin-left: 0.2rem"
           v-model="radio"
           @change="radioChange"
           :label="getData[1].ID"
@@ -235,14 +349,14 @@ function cancelAuto(value: boolean) {
           circle
         ></el-button>
         <el-radio
-          style="margin-left: 15px"
+          style="margin-left: 0.2rem"
           v-model="radio"
           @change="radioChange"
           :label="getData[2].ID"
           ><span></span
         ></el-radio>
       </li>
-      <li class="worktab">
+      <li class="worktab" v-if="showCost2">
         <span class="title"> {{ getData[3].Name }}</span>
         <span class="number">
           {{
@@ -265,55 +379,81 @@ function cancelAuto(value: boolean) {
           @click="clickAdd4"
         ></el-button>
         <el-radio
-          style="margin-left: 15px"
+          style="margin-left: 0.2rem"
           v-model="radio"
           @change="radioChange"
           :label="getData[3].ID"
           ><span></span
         ></el-radio>
       </li>
+      <li class="worktab" v-if="showComplain">
+        <span class="title"> {{ getData[4].Name }}</span>
+        <span class="number">
+          {{
+            intToString(store.state.gameData.workConfig[getData[4].ID], 0)
+          }}</span
+        >
+        <el-button
+          type="info"
+          @click="clickSub5"
+          icon="el-icon-d-arrow-left"
+          size="mini"
+          circle
+        >
+        </el-button>
+        <el-button
+          type="info"
+          icon="el-icon-d-arrow-right"
+          size="mini"
+          circle
+          @click="clickAdd5"
+        ></el-button>
+        <el-radio
+          style="margin-left: 0.2rem"
+          v-model="radio"
+          @change="radioChange"
+          :label="getData[4].ID"
+          ><span></span
+        ></el-radio>
+      </li> -->
     </ul>
   </div>
 </template>
 
 <style scoped>
-.titlep {
-  text-align: left;
-  margin-bottom: 1rem;
+#spantitle {
+  font-size: 0.4rem;
+  padding: 0.1rem;
+  margin-bottom: 0.2rem;
 }
 .workTable {
-  margin-top: 4rem;
-  margin-bottom: 10px;
+  margin-top: 0.6rem;
 }
 #workDataul {
-  padding-inline-start: 1px;
+  padding-inline-start: 0rem;
   margin-block-end: 0;
 }
 
 span.title {
-  width: 100px;
+  width: 2rem;
   text-align: left;
   display: inline-block;
 }
 
 span.number {
-  width: 80px;
+  width: 2rem;
   text-align: center;
   display: inline-block;
 }
-.worktab {
-  padding-left: 10px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  margin-bottom: 2px;
+li.worktab {
+  padding-left: 0.1rem;
+  padding-top: 0rem;
+  margin-bottom: 0.02rem;
   background-color: #ffffff;
-  height: 60px;
-  font-size: 14px;
-  position: relative;
+  height: 0.9rem;
+  font-size: 0.3rem;
   overflow: hidden;
-  box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  font-size: 14px;
 }
 </style>

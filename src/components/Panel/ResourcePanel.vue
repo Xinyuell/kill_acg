@@ -21,6 +21,7 @@ const getData = computed(() => {
       :show-header="false"
       :stripe="true"
       tooltip-effect="dark"
+      size="small"
     >
       <el-table-column width="110">
         <template #default="{ row }">
@@ -30,7 +31,7 @@ const getData = computed(() => {
             :width="200"
             transition=""
           >
-            <span style="font-size: 10px"
+            <span  class="tips" style="font-size: 0.2rem"
               >{{ row.tip_title }} <br />
               {{ row.tip_content }}</span
             >

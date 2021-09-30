@@ -57,15 +57,10 @@ const complete = computed(() => {
 </template>
 
 <style scoped>
-h3 {
-  margin-top: 1rem;
-   margin-left: 1rem;
-  font-size: 1rem;
-}
 
 .resourcePanel {
-  width: 450px;
-  margin: 20px;
+  width: 6remx;
+  margin: 0.3rem;
 }
 .buildItem {
   display: inline;

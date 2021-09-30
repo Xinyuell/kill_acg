@@ -53,6 +53,9 @@ export default {
       if (data.ID == EnumResearchItem.BelieverBuildLevel1) {
         StartGuideByID(2); //解锁第一个信徒建筑
       }
+      if(data.ID == EnumResearchItem.ResearchBuildLevel2){
+        store.commit(UnlockResource, EnumResourceItem.Cost2);
+      }
       if (data.ID === EnumResearchItem.ComplainUnLock) {
         StartGuideByID(8);
       }
@@ -62,26 +65,17 @@ export default {
 </script>
 
 <template>
-  <el-popover placement="bottom" trigger="hover" :width="200">
+  <el-popover placement="bottom" trigger="hover" >
     <template #reference>
       <el-button
-        class="researchItem"
+        class="buildItem"
         type="info"
         plain
         @click="researchItemClick"
         >{{ researchData.Name }}
       </el-button>
     </template>
-    <span style="font-size: 10px">{{ researchData.Desc }}</span>
+    <span  class="tips" style="font-size: 0.1rem">{{ researchData.Desc }}</span>
   </el-popover>
 </template>
 
-<style scoped>
-.researchItem {
-  width: 160px;
-  height: 60px;
-  margin-left: 0px;
-  margin-top: 10px;
-  margin-right: 10px;
-}
-</style>

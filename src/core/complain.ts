@@ -1,14 +1,24 @@
-import { NotificationParamsTyped, ElNotification } from "element-plus";
+import {
+  NotificationParamsTyped,
+  ElNotification,
+  ElMessage,
+} from "element-plus";
 import { GameControl } from "./game";
 import { language } from "./language";
-import { store } from "./store";
-import { EnumResearchItem, GlobalConfig } from "./table";
+import { ModifyResourceCurValue, store, UpdateAcgProgressValue } from "./store";
+import {
+  EnumResearchItem,
+  EnumResourceItem,
+  EnumWorkType,
+  GlobalConfig,
+} from "./table";
+import { intToString } from "./utils";
 
 export enum EnumTimeLineLogType {
   /**举报log */
   Complain,
-  /**固定时间点Log */
-  Fixed,
+  /**历史事件Log */
+  History,
   /**正常log*/
   Normal,
   /**举报log合并项 */
@@ -56,66 +66,119 @@ export function AddTimeLineLog(log: TimeLineLog) {
     }
     let length = timelineLog.length - 1;
     let stateLog = timelineLog[stateIndex];
-    store.state.timelineLogs = timelineLog.filter(
-      function(value){
-        if (value.logType === EnumTimeLineLogType.Complain) {
-        
-         if (value.iconType === "warning") stateLog.wrongCount!++;
-         else stateLog.rightCount!++;
-         return false;
+    store.state.timelineLogs = timelineLog.filter(function (value) {
+      if (value.logType === EnumTimeLineLogType.Complain) {
+        if (value.iconType === "warning") stateLog.wrongCount!++;
+        else stateLog.rightCount!++;
+        return false;
       }
       return true;
-    })
-    stateLog.content = "你一共举报成功: " + stateLog.rightCount! + "次；失败：" + stateLog.wrongCount + "次";
+    });
+    stateLog.content =
+      "你一共举报成功: " +
+      stateLog.rightCount! +
+      "次；失败：" +
+      stateLog.wrongCount +
+      "次";
     //如果此时删完所有的举报log还大于6条，就删完除统计外的log
-    if(timelineLog.length >= 6){
-      store.state.timelineLogs = timelineLog.filter(
-        function(value){
+    if (timelineLog.length >= 6) {
+      store.state.timelineLogs = timelineLog.filter(function (value) {
         return value.logType === EnumTimeLineLogType.ComplainState;
-      })
+      });
     }
   }
   store.state.timelineLogs.unshift(log);
 }
 
 function onNotiClick(this: NotificationParamsTyped) {
-  if((this as any).logd)
+  if ((this as any).logd) {
+    ElMessage.error({
+      showClose: true,
+      message: "已经举报过了。得饶人处且饶人吧",
+    });
     return;
-  let logstr = (this as any).message;
+  }
+  const logStr = (this as any).message;
   const classIndex = parseInt((this as any).title);
+  ShowComplainLog(logStr, classIndex);
+  (this as any).logd = true;
+}
+
+function ShowComplainLog(logstr: string, classIndex: number) {
   logstr += language.comlainLogTips[classIndex];
+  const sourceArr = store.state.gameData.sourceArr;
+  if (classIndex == 0) {
+    const value =
+      sourceArr.get(EnumResourceItem.Influence)!.cacheValue *
+      GlobalConfig.ComplainWrongValueRatio;
+    store.commit(ModifyResourceCurValue, -value);
+    logstr += "你降低了" + intToString(value) + "点影响力";
+  } else if (classIndex <= 3) {
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.ComplainAcgLevel1);
+    logstr +=
+      "ACG文化降低了" +
+      intToString(GlobalConfig.ComplainAcgLevel1) +
+      "点影响力";
+  } else if (classIndex <= 6) {
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.ComplainAcgLevel2);
+    logstr +=
+      "ACG文化降低了" +
+      intToString(GlobalConfig.ComplainAcgLevel2) +
+      "点影响力";
+  } else if (classIndex <= 9) {
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.ComplainAcgLevel3);
+    logstr +=
+      "ACG文化降低了" +
+      intToString(GlobalConfig.ComplainAcgLevel3) +
+      "点影响力";
+  }
   const log: TimeLineLog = {
-    timestamp: GetCurrentTime(),
+    timestamp: GetCurrentLocalDateTime(),
     iconType: classIndex > 0 ? "success" : "warning",
     color: classIndex > 0 ? "#67C23A" : "#E6A23C",
     content: logstr,
     logType: EnumTimeLineLogType.Complain,
   };
-  //TODO 有一个是否保留log的选项
   AddTimeLineLog(log);
-  (this as any).logd = true;
 }
 
 export function randomComplain() {
   setTimeout(() => {
     randomComplain();
-  }, Math.random() * 5000 + 5000);
+  }, Math.random() * 10000 + 10000);
   if (!store.state.running) {
     return;
   }
-  //检查举报科技是否解锁
-    if (
-      store.state.gameData.researchComplete.indexOf(
-        EnumResearchItem.ComplainUnLock
-      ) < 0
-    )
-      return;
-  //检查自动举报科技是否解锁
-  // 随机10%概率出错误的举报；60%国内 25%国外 5%外太空
+  if (store.state.gameFail) {
+    return;
+  }
+  if (
+    store.state.gameData.researchComplete.indexOf(
+      EnumResearchItem.ComplainUnLock
+    ) < 0
+  )
+    return;
+  const params = GetRandomComplain();
+  if (params === undefined) return;
+  if (params.title !== "0") {
+    ElNotification.success(params);
+  } else {
+    ElNotification.warning(params);
+  }
+}
+
+function GetRandomComplain() {
   const random1 = Math.random() * 100; //大类
   const random2 = Math.floor(Math.random() * 3); //小类
   let classIndex = 0;
   let duration = 1000;
+  const researchComplete = store.state.gameData.researchComplete;
+  const hasAuto =
+    researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0;
+  const hasAutoLevel1 =
+    researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
+  const hasAutoLevel2 =
+    researchComplete.indexOf(EnumResearchItem.AutoComplainLevel2) >= 0;
   if (random1 < 10) {
     classIndex = 0;
     duration = 1000;
@@ -132,6 +195,19 @@ export function randomComplain() {
     classIndex = random2 + 7;
     duration = 400;
   }
+  if (hasAuto && classIndex <= 3) {
+    return;
+  }
+  if (hasAutoLevel1 && classIndex <= 6) {
+    return;
+  }
+  if (hasAutoLevel2 && classIndex <= 9) {
+    return;
+  }
+  return GetTimelogParams(classIndex, duration);
+}
+
+function GetTimelogParams(classIndex: number, duration: number) {
   const complainContent = language.complain[classIndex];
   const index = Math.floor(Math.random() * complainContent.length);
   const pos = Math.floor(Math.random() * 4);
@@ -145,16 +221,73 @@ export function randomComplain() {
     showClose: false,
     onClick: onNotiClick,
   };
-  if (classIndex > 0) {
-    ElNotification.success(params);
+  return params;
+}
+
+export function autoRandomComplain() {
+  const researchComplete = store.state.gameData.researchComplete;
+  const sourceArr = store.state.gameData.sourceArr;
+  const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
+  if (
+    store.state.running &&
+    !store.state.gameFail &&
+    researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0 &&
+    workPeople > 0
+  ) {
+    const CD = GetAutoComplainCD();
+    const hasAutoLevel1 =
+      researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
+    const hasAutoLevel2 =
+      researchComplete.indexOf(EnumResearchItem.AutoComplainLevel2) >= 0;
+    const random1 = Math.random() * 100; //大类
+    const random2 = Math.floor(Math.random() * 3); //小类
+    let classIndex = 1;
+    if (hasAutoLevel2) {//5:3:2 国内国外外太空
+      if (random1 <= 50) {
+        classIndex += random2;
+      } else if (random1 <= 80) {
+        classIndex += random2 + 3;
+      } else {
+        classIndex += random2 + 6;
+      }
+    }
+    else if(hasAutoLevel1){//6：4
+      if (random1 <= 60) {
+        classIndex += random2;
+      } else if (random1 <= 40) {
+        classIndex += random2 + 3;
+      } 
+    }
+    else
+      classIndex += random2;
+
+    const complainContent = language.complain[classIndex];
+    const index = Math.floor(Math.random() * complainContent.length);
+    ShowComplainLog(complainContent[index],classIndex)
+    setTimeout(() => {
+      autoRandomComplain();
+    }, CD*1000);
   } else {
-    ElNotification.warning(params);
+    setTimeout(() => {
+      autoRandomComplain();
+    }, 3000);
   }
 }
 
-export function GetCurrentTime() {
-  const time =
-    GlobalConfig.StartData +
-    store.state.gameData.totalTime * GlobalConfig.VrtulTimeRatio;
+export function GetAutoComplainCD() {
+  const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
+  if (workPeople <= 0) return -1;
+  return 100 / Math.pow(workPeople + 10, 0.5);
+}
+
+export function GetCurrentLocalDateTime(time: number): string;
+export function GetCurrentLocalDateTime(): string;
+export function GetCurrentLocalDateTime(time?: number): string {
+  if (time === undefined) {
+    return new Date(
+      GlobalConfig.StartData +
+        store.state.gameData.totalTime * GlobalConfig.VrtulTimeRatio
+    ).toLocaleDateString();
+  }
   return new Date(time).toLocaleDateString();
 }

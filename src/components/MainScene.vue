@@ -8,17 +8,19 @@ import { language } from "../core/language";
 import WorkPanel from "./Panel/WorkPanel.vue";
 import ResourcePanel from "./Panel/ResourcePanel.vue";
 import { TimeLineLog } from "../core/complain";
-import { EnumTimeLineLogType } from "../core/complain";
+
 import { EnumBuildItem } from "../core/table";
+import MiddlePanel from "./Panel/MiddlePanel.vue";
+import LogPanel from "./Panel/LogPanel.vue";
+import AcgProgress from "./Panel/AcgProgress.vue";
 
 const headerHeight = computed(() => {
-  let base = 50;
-  if (store.state.gameData.influenceLevel >= 2) base += 60;
-  return base + "px";
+  let base = 0.5;
+  if (store.state.gameData.influenceLevel >= 2) base += 0.6;
+  return base + "rem";
 });
 const activeIndex = ref("/game/build");
 function handleSelect(key: string, keyPath: any) {
-  console.log(key, keyPath);
 }
 
 function testclick() {
@@ -26,10 +28,11 @@ function testclick() {
   store.state.openGuide = true;
 }
 const workShow = computed(() => {
-  const buildItemData = store.state.gameData.buildArryList.get(EnumBuildItem.InfluenceLevel1)
+  const buildItemData = store.state.gameData.buildArryList.get(
+    EnumBuildItem.InfluenceLevel1
+  );
   if (buildItemData !== undefined) {
-    if(buildItemData.curValue > 0)
-      return true;
+    if (buildItemData.curValue > 0) return true;
   }
   return false;
 });
@@ -37,149 +40,146 @@ const workShow = computed(() => {
 
 <template>
   <el-row>
-    <el-col :height="headerHeight" :span="24">
-      <el-popover
-        placement="bottom"
-        title="Title"
-        :width="400"
-        trigger="hover"
-        content="详细的速度来源信息，总值和当前值"
-        v-if="store.state.gameData.influenceLevel >= 2"
-      >
-        <template #reference>
-          <el-progress
-            :text-inside="true"
-            :stroke-width="24"
-            :percentage="50"
-            status="exception"
-            class="head"
-          />
-        </template>
-      </el-popover>
+    <el-col :span="6" class="hidden-sm-and-down"> </el-col>
+    <el-col :height="headerHeight" :span="12" class="hidden-sm-and-down">
+      <AcgProgress />
+    </el-col>
+      <el-col :height="headerHeight" :span="24" class="hidden-md-and-up">
+      <AcgProgress />
     </el-col>
   </el-row>
-  <el-row :gutter="40" >
-    <el-col :span="1"> </el-col>
-    <el-col :span="6" class="mainCol" style="line-height: 10px">
+  <el-row style="margin-top: 1rem" class="hidden-sm-and-down">
+    <el-col :span="4" > </el-col>
+    <el-col :span="5" class="mainCol" style="line-height: 0.1rem">
       <ResourcePanel />
       <WorkPanel v-if="workShow" />
     </el-col>
-    <el-col :span="9" class="mainCol" >
-      <el-menu
-        :default-active="activeIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
-        router
-        style="margin-bottom: 0.5rem"
-      >
-        <el-menu-item index="/game/build">家园</el-menu-item>
-        <el-menu-item index="/game/research">
-          <template #title>研究</template>
-        </el-menu-item>
-        <el-menu-item index="/game/policy" v-if="false">政治</el-menu-item>
-        <el-menu-item index="/game/stats" v-if="false">统计</el-menu-item>
-      </el-menu>
+    <el-col :span="6" class="mainCol">
+      <MiddlePanel />
       <router-view></router-view>
     </el-col>
-    <el-col :span="6" class="mainCol">
-      <el-scrollbar height="600px" >
-        <el-timeline style="padding: 20px 10px 10px 10px">
-          <el-timeline-item
-            v-for="(log, index) in store.state.timelineLogs"
-            :key="index"
-            :type="log.iconType"
-            :color="log.color"
-            :timestamp="log.timestamp"
-            :hide-timestamp="log.logType === EnumTimeLineLogType.ComplainState"
-            class="timelineItem"
-          >
-            {{ log.content }}
-          </el-timeline-item>
-        </el-timeline>
-      </el-scrollbar>
+    <el-col :span="5" class="mainCol">
+      <LogPanel />
     </el-col>
-    <el-col :span="1"> </el-col>
-    <!-- <el-footer height="100px">Footer</el-footer> -->
+  </el-row>
+
+  <el-row style="margin-top: 1rem"  class="hidden-md-and-up">
+    <el-col :span="24" class="mainCol" style="line-height: 0.1rem">
+      <ResourcePanel />
+      <WorkPanel v-if="workShow" />
+    </el-col>
+    <el-col :span="24" class="mainCol">
+      <MiddlePanel />
+      <router-view></router-view>
+    </el-col>
+    <el-col :span="24" class="mainCol">
+      <LogPanel />
+    </el-col>
   </el-row>
 
   <el-drawer
     v-model="store.state.openGuide"
-    title="指引"
-    direction="rtl"
-    size="20%"
+    title=""
+    direction="ttb"
+    size="4rem"
+    :close-on-click-modal="false"
+    :show-close="true"
   >
-    <span>{{ language.guideTips[store.state.guideTipsID] }}</span>
+  <template #title>
+     <span style="font-size: 0.4rem;line-height:0.5rem;display:inline-block;">指引【ESC关闭】</span>
+  </template>
+    <span style="font-size: 0.3rem;line-height:0.5rem;display:inline-block;white-space:pre-line">{{
+      language.guideTips[store.state.guideTipsID]
+    }}</span>
   </el-drawer>
 </template>
 
-<style scoped>
-.mainCol{
-  padding: 10px 10px 10px 10px;
-  background-color: #DCDFE6;
-  margin:10px
+<style>
+.el-drawer__header{
+  margin-bottom: 0 !important;
 }
-.timelineItem {
-  line-height: 15px;
+@media only screen and (max-width: 767px) {
+  .hidden-xs-only {
+    display: none !important;
+  }
 }
+
+@media only screen and (min-width: 768px) {
+  .hidden-sm-and-up {
+    display: none !important;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .hidden-sm-only {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  .hidden-sm-and-down {
+    display: none !important;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .hidden-md-and-up {
+    display: none !important;
+  }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+  .hidden-md-only {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 1199px) {
+  .hidden-md-and-down {
+    display: none !important;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .hidden-lg-and-up {
+    display: none !important;
+  }
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1919px) {
+  .hidden-lg-only {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 1919px) {
+  .hidden-lg-and-down {
+    display: none !important;
+  }
+}
+
+@media only screen and (min-width: 1920px) {
+  .hidden-xl-only {
+    display: none !important;
+  }
+}
+.mainCol {
+  background-color: #dcdfe6;
+  margin: 0.02rem;
+}
+
 .head {
-  width: 60%;
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  width: 100%;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
 }
 
 .news {
-  margin-top: 10px;
-}
-
-.el-header,
-.el-footer {
-  background-color: #b3c0d1;
-  color: var(--el-text-color-primary);
-  text-align: center;
-  line-height: 30px;
+  margin-top: 0.1rem;
 }
 
 .leftPanel {
-  line-height: 10px;
+  line-height: 0.1rem;
 }
-
-.el-main {
-  background-color: #e9eef3;
-  color: var(--el-text-color-primary);
-  text-align: left;
-  padding: 10px;
-  line-height: 60px;
-}
-
-/* body > .el-container {
-  margin-bottom: 40px;
-} */
-/* 
-.el-container:nth-child(5) .el-aside,
-.el-container:nth-child(6) .el-aside {
-  line-height: 260px;
-}
-
-.el-container:nth-child(7) .el-aside {
-  line-height: 320px;
-} */
-
-/* .tabBg {
-  background-color: aliceblue;
-  widows: 100%;
-  height: 100%;
-}
-.promoBar {
-  background-color: #d5c4a1;
-  bottom: 20;
-  display: inline-flex;
-  height: 2rem;
-  line-height: 2rem;
-  width: 100%;
-  position: fixed;
-} */
 </style>
 

@@ -5,6 +5,7 @@ import {
   BuildClickType,
   BuildInfoList,
   EnumResearchProp,
+  GlobalConfig,
   ItemInfoList,
   ItemType,
 } from "./table";
@@ -30,7 +31,7 @@ export function setStoreGameDataByBase64(
     state.haslog = false;
     return false;
   }
-  gameData.acgProgressData = saveGameData.acgProgressData;
+  gameData.acgProgressValue = saveGameData.acgProgressValue;
   gameData.influenceLevel = saveGameData.influenceLevel;
   gameData.researchUnLockList = saveGameData.researchUnLockList;
   gameData.researchComplete = saveGameData.researchComplete;
@@ -38,6 +39,7 @@ export function setStoreGameDataByBase64(
   gameData.autoWorkIndex = saveGameData.autoWorkIndex;
   gameData.newsID = new Set(saveGameData.newsID);
   gameData.totalTime = saveGameData.totalTime;
+  gameData.historyLogID = saveGameData.historyLogID;
 
   saveGameData.sourceArr.forEach(function (value) {
     if (gameData.sourceArr.has(value.ID)) {
@@ -58,18 +60,20 @@ export function setStoreGameDataByBase64(
 
 export function getCurrentSaveGameData() {
   if (!store.state.running) return;
+  if(store.state.gameFail) return;
   const gameData: GameData = store.state.gameData;
   const saveGameData: ISaveGameData = {
     sourceArr: [],
     buildArryList: [],
-    acgProgressData: gameData.acgProgressData,
+    acgProgressValue: gameData.acgProgressValue,
     influenceLevel: gameData.influenceLevel,
     researchUnLockList: gameData.researchUnLockList,
     researchComplete: gameData.researchComplete,
     workConfig: gameData.workConfig,
     autoWorkIndex: gameData.autoWorkIndex,
-    newsID:Array.from(gameData.newsID),
-    totalTime:gameData.totalTime,
+    newsID: Array.from(gameData.newsID),
+    totalTime: gameData.totalTime,
+    historyLogID:gameData.historyLogID,
   };
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
@@ -93,18 +97,15 @@ export function initGameData() {
   const gameData: GameData = {
     sourceArr: new Map([]),
     buildArryList: new Map([]),
-    acgProgressData: {
-      value: 50, //应该有get取值的
-      max: 10000000000, //100亿
-      cur: 5000000000, //50亿
-    },
+    acgProgressValue:GlobalConfig.AcgProgressBae,
     influenceLevel: 0,
     newsID: new Set(),
     researchUnLockList: [1], //第一个研究默认解锁
     researchComplete: [],
-    workConfig: [0, 0, 0, 0],
+    workConfig: [0, 0, 0, 0, 0],
     autoWorkIndex: -1,
-    totalTime:0,
+    totalTime: 0,
+    historyLogID:-1,
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
@@ -144,24 +145,7 @@ export function initGameData() {
   return gameData;
 }
 
-interface ISaveGameData {
-  sourceArr: ISaveResourcePanelData[];
-  buildArryList: ISaveBuildPanelData[];
-  acgProgressData: object;
-  influenceLevel: number;
-  researchUnLockList: number[];
-  researchComplete: number[];
-  workConfig: number[];
-  autoWorkIndex: number;
-  /**
-   * 已获得新闻的ID（加属性的才记录）
-   */
-  newsID: number[];
-    /**
-   * 游戏的总时间
-   */
-  totalTime:number;
-}
+
 
 interface ISaveBuildPanelData {
   curValue: number;
@@ -213,6 +197,30 @@ export interface resourceItemData {
   tip_content: string;
 }
 
+
+interface ISaveGameData {
+  sourceArr: ISaveResourcePanelData[];
+  buildArryList: ISaveBuildPanelData[];
+  acgProgressValue: number;
+  influenceLevel: number;
+  researchUnLockList: number[];
+  researchComplete: number[];
+  workConfig: number[];
+  autoWorkIndex: number;
+  /**
+   * 记录最后一个显示的历史
+   */
+   historyLogID: number;
+  /**
+   * 已获得新闻的ID（加属性的才记录）
+   */
+  newsID: number[];
+  /**
+   * 游戏的总时间
+   */
+  totalTime: number;
+}
+
 export interface GameData {
   /**
    * 所有资源的信息
@@ -223,13 +231,17 @@ export interface GameData {
    */
   buildArryList: Map<number, buildItemData>;
   /**
-   * acg全局进度条数据
+   * acg全局进度
    */
-  acgProgressData: object;
+  acgProgressValue: number;
   /**
    * 当前影响力的等级,主要决定新闻随机出现的水平和各种事件
    */
   influenceLevel: number;
+  /**
+   * 记录最后一个显示的历史
+   */
+  historyLogID: number;
   /**
    * 已获得新闻的ID（加属性的才记录）
    */
@@ -247,8 +259,8 @@ export interface GameData {
    */
   workConfig: number[];
   autoWorkIndex: number;
-     /**
+  /**
    * 游戏的总时间
    */
-  totalTime:number;
+  totalTime: number;
 }

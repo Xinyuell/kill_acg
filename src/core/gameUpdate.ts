@@ -1,3 +1,4 @@
+import { ElMessage } from "element-plus";
 import { buildItemData, resourceItemData } from "./gameSave";
 import {
   ModifyResourceCurValue,
@@ -7,6 +8,7 @@ import {
   UnlockBuild,
   UnlockResearch,
   UnlockResource,
+  UpdateAcgProgressValue,
   UpdateGuideTips,
   UpdateWorkConfig,
 } from "./store";
@@ -22,6 +24,37 @@ import {
   WorkInfoList,
 } from "./table";
 import { intToString } from "./utils";
+
+export function acgProgressUpdate(deltaTime: number) {
+  if (store.state.gameData.influenceLevel <= 1) return;
+  store.commit(
+    UpdateAcgProgressValue,
+    deltaTime * GlobalConfig.AcgProgressSpeed
+  );
+  if (store.state.gameData.acgProgressValue >= GlobalConfig.AcgProgressMax) {
+    ElMessage.error({
+      showClose: true,
+      message:
+        "游戏失败了，世界各地都被ACG文化影响，你再也无法杀死ACG了！请重新开始，你将会获得一种稀有的资源——政治背景！",
+    });
+    setTimeout(() => {
+      ElMessage.warning({
+        showClose: true,
+        message: "不过此功能暂未开放！目前游戏内容你已经体验完了",
+      });
+    }, 4000);
+    store.state.gameFail = true;
+  }
+  else if(store.state.gameData.acgProgressValue <= 0){
+    store.state.gameData.acgProgressValue = 0;
+    ElMessage.success({
+      showClose: true,
+      message:
+        "世界各地都的ACG文化都被你消灭了，这个世界回归平静。你的心里充满了感恩和光明。游戏胜利了！",
+    });
+    store.state.gameFail = true;
+  }
+}
 
 let oldPeople = 0;
 let currentPeople = 0;
@@ -58,7 +91,7 @@ export function resourceUpdate(deltaTime: number) {
       });
     }
   });
-  updateResourceMaxValue(props,sourceArr);
+  updateResourceMaxValue(props, sourceArr);
   //金钱部分先算,如果金钱会扣到零以下则所有工人全部停工
   const isDebts = calculateMoneySpeed(
     sourceArr,
@@ -154,13 +187,8 @@ export function GetTotalPeople() {
  */
 function autoWork(workConfig: number[]) {
   currentPeople = GetTotalPeople();
-  let addPeople = Math.floor(currentPeople - oldPeople + 0.000001);
-  if (addPeople < 0)
-    //增加的人数取整不到一人直接返回
-    return;
-
-  let total = GetTotalWorks();
   //异常处理，当前工人数小于已工作数
+  let total = GetTotalWorks();
   if (currentPeople < total) {
     let isClear = false;
     store.state.gameData.workConfig = workConfig.map(function (value) {
@@ -173,12 +201,16 @@ function autoWork(workConfig: number[]) {
       return 0;
     });
     return;
-  } else if (currentPeople > total && store.state.gameData.autoWorkIndex >= 0) {
+  }
+  //此时如果是关闭自动分配就直接返回了
+  if (store.state.gameData.autoWorkIndex < 0) return;
+
+  //这是一层保险，当前人数当然要比现有人数大1个才能+1
+  if (Math.floor(currentPeople - total + 0.000001) >= 1) {
     store.commit(UpdateWorkConfig, {
       index: store.state.gameData.autoWorkIndex,
       value: 1,
     });
-    oldPeople++; //没有异常了，每帧最多分配一给人
   }
 }
 
@@ -196,17 +228,14 @@ function updateResourceValue(
   if (data.cacheValue < 0) {
     data.cacheValue = 0; //金钱小于0，上面会设置停工了；影响力小于0游戏结束，TODO 影响力扣的逻辑
   }
-  if(data.ID === EnumResourceItem.Influence){
-    if(data.cacheValue > 1000000000){
+  if (data.ID === EnumResourceItem.Influence) {
+    if (data.cacheValue >= 10000) {
       store.state.gameData.influenceLevel = 4;
-    }
-    else if(data.cacheValue > 10000000){
+    } else if (data.cacheValue >= 3000) {
       store.state.gameData.influenceLevel = 3;
-    }
-    else if(data.cacheValue > 3000){
+    } else if (data.cacheValue >= 1000) {
       store.state.gameData.influenceLevel = 2;
-    }
-    else if(data.cacheValue > 100){
+    } else if (data.cacheValue >= 100) {
       store.state.gameData.influenceLevel = 1;
     }
   }
@@ -302,15 +331,19 @@ function setResourceSpeed(
       data.cacheSpeed = num6;
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
-      data.cacheSpeed =
-        Math.max(0.1, Math.pow(data.cacheValue,0.5) * GlobalConfig.BaseBelieverRatio)
+      data.cacheSpeed = Math.max(
+        0.1,
+        Math.pow(data.cacheValue, 0.5) * GlobalConfig.BaseBelieverRatio
+      );
       break;
     case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
       if (isDebts) data.cacheSpeed = 0;
       else {
         const dataBeliever = sourceArr.get(EnumResourceItem.Believer)!;
-        data.cacheSpeed =
-          Math.max(0.1, Math.pow(data.cacheValue,0.5) * GlobalConfig.BaseBelieverRatio)
+        data.cacheSpeed = Math.max(
+          0.1,
+          Math.pow(data.cacheValue, 0.5) * GlobalConfig.BaseBelieverRatio
+        );
         if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
           //信徒达到最大值
           data.cacheSpeed *= 2;
@@ -327,8 +360,8 @@ function setResourceSpeed(
   }
 }
 
-export function StartGuideByID(ID:number){
-  store.commit(UpdateGuideTips, ID)
+export function StartGuideByID(ID: number) {
+  store.commit(UpdateGuideTips, ID);
   store.state.openGuide = true;
 }
 

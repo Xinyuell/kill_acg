@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { ElMessage } from 'element-plus'
+import { ElMessage } from "element-plus";
 import { store } from "../core/store";
 import { router } from "../router";
 import SaveGameItem from "./BaseItem/SaveGameItem.vue";
@@ -18,7 +18,7 @@ function OnLoadClick() {
 }
 
 function OnAchievementClick() {
-   ElMessage.error({
+  ElMessage.warning({
     message: "敬请期待",
     type: "warning",
   });
@@ -29,31 +29,69 @@ function GetGameName() {
 </script>
 
 <template>
-  <div class="home">
-    <div>
-      <el-button
-        class="elButton"
-        type="success"
-        @click="OnNewGameClick"
-        round
-        >{{ GetGameName() }}</el-button
-      >
-    </div>
-    <div>
-      <el-button class="elButton" type="success" @click="OnLoadClick" round
-        >载入/导出存档</el-button
-      >
-    </div>
-    <div>
-      <el-button
-        class="elButton"
-        type="success"
-        @click="OnAchievementClick"
-        round
-        >成就</el-button
-      >
-    </div>
-  </div>
+  <el-row class="hidden-sm-and-down">
+    <el-col :span="8"></el-col>
+    <el-col :span="8">
+      <div class="home">
+        <div>
+          <el-button
+            class="elButton"
+            type="success"
+            @click="OnNewGameClick"
+            round
+            >{{ GetGameName() }}</el-button
+          >
+        </div>
+        <div>
+          <el-button class="elButton" type="success" @click="OnLoadClick" round
+            >载入/导出存档</el-button
+          >
+        </div>
+        <div>
+          <el-button
+            class="elButton"
+            type="success"
+            @click="OnAchievementClick"
+            round
+            >成就</el-button
+          >
+        </div>
+      </div>
+    </el-col>
+    <el-col :span="8"></el-col>
+  </el-row>
+
+    <el-row class="hidden-md-and-up">
+    <el-col :span="24">
+      <div class="home">
+        <div>
+          <el-button
+            class="elButton"
+            type="success"
+            @click="OnNewGameClick"
+            round
+            >{{ GetGameName() }}</el-button
+          >
+        </div>
+        <div>
+          <el-button class="elButton" type="success" @click="OnLoadClick" round
+            >载入/导出存档</el-button
+          >
+        </div>
+        <div>
+          <el-button
+            class="elButton"
+            type="success"
+            @click="OnAchievementClick"
+            round
+            >成就</el-button
+          >
+        </div>
+        <p style="font-size:0.3rem">本故事纯属虚构，如有雷同，纯属巧合</p>
+      </div>
+    </el-col>
+  </el-row>
+
   <el-dialog
     v-model="dialogVisible"
     title="导入之前最好保存一份存档"
@@ -72,18 +110,16 @@ function GetGameName() {
 
 <style scoped>
 .home {
-  position: absolute;
-  width: 400px;
-  height: 500px;
-  margin: auto;
-  top: 0;
+  margin-top: 20%;
+  margin-left: 20%;
+  top: 10rem;
   left: 0;
   bottom: 0;
   right: 0;
 }
 .elButton {
-  width: 20rem;
-  margin: 1rem;
-  font-size: 1.5rem;
+  width: 5rem;
+  margin: 0rem;
+  font-size: 0.4rem;
 }
 </style>

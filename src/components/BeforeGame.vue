@@ -25,7 +25,6 @@ const onClick = function () {
 <template>
   <div>
     <el-container style="height: 100%">
-      <el-header></el-header>
       <el-main>
         <div class="gametitle">
           <div>{{ beforeGameTitle[0] }}</div>
@@ -47,12 +46,12 @@ const onClick = function () {
 
 <style scoped>
 .elButton {
-  width: 15rem;
-  margin: 0.5rem;
+  width: 4rem;
+  margin: 0.05rem;
 }
 
 .gametitle {
-  font-size: 2.5rem;
+  font-size: 0.8rem;
   margin-top: 5%;
   margin-bottom: 2%;
 }

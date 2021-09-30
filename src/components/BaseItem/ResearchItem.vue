@@ -75,7 +75,7 @@ export default {
         >{{ researchData.Name }}
       </el-button>
     </template>
-    <span  class="tips" style="font-size: 0.1rem">{{ researchData.Desc }}</span>
+    <span  class="tips" >{{ researchData.Desc }}</span>
   </el-popover>
 </template>
 

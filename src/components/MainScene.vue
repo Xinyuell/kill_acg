@@ -40,6 +40,7 @@ const workShow = computed(() => {
 
 <template>
   <el-row>
+     <el-link href="https://github.com/Xinyuell/xinyuell.github.io" target="_blank" type="danger" >反馈BUG</el-link>
     <el-col :span="6" class="hidden-sm-and-down"> </el-col>
     <el-col :height="headerHeight" :span="12" class="hidden-sm-and-down">
       <AcgProgress />

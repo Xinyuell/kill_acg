@@ -29,7 +29,7 @@ function GetGameName() {
 </script>
 
 <template>
-  <el-row class="hidden-sm-and-down">
+  <!-- <el-row class="hidden-sm-and-down">
     <el-col :span="8"></el-col>
     <el-col :span="8">
       <div class="home">
@@ -59,10 +59,11 @@ function GetGameName() {
       </div>
     </el-col>
     <el-col :span="8"></el-col>
-  </el-row>
+  </el-row> -->
 
-    <el-row class="hidden-md-and-up">
-    <el-col :span="24">
+  <el-row>
+    <el-link href="https://github.com/Xinyuell/xinyuell.github.io" target="_blank" type="danger" >反馈BUG</el-link>
+    <el-col :span="24" >
       <div class="home">
         <div>
           <el-button
@@ -87,7 +88,8 @@ function GetGameName() {
             >成就</el-button
           >
         </div>
-        <p style="font-size:0.3rem">本故事纯属虚构，如有雷同，纯属巧合</p>
+        <p style="font-size: 0.3rem">本故事纯属虚构，如有雷同，纯属巧合</p>
+  
       </div>
     </el-col>
   </el-row>
@@ -110,12 +112,9 @@ function GetGameName() {
 
 <style scoped>
 .home {
-  margin-top: 20%;
-  margin-left: 20%;
-  top: 10rem;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  width: 10rem;
+  height: 10rem;
+  margin: auto;
 }
 .elButton {
   width: 5rem;

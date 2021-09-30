@@ -27,5 +27,6 @@ import { language } from "./core/language";
 }
 span.tips{
   white-space: pre-line;
+  font-size:0.25rem
 }
 </style>

@@ -331,9 +331,7 @@ function setResourceSpeed(
       data.cacheSpeed = num6;
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
-      data.cacheSpeed = Math.max(
-        0.1,
-        Math.pow(data.cacheValue, 0.5) * GlobalConfig.BaseBelieverRatio
+      data.cacheSpeed = Math.max(0.1,Math.pow(data.cacheValue, 0.5) * GlobalConfig.BaseBelieverRatio
       );
       break;
     case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
@@ -342,7 +340,7 @@ function setResourceSpeed(
         const dataBeliever = sourceArr.get(EnumResourceItem.Believer)!;
         data.cacheSpeed = Math.max(
           0.1,
-          Math.pow(data.cacheValue, 0.5) * GlobalConfig.BaseBelieverRatio
+          Math.pow(dataBeliever.cacheValue, 0.5) * GlobalConfig.BaseBelieverRatio
         );
         if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
           //信徒达到最大值

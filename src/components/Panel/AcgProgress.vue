@@ -37,6 +37,6 @@ const tips = computed(()=>{
             class="head"
           />
         </template>
-         <span class="tips" style="font-size: 0.1rem">{{ tips }}</span>
+         <span class="tips">{{ tips }}</span>
       </el-popover>
 </template>

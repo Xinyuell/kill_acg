@@ -31,7 +31,7 @@ const getData = computed(() => {
             :width="200"
             transition=""
           >
-            <span  class="tips" style="font-size: 0.2rem"
+            <span  class="tips" 
               >{{ row.tip_title }} <br />
               {{ row.tip_content }}</span
             >

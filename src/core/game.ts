@@ -84,7 +84,7 @@ export class GameControl {
     }
     const newsIndex = Math.floor(Math.random() * language.news.length);
     ElMessage.success({
-      message: language.news[newsIndex],
+      message: "今日新闻：" + language.news[newsIndex],
       duration: 10000,
       showClose: true,
       center: true,
@@ -110,10 +110,10 @@ export class GameControl {
       this.now = Date.now();
       return;
     }
+    updateHistory();
     //正式开始游戏才会计时
     const pass = Date.now() - this.now;
     store.state.gameData.totalTime += pass;
-    updateHistory();
     this.now = Date.now();
     resourceUpdate(pass / 1000);
     acgProgressUpdate(pass / 1000);

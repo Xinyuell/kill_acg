@@ -64,7 +64,7 @@ const GetTips = computed(function(){
           str += "\n当前信徒仅自动举报国内的ACG事件"
       }
       str += "\n当前举报一次的CD" + GetAutoComplainCD().toFixed(2);
-      str += ",增加人数CD会加速举报的进度"
+      str += ",增加人数会加速举报的进度"
     }
     return str;
   }
@@ -118,8 +118,8 @@ const notWork = computed(() => {
   });
   return Math.floor(people - total + 0.00001);
 });
-const radio = ref(1);
-let old = 1;
+const radio = ref(-1);
+let old = -1;
 //选哪个自动，上传store
 function radioChange(curValue: number) {
   if (curValue >= 0) {
@@ -128,7 +128,7 @@ function radioChange(curValue: number) {
   store.commit(UpdateAutoWorkIndex, curValue);
 }
 
-const switchValue = ref(true);
+const switchValue = ref(false);
 function cancelAuto(value: boolean) {
   if (value === false) {
     old = radio.value;
@@ -237,7 +237,7 @@ function clickSub5(e: any) {
             <template #reference>
               <span class="title"> {{ data.Name }}</span>
             </template>
-            <span class="tips" style="font-size: 0.1rem">{{ GetTips(data) }}</span>
+            <span class="tips" >{{ GetTips(data) }}</span>
           </el-popover>
           <span class="number">
             {{ intToString(store.state.gameData.workConfig[data.ID], 0) }}</span

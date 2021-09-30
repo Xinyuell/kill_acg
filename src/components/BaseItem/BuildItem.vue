@@ -146,13 +146,13 @@ export default {
         }}</span>
       </el-button>
     </template>
-    <span class="tips" style="font-size: 0.1rem">{{ tips }}</span>
+    <span class="tips" >{{ tips }}</span>
   </el-popover>
 </template>
 
 <style>
 .el-button.buildItem {
-  width: 2.4rem;
+  width: 2.8rem;
   height: 1rem;
   display: inline-block;
   margin-left: 0.2rem;

@@ -26,15 +26,15 @@ export const GlobalConfig = {
   /**
    * 全局建筑基础消耗10
    */
-  BuildUpgradeBase: import.meta.env.DEV ? 0.1 : 10,
+  BuildUpgradeBase: import.meta.env.DEV ? 0.1 : 5,
   /**
    * 游戏时间,找一个有意义时间
    */
-  StartData: Date.UTC(2007, 7, 16),
+  StartData: Date.UTC(2016, 6, 1),
   /**
    * 自动存档时间
    */
-  SaveTime: 20000,
+  SaveTime: 30000,
   /**
    * 刷新毫秒数,每秒20帧
    */
@@ -583,7 +583,7 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.BelieverInfluenceMax1,
       Name: "虔诚信徒",
-      Desc: "消耗1000点动漫知识。信徒更加虔诚了，消灭ACG的思想也广为流传。每个信徒提升150点影响力上限",
+      Desc: "消耗500点动漫知识。信徒更加虔诚了，消灭ACG的思想也广为流传。每个信徒提升150点影响力上限",
       Cost1: 500,
       Cost2: 0,
       UnLock: [],
@@ -621,7 +621,7 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.ComplainUnLock,
       Name: "举报",
-      Desc: "消耗10K的动漫知识和1000的游戏知识。举报是一项划时代的发明，从此你可以真正打击ACG的发展了。",
+      Desc: "消耗10K的动漫知识。举报是一项划时代的发明，从此你可以真正打击ACG的发展了。",
       Cost1: 10000,
       Cost2: 0,
       UnLock: [

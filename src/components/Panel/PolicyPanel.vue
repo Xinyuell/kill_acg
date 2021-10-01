@@ -2,7 +2,7 @@
 import { computed, PropType, reactive, ref } from "vue";
 import BuildItem from "../BaseItem/BuildItem.vue";
 import {  store } from "../../store/index";
-import * as table from "../../core/tables/table";
+import { ResearchInfoList } from "../../core/tables/table";
 import ResearchItem from "../BaseItem/ResearchItem.vue";
 import { IResearchInfo } from "../../core/tables/ITableInfo";
 
@@ -13,7 +13,7 @@ const unlock = computed(() => {
     const complete:number[] = store.state.gameData.researchComplete;
     unlocklist.forEach(function(id:number){
         if(complete.indexOf(id) < 0)
-            data.push(table.ResearchInfoList.get(id)!)
+            data.push(ResearchInfoList.get(id)!)
     });
 
   return data;
@@ -22,7 +22,7 @@ const complete = computed(() => {
     const data:IResearchInfo[] = [];
     const complete:number[] = store.state.gameData.researchComplete;
     complete.forEach(function(id:number){
-        data.push(table.ResearchInfoList.get(id)!)
+        data.push(ResearchInfoList.get(id)!)
     });
   return data;
 });

@@ -11,7 +11,7 @@ import {
 } from "../../store";
 import { intToString } from "../utils";
 import { EnumResearchItem, EnumWorkType } from "../tables/Enum";
-import GlobalConfig from "../tables/GlobalConfig";
+import  { AcgProgressData, Time } from "../tables/GlobalConfig";
 
 export enum EnumTimeLineLogType {
   /**举报log */
@@ -109,35 +109,35 @@ function ShowComplainLog(logstr: string, classIndex: number) {
   if (classIndex == 0) {
     const value =
       store.getters.getInfluenceItem *
-      GlobalConfig.AcgProgressData.ComplainWrongValueRatio;
+      AcgProgressData.ComplainWrongValueRatio;
     store.commit(ModifyResourceCurValue, -value);
     logstr += "你降低了" + intToString(value) + "点影响力";
   } else if (classIndex <= 3) {
     store.commit(
       UpdateAcgProgressValue,
-      -GlobalConfig.AcgProgressData.ComplainAcgLevel1
+      -AcgProgressData.ComplainAcgLevel1
     );
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel1) +
+      intToString(AcgProgressData.ComplainAcgLevel1) +
       "点影响力";
   } else if (classIndex <= 6) {
     store.commit(
       UpdateAcgProgressValue,
-      -GlobalConfig.AcgProgressData.ComplainAcgLevel2
+      -AcgProgressData.ComplainAcgLevel2
     );
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel2) +
+      intToString(AcgProgressData.ComplainAcgLevel2) +
       "点影响力";
   } else if (classIndex <= 9) {
     store.commit(
       UpdateAcgProgressValue,
-      -GlobalConfig.AcgProgressData.ComplainAcgLevel3
+      -AcgProgressData.ComplainAcgLevel3
     );
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel3) +
+      intToString(AcgProgressData.ComplainAcgLevel3) +
       "点影响力";
   }
   const log: TimeLineLog = {
@@ -294,8 +294,8 @@ export function GetCurrentLocalDateTime(): string;
 export function GetCurrentLocalDateTime(time?: number): string {
   if (time === undefined) {
     return new Date(
-      GlobalConfig.Time.StartDate +
-        store.state.gameData.totalTime * GlobalConfig.Time.VrtulTimeRatio
+      Time.StartDate +
+        store.state.gameData.totalTime * Time.VrtulTimeRatio
     ).toLocaleDateString();
   }
   return new Date(time).toLocaleDateString();

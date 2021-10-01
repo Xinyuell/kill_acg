@@ -5,7 +5,6 @@ import { store } from "../../store";
 import { randomComplain, autoRandomComplain } from "../system/complain";
 import { updateHistory } from "../system/history";
 import language from "../tables/language";
-import GlobalConfig from "../tables/GlobalConfig";
 import { acgProgressUpdate } from "./acgUpdate";
 import {
   setStoreGameDataByBase64,
@@ -13,6 +12,7 @@ import {
   getCurrentSaveGameData,
 } from "./gameSave";
 import { resourceUpdate } from "./gameUpdate";
+import { Time } from "../tables/GlobalConfig";
 
 export class GameControl {
   resourceIDMap: Map<number, number>;
@@ -35,11 +35,11 @@ export class GameControl {
     setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey]);
     setInterval(() => {
       this.update();
-    }, GlobalConfig.Time.UpdateTime);
-
+    }, Time.UpdateTime);
+// 
     setInterval(() => {
       this.saveGame();
-    }, GlobalConfig.Time.SaveTime);
+    }, Time.SaveTime);
 
     setTimeout(() => {
       this.randomNews();

@@ -1,6 +1,6 @@
 import { GetTotalWorks } from "../system/works";
 import { EnumResearchProp, EnumResourceItem, EnumWorkType } from "../tables/Enum";
-import GlobalConfig from "../tables/GlobalConfig";
+import { Resource } from "../tables/GlobalConfig";
 import { buildItemData, resourceItemData } from "./gameSave";
 
 /** * 计算当前金钱的最终速度，考虑产出和消耗 */
@@ -24,17 +24,17 @@ export function calculateMoneySpeed(
       (researchProps.get(EnumResearchProp.Cost1Ratio)
         ? researchProps.get(EnumResearchProp.Cost1Ratio)!
         : 0)) *
-    GlobalConfig.Resource.Cost1MoneyRatio;
+    Resource.Cost1MoneyRatio;
   num2 *=
     (1 +
       (researchProps.get(EnumResearchProp.Cost2Ratio)
         ? researchProps.get(EnumResearchProp.Cost2Ratio)!
         : 0)) *
-    GlobalConfig.Resource.Cost2MoneyRatio;
+    Resource.Cost2MoneyRatio;
   //工人支出、cost1转化、cost2转化
   //影响力收入
   let num7: number = sourceArr.get(EnumResourceItem.Influence)!.cacheValue; //影响力总数
-  let num8 = workConfig[EnumWorkType.MoneyWork] * GlobalConfig.Resource.GetMoneyRatio; //金钱工人数量
+  let num8 = workConfig[EnumWorkType.MoneyWork] * Resource.GetMoneyRatio; //金钱工人数量
   if (researchProps.has(EnumResearchProp.InfluenceMoney)) {
     num7 *= researchProps.get(EnumResearchProp.InfluenceMoney)!; //影响力转化金钱
   } else

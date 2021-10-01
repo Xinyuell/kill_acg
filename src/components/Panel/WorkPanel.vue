@@ -16,7 +16,7 @@ import { resourceItemData } from "../../core/gameMain/gameSave";
 import { GetTotalPeople, GetTotalWorks } from "../../core/system/works";
 import { IWorkInfo } from "../../core/tables/ITableInfo";
 import * as Enum from "../../core/tables/Enum"
-import  GlobalConfig  from "../../core/tables/GlobalConfig";
+import { Resource } from "../../core/tables/GlobalConfig";
 
 export interface IWorkConfig extends IWorkInfo {
   count: number;
@@ -148,9 +148,9 @@ function clickAdd(e: MouseEvent, index: number) {
   )!;
   let max = moneyData.cacheValue + moneyData.cacheSpeed; // TODO 需要考虑工人的消耗
   if (index === Enum.EnumWorkType.Cost1Work)
-    max /= GlobalConfig.Resource.Cost1MoneyRatio;
+    max /= Resource.Cost1MoneyRatio;
   else index === Enum.EnumWorkType.Cost2Work;
-  max /= GlobalConfig.Resource.Cost2MoneyRatio;
+  max /= Resource.Cost2MoneyRatio;
   max = Math.floor(max);
   if (max < 0) return;
   value = Math.min(value, max); //取更小的，如果钱不够了最大能加的人则有限

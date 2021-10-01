@@ -3,11 +3,11 @@ import { intToString } from "../utils";
 import { autoWork } from "../system/works";
 import { ResearchInfoList } from "../tables/table";
 import { EnumResearchProp, EnumResourceItem, EnumWorkType } from "../tables/Enum";
-import GlobalConfig from "../tables/GlobalConfig";
 import { buildItemData, resourceItemData } from "./gameSave";
 import { checkResourceUnlock } from "../system/resource";
 import { calculateMoneySpeed } from "./calculateMoneySpeed";
 import { checkBuildUnlock } from "../system/build";
+import { InfluenceLevel, Resource } from "../tables/GlobalConfig";
 
 
 
@@ -133,7 +133,7 @@ function updateResourceValue(
     data.cacheValue = 0; //金钱小于0，上面会设置停工了；影响力小于0游戏结束，TODO 影响力扣的逻辑
   }
   if (data.ID === EnumResourceItem.Influence) {
-    GlobalConfig.InfluenceLevel.forEach((value,index)=>{
+    InfluenceLevel.forEach((value,index)=>{
       if(data.cacheValue >= value)
       store.state.gameData.influenceLevel = index + 1;//0级无要求 1级是索引0
     })
@@ -175,7 +175,7 @@ function setResourceSpeed(
       data.cacheSpeed = num6;
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
-      data.cacheSpeed = Math.max(0.1,Math.pow(data.cacheValue, 0.5) * GlobalConfig.Resource.BaseBelieverRatio
+      data.cacheSpeed = Math.max(0.1,Math.pow(data.cacheValue, 0.5) * Resource.BaseBelieverRatio
       );
       break;
     case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
@@ -184,7 +184,7 @@ function setResourceSpeed(
         const dataBeliever = sourceArr.get(EnumResourceItem.Believer)!;
         data.cacheSpeed = Math.max(
           0.1,
-          Math.pow(dataBeliever.cacheValue, 0.5) * GlobalConfig.Resource.BaseBelieverRatio
+          Math.pow(dataBeliever.cacheValue, 0.5) * Resource.BaseBelieverRatio
         );
         if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
           //信徒达到最大值

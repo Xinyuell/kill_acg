@@ -1,16 +1,16 @@
 import { ElMessage } from "element-plus";
 import { store, UpdateAcgProgressValue } from "../../store";
 import { AddTimeLineLog, GetCurrentLocalDateTime, EnumTimeLineLogType } from "../system/complain";
+import { AcgProgressData } from "../tables/GlobalConfig";
 import language from "../tables/language";
-import GlobalConfig from "../tables/GlobalConfig";
 
 export function acgProgressUpdate(deltaTime: number) {
     if (store.state.gameData.influenceLevel <= 1) return;
     store.commit(
       UpdateAcgProgressValue,
-      deltaTime * GlobalConfig.AcgProgressData.AcgProgressSpeed
+      deltaTime * AcgProgressData.AcgProgressSpeed
     );
-    if (store.state.gameData.acgProgressValue >= GlobalConfig.AcgProgressData.AcgProgressMax) {
+    if (store.state.gameData.acgProgressValue >= AcgProgressData.AcgProgressMax) {
       ElMessage.error({
         showClose: true,
         message:language.endGame.fail1,

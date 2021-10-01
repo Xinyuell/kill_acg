@@ -8,12 +8,12 @@ import {
 import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString } from "../../core/utils";
 import { buildItemData, resourceItemData } from "../../core/gameMain/gameSave";
-import GlobalConfig from "../../core/tables/GlobalConfig";
 import { BuildClickType, EnumBuildItem, EnumResourceItem } from "../../core/tables/Enum";
+import { Resource } from "../../core/tables/GlobalConfig";
 
 function getUpgradeCost(data: buildItemData) {
   const cost =
-    GlobalConfig.Resource.BuildUpgradeBase *
+    Resource.BuildUpgradeBase *
     (data.curValue * data.upgradeCostRatio +
       Math.pow(data.upgradeCostPower, data.curValue));
   return cost;
@@ -69,22 +69,22 @@ export default {
           break;
         case BuildClickType.AddInfluence:
           sourceArr.get(EnumResourceItem.Influence)!.cacheValue +=
-            GlobalConfig.Resource.ClickAddBase;
+            Resource.ClickAddBase;
           break;
         case BuildClickType.AddMoeny:
           sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
-            GlobalConfig.Resource.ClickAddBase *
-            GlobalConfig.Resource.GetMoneyRatio;
+            Resource.ClickAddBase *
+            Resource.GetMoneyRatio;
           break;
         case BuildClickType.AddResearch:
           if (
             sourceArr.get(EnumResourceItem.Money)!.cacheValue >=
-            GlobalConfig.Resource.Cost1MoneyRatio
+            Resource.Cost1MoneyRatio
           ) {
             sourceArr.get(EnumResourceItem.Cost1)!.cacheValue +=
-              GlobalConfig.Resource.ClickAddBase;
+              Resource.ClickAddBase;
             sourceArr.get(EnumResourceItem.Money)!.cacheValue -=
-              GlobalConfig.Resource.Cost1MoneyRatio;
+              Resource.Cost1MoneyRatio;
           }
           break;
       }

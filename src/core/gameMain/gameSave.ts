@@ -3,7 +3,7 @@ import { State } from "vue";
 import { store } from "../../store";
 import { ItemInfoList, BuildInfoList } from "../tables/table";
 import { ItemType, BuildClickType, EnumResearchProp } from "../tables/Enum";
-import GlobalConfig from "../tables/GlobalConfig";
+import { AcgProgressData } from "../tables/GlobalConfig";
 
 
 export const SaveLocalStorageKey = "kill_acg_game";
@@ -93,7 +93,7 @@ export function initGameData() {
   const gameData: GameData = {
     sourceArr: new Map([]),
     buildArryList: new Map([]),
-    acgProgressValue:GlobalConfig.AcgProgressData.AcgProgressBae,
+    acgProgressValue:AcgProgressData.AcgProgressBae,
     influenceLevel: 0,
     newsID: new Set(),
     researchUnLockList: [1], //第一个研究默认解锁

@@ -3,7 +3,7 @@ import {
   ElNotification,
   ElMessage,
 } from "element-plus";
-import { language } from "../tables/language";
+import language from "../tables/language";
 import { ModifyResourceCurValue, store, UpdateAcgProgressValue } from "../../store";
 import { intToString } from "../utils";
 import * as table from "../tables/table";
@@ -104,26 +104,26 @@ function ShowComplainLog(logstr: string, classIndex: number) {
   logstr += language.comlainLogTips[classIndex];
   const sourceArr = store.state.gameData.sourceArr;
   if (classIndex == 0) {
-    const value = store.getters.getInfluenceItem * GlobalConfig.GlobalConfig.AcgProgressData.ComplainWrongValueRatio;
+    const value = store.getters.getInfluenceItem * GlobalConfig.default.AcgProgressData.ComplainWrongValueRatio;
     store.commit(ModifyResourceCurValue, -value);
     logstr += "你降低了" + intToString(value) + "点影响力";
   } else if (classIndex <= 3) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel1);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.default.AcgProgressData.ComplainAcgLevel1);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel1) +
+      intToString(GlobalConfig.default.AcgProgressData.ComplainAcgLevel1) +
       "点影响力";
   } else if (classIndex <= 6) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel2);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.default.AcgProgressData.ComplainAcgLevel2);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel2) +
+      intToString(GlobalConfig.default.AcgProgressData.ComplainAcgLevel2) +
       "点影响力";
   } else if (classIndex <= 9) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel3);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.default.AcgProgressData.ComplainAcgLevel3);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel3) +
+      intToString(GlobalConfig.default.AcgProgressData.ComplainAcgLevel3) +
       "点影响力";
   }
   const log: TimeLineLog = {
@@ -281,8 +281,8 @@ export function GetCurrentLocalDateTime(): string;
 export function GetCurrentLocalDateTime(time?: number): string {
   if (time === undefined) {
     return new Date(
-      GlobalConfig.GlobalConfig.Time.StartDate +
-        store.state.gameData.totalTime * GlobalConfig.GlobalConfig.Time.VrtulTimeRatio
+      GlobalConfig.default.Time.StartDate +
+        store.state.gameData.totalTime * GlobalConfig.default.Time.VrtulTimeRatio
     ).toLocaleDateString();
   }
   return new Date(time).toLocaleDateString();

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ElButton, ElRow } from "element-plus";
 import { reactive, ref } from "vue";
-import { language } from "../core/tables/language";
+import language from "../core/tables/language";
 import { router } from "../router";
 const beforeGameTitle = reactive(language.startGame.enterTitle);
 const btns = reactive(language.startGame.btns);

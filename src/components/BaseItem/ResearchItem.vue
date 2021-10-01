@@ -10,28 +10,30 @@ import {
 import * as table from "../../core/tables/table";
 import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { resourceItemData } from "../../core/gameMain/gameSave";
+import { IResearchInfo } from "../../core/tables/ITableInfo";
+import { EnumResearchItem, EnumResourceItem } from "../../core/tables/Enum";
 
 export default {
   props: {
     researchData: {
-      type: Object as PropType<table.IResearchInfo>,
+      type: Object as PropType<IResearchInfo>,
       required: true,
     },
   },
   methods: {
     researchItemClick: function () {
       //消耗cost 解锁研究。还需要考虑影响力的因素
-      const data: table.IResearchInfo = (this as any).researchData;
+      const data: IResearchInfo = (this as any).researchData;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const cost1Data = sourceArr.get(
-        table.EnumResourceItem.Cost1
+        EnumResourceItem.Cost1
       ) as resourceItemData;
       const cost2Data = sourceArr.get(
-        table.EnumResourceItem.Cost2
+        EnumResourceItem.Cost2
       ) as resourceItemData;
       const influenceData = sourceArr.get(
-        table.EnumResourceItem.Influence
+        EnumResourceItem.Influence
       ) as resourceItemData;
 
       if (data.Condition > influenceData.cacheValue) return;
@@ -46,13 +48,13 @@ export default {
         store.commit(UnlockResearch, data.UnLock);
       }
       CaculateProps();
-      if (data.ID == table.EnumResearchItem.BelieverBuildLevel1) {
+      if (data.ID == EnumResearchItem.BelieverBuildLevel1) {
         StartGuideByID(2); //解锁第一个信徒建筑
       }
-      if(data.ID == table.EnumResearchItem.ResearchBuildLevel2){
-        store.commit(UnlockResource, table.EnumResourceItem.Cost2);
+      if(data.ID == EnumResearchItem.ResearchBuildLevel2){
+        store.commit(UnlockResource, EnumResourceItem.Cost2);
       }
-      if (data.ID === table.EnumResearchItem.ComplainUnLock) {
+      if (data.ID === EnumResearchItem.ComplainUnLock) {
         StartGuideByID(8);
       }
     },

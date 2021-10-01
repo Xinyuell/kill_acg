@@ -14,8 +14,11 @@ import { intToString } from "../../core/utils";
 import { GetAutoComplainCD } from "../../core/system/complain";
 import { resourceItemData } from "../../core/gameMain/gameSave";
 import { GetTotalPeople, GetTotalWorks } from "../../core/system/works";
+import { IWorkInfo } from "../../core/tables/ITableInfo";
+import * as Enum from "../../core/tables/Enum"
+import  GlobalConfig  from "../../core/tables/GlobalConfig";
 
-export interface IWorkConfig extends table.IWorkInfo {
+export interface IWorkConfig extends IWorkInfo {
   count: number;
   clickAdd: Function;
   clickSub: Function;
@@ -26,13 +29,13 @@ const IsShow = computed(function () {
     const researchComplete = store.state.gameData.researchComplete;
     if (
       id == 3 &&
-      researchComplete.indexOf(table.EnumResearchItem.ResearchBuildLevel2) < 0
+      researchComplete.indexOf(Enum.EnumResearchItem.ResearchBuildLevel2) < 0
     ) {
       return false;
     }
     if (
       id == 4 &&
-      researchComplete.indexOf(table.EnumResearchItem.BelieverInfluenceMax2) < 0
+      researchComplete.indexOf(Enum.EnumResearchItem.BelieverInfluenceMax2) < 0
     ) {
       return false;
     }
@@ -43,14 +46,14 @@ const IsShow = computed(function () {
 const GetTips = computed(function () {
   return (data: IWorkConfig) => {
     let str = data.Desc;
-    if (data.ID === table.EnumWorkType.ComplainWork) {
+    if (data.ID === Enum.EnumWorkType.ComplainWork) {
       const researchComplete = store.state.gameData.researchComplete;
       if (
-        researchComplete.indexOf(table.EnumResearchItem.AutoComplainLevel1) > 0
+        researchComplete.indexOf(Enum.EnumResearchItem.AutoComplainLevel1) > 0
       ) {
         str += "\n当前信徒会自动举报国内、国外的ACG事件";
       } else if (
-        researchComplete.indexOf(table.EnumResearchItem.AutoComplainLevel2) > 0
+        researchComplete.indexOf(Enum.EnumResearchItem.AutoComplainLevel2) > 0
       ) {
         str += "\n当前信徒会自动举报国内、国外和外太空的ACG事件";
       } else {
@@ -100,10 +103,10 @@ const notWork = computed(() => {
   const sourceArr: Map<number, resourceItemData> =
     store.state.gameData.sourceArr;
   let people = 0;
-  if (sourceArr.has(table.EnumResourceItem.Believer))
-    people += sourceArr.get(table.EnumResourceItem.Believer)!.cacheValue;
-  if (sourceArr.has(table.EnumResourceItem.People))
-    people += sourceArr.get(table.EnumResourceItem.People)!.cacheValue;
+  if (sourceArr.has(Enum.EnumResourceItem.Believer))
+    people += sourceArr.get(Enum.EnumResourceItem.Believer)!.cacheValue;
+  if (sourceArr.has(Enum.EnumResourceItem.People))
+    people += sourceArr.get(Enum.EnumResourceItem.People)!.cacheValue;
 
   let total = 0;
   workConfig.forEach((element) => {
@@ -141,13 +144,13 @@ function clickAdd(e: MouseEvent, index: number) {
   if (e.altKey) value *= 100;
   //如果金钱小于0
   const moneyData = store.state.gameData.sourceArr.get(
-    table.EnumResourceItem.Money
+    Enum.EnumResourceItem.Money
   )!;
   let max = moneyData.cacheValue + moneyData.cacheSpeed; // TODO 需要考虑工人的消耗
-  if (index === table.EnumWorkType.Cost1Work)
-    max /= table.GlobalConfig.Resource.Cost1MoneyRatio;
-  else index === table.EnumWorkType.Cost2Work;
-  max /= table.GlobalConfig.Resource.Cost2MoneyRatio;
+  if (index === Enum.EnumWorkType.Cost1Work)
+    max /= GlobalConfig.Resource.Cost1MoneyRatio;
+  else index === Enum.EnumWorkType.Cost2Work;
+  max /= GlobalConfig.Resource.Cost2MoneyRatio;
   max = Math.floor(max);
   if (max < 0) return;
   value = Math.min(value, max); //取更小的，如果钱不够了最大能加的人则有限

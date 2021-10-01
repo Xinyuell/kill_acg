@@ -2,8 +2,9 @@
 import { computed, PropType, reactive, ref } from "vue";
 import BuildItem from "../BaseItem/BuildItem.vue";
 import {  store } from "../../store/index";
-import { IResearchInfo, ResearchInfoList } from "../../core/tables/table";
+import {  ResearchInfoList } from "../../core/tables/table";
 import ResearchItem from "../BaseItem/ResearchItem.vue";
+import { IResearchInfo } from "../../core/tables/ITableInfo";
 
 const activeNames = ref(["0"]);
 const unlock = computed(() => {

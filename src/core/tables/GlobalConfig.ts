@@ -1,4 +1,4 @@
-export const GlobalConfig = {
+export default {
   Resource: {
     /** * 每次点击获得资源基础值*/
     ClickAddBase: import.meta.env.DEV ? 1000 : 1,

@@ -4,8 +4,8 @@ import { ElMessage } from "element-plus";
 import { store } from "../../store";
 import { randomComplain, autoRandomComplain } from "../system/complain";
 import { updateHistory } from "../system/history";
-import { language } from "../tables/language";
-import { GlobalConfig } from "../tables/GlobalConfig";
+import language from "../tables/language";
+import GlobalConfig from "../tables/GlobalConfig";
 import { acgProgressUpdate } from "./acgUpdate";
 import {
   setStoreGameDataByBase64,

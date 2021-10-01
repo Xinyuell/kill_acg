@@ -1,15 +1,15 @@
 
 <script setup lang="ts">
 import { computed,  ref } from "vue";
-import BuildPanel from "./Panel/BuildPanel.vue";
 import {store, UpdateGuideTips } from "../store/index";
+import BuildPanel from "./Panel/BuildPanel.vue";
 import WorkPanel from "./Panel/WorkPanel.vue";
 import ResourcePanel from "./Panel/ResourcePanel.vue";
-
-import { EnumBuildItem } from "../core/tables/table";
 import MiddlePanel from "./Panel/MiddlePanel.vue";
 import LogPanel from "./Panel/LogPanel.vue";
 import AcgProgress from "./Panel/AcgProgress.vue";
+import { EnumBuildItem } from "../core/tables/Enum";
+import language from "../core/tables/language";
 
 const headerHeight = computed(() => {
   let base = 0.5;

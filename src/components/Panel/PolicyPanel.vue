@@ -4,10 +4,11 @@ import BuildItem from "../BaseItem/BuildItem.vue";
 import {  store } from "../../store/index";
 import * as table from "../../core/tables/table";
 import ResearchItem from "../BaseItem/ResearchItem.vue";
+import { IResearchInfo } from "../../core/tables/ITableInfo";
 
 const activeNames = ref(["0"]);
 const unlock = computed(() => {
-    const data:table.IResearchInfo[] = [];
+    const data:IResearchInfo[] = [];
     const unlocklist:number[] = store.state.gameData.researchUnLockList;
     const complete:number[] = store.state.gameData.researchComplete;
     unlocklist.forEach(function(id:number){
@@ -18,7 +19,7 @@ const unlock = computed(() => {
   return data;
 });
 const complete = computed(() => {
-    const data:table.IResearchInfo[] = [];
+    const data:IResearchInfo[] = [];
     const complete:number[] = store.state.gameData.researchComplete;
     complete.forEach(function(id:number){
         data.push(table.ResearchInfoList.get(id)!)

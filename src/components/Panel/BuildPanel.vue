@@ -2,7 +2,7 @@
 import { computed, PropType, reactive, ref } from "vue";
 import BuildItem from "../BaseItem/BuildItem.vue";
 import { ReplaceGameData, store } from "../../store/index";
-import { buildItemData } from "../../core/gameMain/gameSave/gameSave";
+import { buildItemData } from "../../core/gameMain/gameSave";
 
 const activeNames = ref(["0","1","2","3","4"]);
 const buildArry0 = computed(() => {

@@ -1,5 +1,5 @@
 import { State } from "vue"
-import { EnumResourceItem } from "../core/table"
+import { EnumResourceItem } from "../core/tables/Enum"
 
 
 

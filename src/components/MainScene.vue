@@ -4,12 +4,12 @@ import { computed, defineComponent, ref } from "vue";
 import { mapGetters } from "vuex";
 import BuildPanel from "./Panel/BuildPanel.vue";
 import { ReplaceGameData, store, UpdateGuideTips } from "../store/index";
-import { language } from "../core/language";
+import { language } from "../core/tables/language";
 import WorkPanel from "./Panel/WorkPanel.vue";
 import ResourcePanel from "./Panel/ResourcePanel.vue";
-import { TimeLineLog } from "../core/complain";
+import { TimeLineLog } from "../core/system/complain";
 
-import { EnumBuildItem } from "../core/table";
+import { EnumBuildItem } from "../core/tables/table";
 import MiddlePanel from "./Panel/MiddlePanel.vue";
 import LogPanel from "./Panel/LogPanel.vue";
 import AcgProgress from "./Panel/AcgProgress.vue";

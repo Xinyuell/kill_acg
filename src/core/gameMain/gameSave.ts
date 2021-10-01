@@ -1,14 +1,8 @@
 import { Base64 } from "js-base64";
 import { State } from "vue";
-import { store } from "../store/index";
-import {
-  BuildClickType,
-  BuildInfoList,
-  EnumResearchProp,
-  GlobalConfig,
-  ItemInfoList,
-  ItemType,
-} from "./table";
+import { store } from "../../store";
+import { GlobalConfig, ItemInfoList, ItemType, BuildInfoList, BuildClickType, EnumResearchProp } from "../tables/table";
+
 
 export const SaveLocalStorageKey = "kill_acg_game";
 

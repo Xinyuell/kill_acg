@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SaveGameItem from "../BaseItem/SaveGameItem.vue";
-import { language } from "../../core/language";
+import { language } from "../../core/tables/language";
 
 const tips = language.settingTips;
 </script>

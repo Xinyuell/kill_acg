@@ -12,9 +12,9 @@ import {
   EnumResearchItem,
   EnumResourceItem,
   IResearchInfo,
-} from "../../core/table";
-import { buildItemData, resourceItemData } from "../../core/gameSave";
-import { CaculateProps, StartGuideByID } from "../../core/gameUpdate";
+} from "../../core/tables/table";
+import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
+import { resourceItemData } from "../../core/gameMain/gameSave";
 
 export default {
   props: {

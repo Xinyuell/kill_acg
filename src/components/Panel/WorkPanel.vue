@@ -1,6 +1,5 @@
 <script  setup lang="ts">
 import { computed, ComputedRef, PropType, reactive, ref, State } from "vue";
-import { resourceItemData } from "../../core/gameSave";
 import {
   ReplaceGameData,
   store,
@@ -14,14 +13,15 @@ import {
   GlobalConfig,
   IWorkInfo,
   WorkInfoList,
-} from "../../core/table";
+} from "../../core/tables/table";
 import { intToString } from "../../core/utils";
 /**
  * 我也不想这样的，有空研究清楚了再改
  * 太菜了 搞不定了
  */
-import { GetTotalPeople, GetTotalWorks } from "../../core/gameUpdate";
-import { GetAutoComplainCD } from "../../core/complain";
+import { GetAutoComplainCD } from "../../core/system/complain";
+import { resourceItemData } from "../../core/gameMain/gameSave";
+import { GetTotalPeople, GetTotalWorks } from "../../core/system/works";
 
 export interface IWorkConfig extends IWorkInfo {
   count: number;

@@ -10,10 +10,10 @@ import {
   EnumBuildItem,
   EnumResourceItem,
   GlobalConfig,
-} from "../../core/table";
-import { buildItemData, resourceItemData } from "../../core/gameSave";
-import { CaculateProps, StartGuideByID } from "../../core/gameUpdate";
+} from "../../core/tables/table";
+import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString } from "../../core/utils";
+import { buildItemData, resourceItemData } from "../../core/gameMain/gameSave";
 
 function getUpgradeCost(data: buildItemData) {
   const cost =

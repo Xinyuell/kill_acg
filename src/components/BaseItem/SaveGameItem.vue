@@ -4,7 +4,6 @@ import { getCurrentInstance, PropType, reactive, ref } from "vue";
 import { ReplaceGameData, store } from "../../store/index";
 import useClipboard from "vue-clipboard3";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { SaveLocalStorageKey } from "../../core/gameSave";
 import { router } from "../../router";
 
 const textarea = ref("");

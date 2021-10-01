@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, PropType, reactive, ref } from "vue";
-import { resourceItemData } from "../../core/gameSave";
 import { ReplaceGameData, store } from "../../store/index";
-import { EnumResourceItem, ItemInfoList } from "../../core/table";
+import { EnumResearchProp, EnumResourceItem, ItemInfoList } from "../../core/tables/table";
 import { stringFormat } from "../../core/utils";
+import { resourceItemData } from "../../core/gameMain/gameSave";
 
 const getData = computed(() => {
   const sourceArr: Map<number, resourceItemData> =
@@ -25,25 +25,28 @@ const getTips = computed(function () {
           store.state.gameData.influenceLevel.toString()
         );
       case EnumResourceItem.Money:
+        if(store.state.props.get(EnumResearchProp.MoneyRatio) === undefined)
+          return data.Desc;
         return stringFormat(
           data.Desc,
-          store.state.gameData.influenceLevel.toString()
+          store.state.props.get(EnumResearchProp.MoneyRatio)!.toString()
         );
       case EnumResourceItem.Cost1:
+        if(store.state.props.get(EnumResearchProp.Cost1Ratio) === undefined)
+          return data.Desc;        
         return stringFormat(
           data.Desc,
-          store.state.gameData.influenceLevel.toString()
+          store.state.props.get(EnumResearchProp.Cost1Ratio)!.toString()
         );
       case EnumResourceItem.Cost2:
+        if(store.state.props.get(EnumResearchProp.Cost2Ratio) === undefined)
+          return data.Desc;           
         return stringFormat(
           data.Desc,
-          store.state.gameData.influenceLevel.toString()
+          store.state.props.get(EnumResearchProp.Cost2Ratio)!.toString()
         );
       case EnumResourceItem.Believer:
-        return stringFormat(
-          data.Desc,
-          store.state.gameData.influenceLevel.toString()
-        );
+           return data.Desc;  
       case EnumResourceItem.People:
         return stringFormat(
           data.Desc,

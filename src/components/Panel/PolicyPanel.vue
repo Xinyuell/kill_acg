@@ -2,7 +2,7 @@
 import { computed, PropType, reactive, ref } from "vue";
 import BuildItem from "../BaseItem/BuildItem.vue";
 import {  store } from "../../store/index";
-import { IResearchInfo, ResearchInfoList } from "../../core/table";
+import { IResearchInfo, ResearchInfoList } from "../../core/tables/table";
 import ResearchItem from "../BaseItem/ResearchItem.vue";
 
 const activeNames = ref(["0"]);

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "@vue/reactivity";
 import { ReplaceGameData, store, UpdateGuideTips } from "../../store/index";
-import { GlobalConfig } from "../../core/table";
+import { GlobalConfig } from "../../core/tables/table";
 import { intToString } from "../../core/utils";
 const precent = computed(()=>{
   const value = 100 * store.state.gameData.acgProgressValue / GlobalConfig.AcgProgressData.AcgProgressMax;

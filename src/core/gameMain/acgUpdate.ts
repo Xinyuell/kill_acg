@@ -1,8 +1,8 @@
 import { ElMessage } from "element-plus";
-import { store, UpdateAcgProgressValue } from "../store";
-import { AddTimeLineLog, GetCurrentLocalDateTime, EnumTimeLineLogType } from "./complain";
-import { language } from "./language";
-import { GlobalConfig } from "./table";
+import { store, UpdateAcgProgressValue } from "../../store";
+import { AddTimeLineLog, GetCurrentLocalDateTime, EnumTimeLineLogType } from "../system/complain";
+import { language } from "../tables/language";
+import { GlobalConfig } from "../tables/table";
 
 export function acgProgressUpdate(deltaTime: number) {
     if (store.state.gameData.influenceLevel <= 1) return;

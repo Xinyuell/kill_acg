@@ -1,32 +1,20 @@
 import { Base64 } from "js-base64";
-import { router } from "../router";
-import {
-  BuildClickType,
-  BuildInfoList,
-  GlobalConfig,
-  ItemInfoList,
-  ItemType,
-} from "./table";
-import { intToString } from "./utils";
-import { store } from "../store";
-import { resourceUpdate } from "./gameUpdate";
-import { acgProgressUpdate } from "./acgUpdate";
-import {
-  GameData,
-  getCurrentSaveGameData,
-  setStoreGameDataByBase64,
-  SaveLocalStorageKey,
-} from "./gameSave";
 import { State } from "@vue/runtime-core";
-import { language } from "./language";
 import {
   ElMessage,
   ElNotification,
   NotificationHandle,
   NotificationParamsTyped,
 } from "element-plus";
-import { autoRandomComplain, randomComplain } from "./complain";
-import { updateHistory } from "./history";
+import { store } from "../../store";
+import { randomComplain, autoRandomComplain } from "../system/complain";
+import { updateHistory } from "../system/history";
+import { language } from "../tables/language";
+import { GlobalConfig } from "../tables/table";
+import { acgProgressUpdate } from "./acgUpdate";
+import { setStoreGameDataByBase64, SaveLocalStorageKey, getCurrentSaveGameData } from "./gameSave";
+import { resourceUpdate } from "./gameUpdate";
+
 
 export class GameControl {
   resourceIDMap: Map<number, number>;

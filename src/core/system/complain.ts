@@ -3,16 +3,10 @@ import {
   ElNotification,
   ElMessage,
 } from "element-plus";
-import { GameControl } from "./game";
-import { language } from "./language";
-import { ModifyResourceCurValue, store, UpdateAcgProgressValue } from "../store";
-import {
-  EnumResearchItem,
-  EnumResourceItem,
-  EnumWorkType,
-  GlobalConfig,
-} from "./table";
-import { intToString } from "./utils";
+import { language } from "../tables/language";
+import { ModifyResourceCurValue, store, UpdateAcgProgressValue } from "../../store";
+import { intToString } from "../utils";
+import { GlobalConfig, EnumResearchItem, EnumWorkType } from "../tables/table";
 
 export enum EnumTimeLineLogType {
   /**举报log */

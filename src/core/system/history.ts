@@ -1,7 +1,7 @@
+import { store } from "../../store";
+import { language } from "../tables/language";
+import { GlobalConfig } from "../tables/table";
 import { AddTimeLineLog, EnumTimeLineLogType, GetCurrentLocalDateTime } from "./complain";
-import { language } from "./language";
-import { store } from "../store/index";
-import { GlobalConfig } from "./table";
 
 export function GetCurrentUTCTime() {
     const time =

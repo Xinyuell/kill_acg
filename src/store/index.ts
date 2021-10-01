@@ -1,8 +1,8 @@
 import { App, State } from "@vue/runtime-core";
 import { createStore  } from "vuex";
-import { TimeLineLog } from "../core/complain";
-import { GameControl } from "../core/game";
-import {  buildItemData, GameData, initGameData } from "../core/gameSave";
+import { TimeLineLog } from "../core/system/complain";
+import { GameControl } from "../core/gameMain/gameMain/game";
+import {  buildItemData, GameData, initGameData } from "../core/gameMain/gameSave/gameSave";
 import { EnumResearchProp } from "../core/table";
 import { getters } from "./getters";
 import { mutations } from "./mutations";

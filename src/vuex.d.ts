@@ -1,8 +1,8 @@
 import { ComponentCustomProperties } from 'vue'
 import { Store } from 'vuex'
-import { TimeLineLog } from './core/complain'
-import { GameData } from './core/gameSave'
-import { EnumResearchProp } from './core/table'
+import { TimeLineLog } from './core/system/complain'
+import { GameData } from './core/gameMain/gameSave'
+import { EnumResearchProp } from './core/tables/table'
 
 declare module '@vue/runtime-core' {
   // 声明自己的 store state

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ReplaceGameData, store, UpdateGuideTips } from "../../store/index";
-import { EnumTimeLineLogType } from "../../core/complain";
+import { EnumTimeLineLogType } from "../../core/system/complain";
 </script>
 
 <template>

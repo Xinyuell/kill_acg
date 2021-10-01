@@ -29,35 +29,42 @@ function GetGameName() {
 </script>
 
 <template>
-  <el-row>
-   
-    <el-col :span="24" >
-      <div class="home">
-        <div>
-          <el-button
-            class="elButton"
-            type="success"
-            @click="OnNewGameClick"
-            round
-            >{{ GetGameName() }}</el-button
-          >
+  <el-row style="height: 100%">
+    <el-col
+      :span="24"
+      style="align-items: center; justify-content: center; height: 100%"
+    >
+      <div class="flexdiv">
+        <div class="home">
+          <div>
+            <el-button
+              class="elButton"
+              type="success"
+              @click="OnNewGameClick"
+              round
+              >{{ GetGameName() }}</el-button
+            >
+          </div>
+          <div>
+            <el-button
+              class="elButton"
+              type="success"
+              @click="OnLoadClick"
+              round
+              >载入/导出存档</el-button
+            >
+          </div>
+          <div>
+            <el-button
+              class="elButton"
+              type="success"
+              @click="OnAchievementClick"
+              round
+              >成就</el-button
+            >
+          </div>
+          <p style="font-size: 0.3rem">本故事纯属虚构，如有雷同，纯属巧合</p>
         </div>
-        <div>
-          <el-button class="elButton" type="success" @click="OnLoadClick" round
-            >载入/导出存档</el-button
-          >
-        </div>
-        <div>
-          <el-button
-            class="elButton"
-            type="success"
-            @click="OnAchievementClick"
-            round
-            >成就</el-button
-          >
-        </div>
-        <p style="font-size: 0.3rem">本故事纯属虚构，如有雷同，纯属巧合</p>
-  
       </div>
     </el-col>
   </el-row>
@@ -79,10 +86,24 @@ function GetGameName() {
 </template>
 
 <style scoped>
+.flexdiv {
+  display: flex;
+  align-items: center; /*定义body的元素垂直居中*/
+  justify-content: center; /*定义body的里的元素水平居中*/
+  height: 100%;
+}
+h1.title {
+  width: 12rem;
+  height: 4rem;
+  margin: 0 auto;
+  font-size: 2rem;
+  color: #f56c6c;
+}
+
 .home {
   width: 10rem;
   height: 10rem;
-  margin: auto;
+  margin: 0 auto;
 }
 .elButton {
   width: 5rem;

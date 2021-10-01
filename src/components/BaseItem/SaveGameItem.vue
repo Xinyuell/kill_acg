@@ -101,7 +101,7 @@ const { toClipboard } = useClipboard();
 <style scoped>
 .button {
   margin-left: 0.2rem;
-  margin-top: 0rem;
+  margin-top: 0.2rem;
   margin-bottom: 0.2rem;
 }
 .href {

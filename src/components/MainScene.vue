@@ -40,17 +40,7 @@ const dialogVisible = ref(false);
 
 <template>
   <el-row>
-    <el-col :span="2" class="hidden-sm-and-down">
-      <el-link
-        href="https://github.com/Xinyuell/xinyuell.github.io"
-        target="_blank"
-        type="danger"
-        >反馈BUG</el-link
-      >
-      <el-button @click="() => (dialogVisible = true)">导入/导出存档</el-button>
-    </el-col>
-
-    <el-col :span="4" class="hidden-sm-and-down"> </el-col>
+    <el-col :span="6" class="hidden-sm-and-down"> </el-col>
     <el-col :height="headerHeight" :span="12" class="hidden-sm-and-down">
       <AcgProgress />
     </el-col>

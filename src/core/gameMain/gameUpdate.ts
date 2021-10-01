@@ -1,9 +1,9 @@
-import * as store from "../../store/index";
+import { store, UpdateProps, ModifyResourceMaxValue, ModifyResourceCurValue, SetResourceSpeed, UpdateGuideTips } from "../../store/index";
 import { intToString } from "../utils";
 import { autoWork } from "../system/works";
-import * as table from "../tables/table";
-import * as Enum from "../tables/Enum";
-import * as GlobalConfig from "../tables/GlobalConfig";
+import { ResearchInfoList } from "../tables/table";
+import { EnumResearchProp, EnumResourceItem, EnumWorkType } from "../tables/Enum";
+import GlobalConfig from "../tables/GlobalConfig";
 import { buildItemData, resourceItemData } from "./gameSave";
 import { checkResourceUnlock } from "../system/resource";
 import { calculateMoneySpeed } from "./calculateMoneySpeed";
@@ -13,13 +13,13 @@ import { checkBuildUnlock } from "../system/build";
 
 /** 重算全局属性，并提交给store */
 export function CaculateProps(){
-  const researchComplete: number[] = store.store.state.gameData.researchComplete;
+  const researchComplete: number[] = store.state.gameData.researchComplete;
   const buildArryList: Map<number, buildItemData> =
-  store.store.state.gameData.buildArryList;
-  const props: Map<Enum.EnumResearchProp, number> = new Map();
+  store.state.gameData.buildArryList;
+  const props: Map<EnumResearchProp, number> = new Map();
   //属性是动态算的
   researchComplete.forEach(function (id) {
-    const researchProp = table.ResearchInfoList.get(id)!.ResearchProp;
+    const researchProp = ResearchInfoList.get(id)!.ResearchProp;
     if (researchProp !== undefined) {
       researchProp.forEach(function (value, key) {
         props.set(
@@ -42,17 +42,17 @@ export function CaculateProps(){
       });
     }
   });
-  store.store.commit(store.UpdateProps,props);
+  store.commit(UpdateProps,props);
   return props;
 }
 
 export function resourceUpdate(deltaTime: number) {
   const sourceArr: Map<number, resourceItemData> =
-    store.store.state.gameData.sourceArr;
+    store.state.gameData.sourceArr;
   const buildArryList: Map<number, buildItemData> =
-    store.store.state.gameData.buildArryList;
-  const workConfig: number[] = store.store.state.gameData.workConfig;
-  const researchComplete: number[] = store.store.state.gameData.researchComplete;
+    store.state.gameData.buildArryList;
+  const workConfig: number[] = store.state.gameData.workConfig;
+  const researchComplete: number[] = store.state.gameData.researchComplete;
   const props = CaculateProps();
   updateResourceMaxValue(props, sourceArr);
   //金钱部分先算,如果金钱会扣到零以下则所有工人全部停工
@@ -86,31 +86,31 @@ export function resourceUpdate(deltaTime: number) {
  * 更新最大值
  */
 function updateResourceMaxValue(
-  props: Map<Enum.EnumResearchProp, number>,
+  props: Map<EnumResearchProp, number>,
   sourceArr: Map<number, resourceItemData>
 ) {
   props.forEach(function (prop, enumKey) {
     let data: resourceItemData | undefined = undefined;
-    if (enumKey === Enum.EnumResearchProp.BelieverMax) {
-      data = sourceArr.get(Enum.EnumResourceItem.Believer)!;
+    if (enumKey === EnumResearchProp.BelieverMax) {
+      data = sourceArr.get(EnumResourceItem.Believer)!;
       data.cacheMaxValue = data.baseMaxValue + prop;
     }
-    if (enumKey === Enum.EnumResearchProp.PeopleMax) {
-      data = sourceArr.get(Enum.EnumResourceItem.People)!;
+    if (enumKey === EnumResearchProp.PeopleMax) {
+      data = sourceArr.get(EnumResourceItem.People)!;
       data.cacheMaxValue =
-        sourceArr.get(Enum.EnumResourceItem.People)!.baseMaxValue + prop;
+        sourceArr.get(EnumResourceItem.People)!.baseMaxValue + prop;
     }
-    if (enumKey === Enum.EnumResearchProp.BelieverAddInfluenceMax) {
+    if (enumKey === EnumResearchProp.BelieverAddInfluenceMax) {
       //影响力上限等于基础值+信徒属性加成*当前信徒总数
-      data = sourceArr.get(Enum.EnumResourceItem.Influence)!;
+      data = sourceArr.get(EnumResourceItem.Influence)!;
       data.cacheMaxValue =
-        sourceArr.get(Enum.EnumResourceItem.People)!.baseMaxValue +
-        prop * sourceArr.get(Enum.EnumResourceItem.Believer)!.cacheValue;
+        sourceArr.get(EnumResourceItem.People)!.baseMaxValue +
+        prop * sourceArr.get(EnumResourceItem.Believer)!.cacheValue;
     }
     if (data === undefined) return;
     const strValue = intToString(data.cacheMaxValue);
     if (strValue !== data.maxValue) {
-      store.store.commit(store.ModifyResourceMaxValue, {
+      store.commit(ModifyResourceMaxValue, {
         index: data.ID,
         value: strValue,
       });
@@ -132,15 +132,15 @@ function updateResourceValue(
   if (data.cacheValue < 0) {
     data.cacheValue = 0; //金钱小于0，上面会设置停工了；影响力小于0游戏结束，TODO 影响力扣的逻辑
   }
-  if (data.ID === Enum.EnumResourceItem.Influence) {
-    GlobalConfig.default.InfluenceLevel.forEach((value,index)=>{
+  if (data.ID === EnumResourceItem.Influence) {
+    GlobalConfig.InfluenceLevel.forEach((value,index)=>{
       if(data.cacheValue >= value)
-      store.store.state.gameData.influenceLevel = index + 1;//0级无要求 1级是索引0
+      store.state.gameData.influenceLevel = index + 1;//0级无要求 1级是索引0
     })
   }
   const strValue = intToString(data.cacheValue);
   if (strValue !== data.curValue) {
-    store.store.commit(store.ModifyResourceCurValue, {
+    store.commit(ModifyResourceCurValue, {
       index: ID,
       value: strValue,
     });
@@ -153,38 +153,38 @@ function setResourceSpeed(
   sourceArr: Map<number, resourceItemData>,
   buildArryList: Map<number, buildItemData>,
   workConfig: number[],
-  researchProps: Map<Enum.EnumResearchProp, number>,
+  researchProps: Map<EnumResearchProp, number>,
   isDebts: boolean
 ) {
   if (!data.unlock) return;
   switch (data.ID) {
-    case Enum.EnumResourceItem.Influence: //影响力的速度公式：每个安排工作的提升1点 后面可能考虑科技
-      const num1 = workConfig[Enum.EnumWorkType.InfluenceWork];
+    case EnumResourceItem.Influence: //影响力的速度公式：每个安排工作的提升1点 后面可能考虑科技
+      const num1 = workConfig[EnumWorkType.InfluenceWork];
       data.cacheSpeed = num1;
       break;
-    case Enum.EnumResourceItem.Cost1: //动漫知识的公式,工人转化*建筑提升
-      let num5 = workConfig[Enum.EnumWorkType.Cost1Work];
-      if (researchProps.has(Enum.EnumResearchProp.Cost1Ratio))
-        num5 *= 1 + researchProps.get(Enum.EnumResearchProp.Cost1Ratio)!;
+    case EnumResourceItem.Cost1: //动漫知识的公式,工人转化*建筑提升
+      let num5 = workConfig[EnumWorkType.Cost1Work];
+      if (researchProps.has(EnumResearchProp.Cost1Ratio))
+        num5 *= 1 + researchProps.get(EnumResearchProp.Cost1Ratio)!;
       data.cacheSpeed = num5;
       break;
-    case Enum.EnumResourceItem.Cost2: //游戏知识的公式，工人转化*建筑提升
-      let num6 = workConfig[Enum.EnumWorkType.Cost2Work];
-      if (researchProps.has(Enum.EnumResearchProp.Cost2Ratio))
-        num6 *= 1 + researchProps.get(Enum.EnumResearchProp.Cost2Ratio)!;
+    case EnumResourceItem.Cost2: //游戏知识的公式，工人转化*建筑提升
+      let num6 = workConfig[EnumWorkType.Cost2Work];
+      if (researchProps.has(EnumResearchProp.Cost2Ratio))
+        num6 *= 1 + researchProps.get(EnumResearchProp.Cost2Ratio)!;
       data.cacheSpeed = num6;
       break;
-    case Enum.EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
-      data.cacheSpeed = Math.max(0.1,Math.pow(data.cacheValue, 0.5) * GlobalConfig.default.Resource.BaseBelieverRatio
+    case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
+      data.cacheSpeed = Math.max(0.1,Math.pow(data.cacheValue, 0.5) * GlobalConfig.Resource.BaseBelieverRatio
       );
       break;
-    case Enum.EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
+    case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
       if (isDebts) data.cacheSpeed = 0;
       else {
-        const dataBeliever = sourceArr.get(Enum.EnumResourceItem.Believer)!;
+        const dataBeliever = sourceArr.get(EnumResourceItem.Believer)!;
         data.cacheSpeed = Math.max(
           0.1,
-          Math.pow(dataBeliever.cacheValue, 0.5) * GlobalConfig.default.Resource.BaseBelieverRatio
+          Math.pow(dataBeliever.cacheValue, 0.5) * GlobalConfig.Resource.BaseBelieverRatio
         );
         if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
           //信徒达到最大值
@@ -195,7 +195,7 @@ function setResourceSpeed(
   }
   const strValue = intToString(data.cacheSpeed, 2);
   if (strValue !== data.speed) {
-    store.store.commit(store.SetResourceSpeed, {
+    store.commit(SetResourceSpeed, {
       index: data.ID,
       value: strValue,
     });
@@ -203,8 +203,8 @@ function setResourceSpeed(
 }
 
 export function StartGuideByID(ID: number) {
-  store.store.commit(store.UpdateGuideTips, ID);
-  store.store.state.openGuide = true;
+  store.commit(UpdateGuideTips, ID);
+  store.state.openGuide = true;
 }
 
 

@@ -7,7 +7,6 @@ import {
   UnlockResearch,
   UnlockResource,
 } from "../../store/index";
-import * as table from "../../core/tables/table";
 import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { resourceItemData } from "../../core/gameMain/gameSave";
 import { IResearchInfo } from "../../core/tables/ITableInfo";

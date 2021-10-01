@@ -5,7 +5,6 @@ import {
   store,
   UnlockResource,
 } from "../../store/index";
-import * as table from "../../core/tables/table";
 import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString } from "../../core/utils";
 import { buildItemData, resourceItemData } from "../../core/gameMain/gameSave";

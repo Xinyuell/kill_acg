@@ -1,4 +1,4 @@
-import * as Enum from "./Enum";
+import { ItemType, BuildClickType, EnumResearchItem, EnumResearchProp } from "./Enum";
 
 interface IBaseInfo {
   ID: number;
@@ -8,24 +8,24 @@ interface IBaseInfo {
 
 export interface IItemInfo extends IBaseInfo {
   BaseMax: number;
-  Type: Enum.ItemType;
+  Type: ItemType;
   TipsContent: string;
 }
 
 export interface IBuildInfo extends IBaseInfo {
-  Type: Enum.ItemType;
+  Type: ItemType;
   /**UI分类 */
   cityName: number;
   /**点击反馈类型 后面的都是升级建筑 */
-  OnClickType: Enum.BuildClickType;
+  OnClickType: BuildClickType;
   /**成本公式 线性倍率*/
   UpgradeCostRatio: number;
   /**成本公式 指数倍率*/
   UpgradeCostPower: number;
   /**解锁需要完成科技*/
-  Require: Enum.EnumResearchItem;
+  Require: EnumResearchItem;
   /**提供属性，乘以数量 */
-  ResearchProp: Map<Enum.EnumResearchProp, number>;
+  ResearchProp: Map<EnumResearchProp, number>;
 }
 
 export interface IResearchInfo extends IBaseInfo {
@@ -38,7 +38,7 @@ export interface IResearchInfo extends IBaseInfo {
   /** * 当前影响力值的条件*/
   Condition: number;
   /** * 解锁后增加的资源属性 */
-  ResearchProp?: Map<Enum.EnumResearchProp, number>;
+  ResearchProp?: Map<EnumResearchProp, number>;
 }
 
 export interface IPolicyInfo extends IBaseInfo {
@@ -47,16 +47,16 @@ export interface IPolicyInfo extends IBaseInfo {
   /**需要的政治背景等级 */
   Condition: number;
   /** * 解锁后增加的资源属性 */
-  ResearchProp?: Map<Enum.EnumResearchProp, number>;
+  ResearchProp?: Map<EnumResearchProp, number>;
 }
 
 export interface ILawInfo extends IBaseInfo {
   /**消耗的政治背景 */
   Cost: number;
   /** * 解锁后增加的资源属性 */
-  ResearchProp?: Map<Enum.EnumResearchProp, number>;
+  ResearchProp?: Map<EnumResearchProp, number>;
 }
 
 export interface IWorkInfo extends IBaseInfo {
-  Type?: Enum.ItemType;
+  Type?: ItemType;
 }

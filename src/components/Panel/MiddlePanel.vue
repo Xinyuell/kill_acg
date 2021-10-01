@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { store } from "../../store/index";
-const a = store.state;
 const activeIndex = ref("/game/build");
 </script>
 

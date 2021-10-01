@@ -4,11 +4,14 @@ import {
   ElMessage,
 } from "element-plus";
 import language from "../tables/language";
-import { ModifyResourceCurValue, store, UpdateAcgProgressValue } from "../../store";
+import {
+  ModifyResourceCurValue,
+  store,
+  UpdateAcgProgressValue,
+} from "../../store";
 import { intToString } from "../utils";
-import * as table from "../tables/table";
-import * as ItemType from "../tables/Enum";
-import * as GlobalConfig from "../tables/GlobalConfig";
+import { EnumResearchItem, EnumWorkType } from "../tables/Enum";
+import GlobalConfig from "../tables/GlobalConfig";
 
 export enum EnumTimeLineLogType {
   /**举报log */
@@ -104,26 +107,37 @@ function ShowComplainLog(logstr: string, classIndex: number) {
   logstr += language.comlainLogTips[classIndex];
   const sourceArr = store.state.gameData.sourceArr;
   if (classIndex == 0) {
-    const value = store.getters.getInfluenceItem * GlobalConfig.default.AcgProgressData.ComplainWrongValueRatio;
+    const value =
+      store.getters.getInfluenceItem *
+      GlobalConfig.AcgProgressData.ComplainWrongValueRatio;
     store.commit(ModifyResourceCurValue, -value);
     logstr += "你降低了" + intToString(value) + "点影响力";
   } else if (classIndex <= 3) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.default.AcgProgressData.ComplainAcgLevel1);
+    store.commit(
+      UpdateAcgProgressValue,
+      -GlobalConfig.AcgProgressData.ComplainAcgLevel1
+    );
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.default.AcgProgressData.ComplainAcgLevel1) +
+      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel1) +
       "点影响力";
   } else if (classIndex <= 6) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.default.AcgProgressData.ComplainAcgLevel2);
+    store.commit(
+      UpdateAcgProgressValue,
+      -GlobalConfig.AcgProgressData.ComplainAcgLevel2
+    );
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.default.AcgProgressData.ComplainAcgLevel2) +
+      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel2) +
       "点影响力";
   } else if (classIndex <= 9) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.default.AcgProgressData.ComplainAcgLevel3);
+    store.commit(
+      UpdateAcgProgressValue,
+      -GlobalConfig.AcgProgressData.ComplainAcgLevel3
+    );
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.default.AcgProgressData.ComplainAcgLevel3) +
+      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel3) +
       "点影响力";
   }
   const log: TimeLineLog = {
@@ -148,7 +162,7 @@ export function randomComplain() {
   }
   if (
     store.state.gameData.researchComplete.indexOf(
-      ItemType.EnumResearchItem.ComplainUnLock
+      EnumResearchItem.ComplainUnLock
     ) < 0
   )
     return;
@@ -168,11 +182,11 @@ function GetRandomComplain() {
   let duration = 1000;
   const researchComplete = store.state.gameData.researchComplete;
   const hasAuto =
-    researchComplete.indexOf(ItemType.EnumResearchItem.BelieverInfluenceMax2) >= 0;
+    researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0;
   const hasAutoLevel1 =
-    researchComplete.indexOf(ItemType.EnumResearchItem.AutoComplainLevel1) >= 0;
+    researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
   const hasAutoLevel2 =
-    researchComplete.indexOf(ItemType.EnumResearchItem.AutoComplainLevel2) >= 0;
+    researchComplete.indexOf(EnumResearchItem.AutoComplainLevel2) >= 0;
   if (random1 < 10) {
     classIndex = 0;
     duration = 1000;
@@ -221,22 +235,23 @@ function GetTimelogParams(classIndex: number, duration: number) {
 export function autoRandomComplain() {
   const researchComplete = store.state.gameData.researchComplete;
   const sourceArr = store.state.gameData.sourceArr;
-  const workPeople = store.state.gameData.workConfig[ItemType.EnumWorkType.ComplainWork];
+  const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
   if (
     store.state.running &&
     !store.state.gameFail &&
-    researchComplete.indexOf(ItemType.EnumResearchItem.BelieverInfluenceMax2) >= 0 &&
+    researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0 &&
     workPeople > 0
   ) {
     const CD = GetAutoComplainCD();
     const hasAutoLevel1 =
-      researchComplete.indexOf(ItemType.EnumResearchItem.AutoComplainLevel1) >= 0;
+      researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
     const hasAutoLevel2 =
-      researchComplete.indexOf(ItemType.EnumResearchItem.AutoComplainLevel2) >= 0;
+      researchComplete.indexOf(EnumResearchItem.AutoComplainLevel2) >= 0;
     const random1 = Math.random() * 100; //大类
     const random2 = Math.floor(Math.random() * 3); //小类
     let classIndex = 1;
-    if (hasAutoLevel2) {//5:3:2 国内国外外太空
+    if (hasAutoLevel2) {
+      //5:3:2 国内国外外太空
       if (random1 <= 50) {
         classIndex += random2;
       } else if (random1 <= 80) {
@@ -244,23 +259,21 @@ export function autoRandomComplain() {
       } else {
         classIndex += random2 + 6;
       }
-    }
-    else if(hasAutoLevel1){//6：4
+    } else if (hasAutoLevel1) {
+      //6：4
       if (random1 <= 60) {
         classIndex += random2;
       } else if (random1 <= 40) {
         classIndex += random2 + 3;
-      } 
-    }
-    else
-      classIndex += random2;
+      }
+    } else classIndex += random2;
 
     const complainContent = language.complain[classIndex];
     const index = Math.floor(Math.random() * complainContent.length);
-    ShowComplainLog(complainContent[index],classIndex)
+    ShowComplainLog(complainContent[index], classIndex);
     setTimeout(() => {
       autoRandomComplain();
-    }, CD*1000);
+    }, CD * 1000);
   } else {
     setTimeout(() => {
       autoRandomComplain();
@@ -269,7 +282,7 @@ export function autoRandomComplain() {
 }
 
 export function GetAutoComplainCD() {
-  const workPeople = store.state.gameData.workConfig[ItemType.EnumWorkType.ComplainWork];
+  const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
   if (workPeople <= 0) return -1;
   return 200 / Math.pow(workPeople + 50, 0.4);
 }
@@ -281,8 +294,8 @@ export function GetCurrentLocalDateTime(): string;
 export function GetCurrentLocalDateTime(time?: number): string {
   if (time === undefined) {
     return new Date(
-      GlobalConfig.default.Time.StartDate +
-        store.state.gameData.totalTime * GlobalConfig.default.Time.VrtulTimeRatio
+      GlobalConfig.Time.StartDate +
+        store.state.gameData.totalTime * GlobalConfig.Time.VrtulTimeRatio
     ).toLocaleDateString();
   }
   return new Date(time).toLocaleDateString();

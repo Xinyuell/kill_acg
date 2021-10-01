@@ -27,6 +27,10 @@ import { EnumResourceItem } from "../tables/table";
       )!.cacheValue;
     return result;
   }
+
+  export function calculatePeopleCost(){
+    
+  }
   
   /**
    * 安排自动工作

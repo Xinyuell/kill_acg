@@ -16,8 +16,9 @@ import { intToString } from "../utils";
 import { autoWork } from "../system/works";
 import { EnumResearchProp, ResearchInfoList, EnumResourceItem, GlobalConfig, EnumWorkType } from "../tables/table";
 import { buildItemData, resourceItemData } from "./gameSave";
-import { checkResourceUnlock, checkBuildUnlock } from "./checkBuildUnlock";
+import { checkResourceUnlock } from "../system/resource";
 import { calculateMoneySpeed } from "./calculateMoneySpeed";
+import { checkBuildUnlock } from "../system/build";
 
 
 
@@ -155,7 +156,6 @@ function updateResourceValue(
       value: strValue,
     });
   }
-  //自动工人的计算逻辑
 }
 
 //设置各个资源的速率

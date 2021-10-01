@@ -137,8 +137,6 @@ export function initGameData() {
   return gameData;
 }
 
-
-
 interface ISaveBuildPanelData {
   curValue: number;
   unlock: boolean;
@@ -186,7 +184,6 @@ export interface resourceItemData {
   unlock: boolean;
   ID: number; //
 }
-
 
 interface ISaveGameData {
   sourceArr: ISaveResourcePanelData[];

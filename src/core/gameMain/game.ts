@@ -1,20 +1,18 @@
 import { Base64 } from "js-base64";
 import { State } from "@vue/runtime-core";
-import {
-  ElMessage,
-  ElNotification,
-  NotificationHandle,
-  NotificationParamsTyped,
-} from "element-plus";
+import { ElMessage } from "element-plus";
 import { store } from "../../store";
 import { randomComplain, autoRandomComplain } from "../system/complain";
 import { updateHistory } from "../system/history";
 import { language } from "../tables/language";
-import { GlobalConfig } from "../tables/table";
+import { GlobalConfig } from "../tables/GlobalConfig";
 import { acgProgressUpdate } from "./acgUpdate";
-import { setStoreGameDataByBase64, SaveLocalStorageKey, getCurrentSaveGameData } from "./gameSave";
+import {
+  setStoreGameDataByBase64,
+  SaveLocalStorageKey,
+  getCurrentSaveGameData,
+} from "./gameSave";
 import { resourceUpdate } from "./gameUpdate";
-
 
 export class GameControl {
   resourceIDMap: Map<number, number>;

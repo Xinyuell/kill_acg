@@ -2,26 +2,26 @@
 import { computed, PropType, reactive, ref } from "vue";
 import BuildItem from "../BaseItem/BuildItem.vue";
 import {  store } from "../../store/index";
-import { IResearchInfo, ResearchInfoList } from "../../core/tables/table";
+import * as table from "../../core/tables/table";
 import ResearchItem from "../BaseItem/ResearchItem.vue";
 
 const activeNames = ref(["0"]);
 const unlock = computed(() => {
-    const data:IResearchInfo[] = [];
+    const data:table.IResearchInfo[] = [];
     const unlocklist:number[] = store.state.gameData.researchUnLockList;
     const complete:number[] = store.state.gameData.researchComplete;
     unlocklist.forEach(function(id:number){
         if(complete.indexOf(id) < 0)
-            data.push(ResearchInfoList.get(id)!)
+            data.push(table.ResearchInfoList.get(id)!)
     });
 
   return data;
 });
 const complete = computed(() => {
-    const data:IResearchInfo[] = [];
+    const data:table.IResearchInfo[] = [];
     const complete:number[] = store.state.gameData.researchComplete;
     complete.forEach(function(id:number){
-        data.push(ResearchInfoList.get(id)!)
+        data.push(table.ResearchInfoList.get(id)!)
     });
   return data;
 });

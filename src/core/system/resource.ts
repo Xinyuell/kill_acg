@@ -1,5 +1,5 @@
 import { store, UnlockResource } from "../../store/index";
-import { EnumResourceItem } from "../tables/table";
+import { EnumResourceItem } from "../tables/Enum";
 import { resourceItemData } from "../gameMain/gameSave";
 
 //资源的解锁检查

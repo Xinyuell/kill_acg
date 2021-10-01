@@ -1,23 +1,18 @@
 <script lang="ts">
-import { getCurrentInstance, PropType, reactive, ref } from "vue";
+import { PropType } from "vue";
 import {
   ModifyResourceCurValue,
   store,
   UnlockResource,
 } from "../../store/index";
-import {
-  BuildClickType,
-  EnumBuildItem,
-  EnumResourceItem,
-  GlobalConfig,
-} from "../../core/tables/table";
+import * as table from "../../core/tables/table";
 import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString } from "../../core/utils";
 import { buildItemData, resourceItemData } from "../../core/gameMain/gameSave";
 
 function getUpgradeCost(data: buildItemData) {
   const cost =
-    GlobalConfig.Resource.BuildUpgradeBase *
+    table.GlobalConfig.Resource.BuildUpgradeBase *
     (data.curValue * data.upgradeCostRatio +
       Math.pow(data.upgradeCostPower, data.curValue));
   return cost;
@@ -25,29 +20,27 @@ function getUpgradeCost(data: buildItemData) {
 
 function buildGuideTips(data: buildItemData) {
   //建筑第一次升级的额外处理
-  if (data.ID === EnumBuildItem.InfluenceLevel1 && data.curValue === 1) {
-    store.commit(UnlockResource, EnumResourceItem.Believer);
+  if (data.ID === table.EnumBuildItem.InfluenceLevel1 && data.curValue === 1) {
+    store.commit(UnlockResource, table.EnumResourceItem.Believer);
     store.commit(ModifyResourceCurValue, {
-      index: EnumResourceItem.Believer,
+      index: table.EnumResourceItem.Believer,
       value: 1,
     });
     StartGuideByID(3);
   }
-  if (data.ID === EnumBuildItem.MoneyLevel1 && data.curValue === 1) {
+  if (data.ID === table.EnumBuildItem.MoneyLevel1 && data.curValue === 1) {
     //StartGuideByID(4);
   }
-  if (data.ID === EnumBuildItem.ResearchLevel1 && data.curValue === 1) {
+  if (data.ID === table.EnumBuildItem.ResearchLevel1 && data.curValue === 1) {
     //StartGuideByID(5);
   }
-  if (data.ID === EnumBuildItem.InfulenceLevel2 && data.curValue === 1) {
-    store.commit(UnlockResource, EnumResourceItem.People);
+  if (data.ID === table.EnumBuildItem.InfulenceLevel2 && data.curValue === 1) {
+    store.commit(UnlockResource, table.EnumResourceItem.People);
     StartGuideByID(6);
   }
-  if (data.ID === EnumBuildItem.ResearchLevel2 && data.curValue === 1) {
-    
+  if (data.ID === table.EnumBuildItem.ResearchLevel2 && data.curValue === 1) {
     StartGuideByID(7);
   }
-
 }
 
 export default {
@@ -63,32 +56,34 @@ export default {
         store.state.gameData.sourceArr;
       const data: buildItemData = (this as any).buildData;
       switch (data.click) {
-        case BuildClickType.Upgrade:
+        case table.BuildClickType.Upgrade:
           //TODO 建筑的升级检查
           const cost = getUpgradeCost(data);
-          if (cost > sourceArr.get(EnumResourceItem.Money)!.cacheValue) return;
-          sourceArr.get(EnumResourceItem.Money)!.cacheValue -= cost;
+          if (cost > sourceArr.get(table.EnumResourceItem.Money)!.cacheValue)
+            return;
+          sourceArr.get(table.EnumResourceItem.Money)!.cacheValue -= cost;
           data.curValue++;
           buildGuideTips(data);
           CaculateProps();
           break;
-        case BuildClickType.AddInfluence:
-          sourceArr.get(EnumResourceItem.Influence)!.cacheValue +=
-            GlobalConfig.Resource.ClickAddBase;
+        case table.BuildClickType.AddInfluence:
+          sourceArr.get(table.EnumResourceItem.Influence)!.cacheValue +=
+            table.GlobalConfig.Resource.ClickAddBase;
           break;
-        case BuildClickType.AddMoeny:
-          sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
-            GlobalConfig.Resource.ClickAddBase * GlobalConfig.Resource.GetMoneyRatio;
+        case table.BuildClickType.AddMoeny:
+          sourceArr.get(table.EnumResourceItem.Money)!.cacheValue +=
+            table.GlobalConfig.Resource.ClickAddBase *
+            table.GlobalConfig.Resource.GetMoneyRatio;
           break;
-        case BuildClickType.AddResearch:
+        case table.BuildClickType.AddResearch:
           if (
-            sourceArr.get(EnumResourceItem.Money)!.cacheValue >=
-            GlobalConfig.Resource.Cost1MoneyRatio
+            sourceArr.get(table.EnumResourceItem.Money)!.cacheValue >=
+            table.GlobalConfig.Resource.Cost1MoneyRatio
           ) {
-            sourceArr.get(EnumResourceItem.Cost1)!.cacheValue +=
-              GlobalConfig.Resource.ClickAddBase;
-            sourceArr.get(EnumResourceItem.Money)!.cacheValue -=
-              GlobalConfig.Resource.Cost1MoneyRatio;
+            sourceArr.get(table.EnumResourceItem.Cost1)!.cacheValue +=
+              table.GlobalConfig.Resource.ClickAddBase;
+            sourceArr.get(table.EnumResourceItem.Money)!.cacheValue -=
+              table.GlobalConfig.Resource.Cost1MoneyRatio;
           }
           break;
       }
@@ -99,15 +94,20 @@ export default {
     tips: function () {
       const data: buildItemData = (this as any).buildData;
       let str = "";
-      if (data.click === BuildClickType.Upgrade) {
+      if (data.click === table.BuildClickType.Upgrade) {
         str += "消耗" + intToString(getUpgradeCost(data)) + "金钱\n";
         const sourceArr: Map<number, resourceItemData> =
           store.state.gameData.sourceArr;
         if (
           getUpgradeCost(data) >
-          sourceArr.get(EnumResourceItem.Money)!.cacheValue
+          sourceArr.get(table.EnumResourceItem.Money)!.cacheValue
         ) {
-          str += "当前金钱" + intToString( sourceArr.get(EnumResourceItem.Money)!.cacheValue) + "无法升级\n"
+          str +=
+            "当前金钱" +
+            intToString(
+              sourceArr.get(table.EnumResourceItem.Money)!.cacheValue
+            ) +
+            "无法升级\n";
         }
       }
       str += data.baseTips;
@@ -115,12 +115,12 @@ export default {
     },
     canClick: function () {
       const data: buildItemData = (this as any).buildData;
-      if (data.click === BuildClickType.Upgrade) {
+      if (data.click === table.BuildClickType.Upgrade) {
         const sourceArr: Map<number, resourceItemData> =
           store.state.gameData.sourceArr;
         if (
           getUpgradeCost(data) >
-          sourceArr.get(EnumResourceItem.Money)!.cacheValue
+          sourceArr.get(table.EnumResourceItem.Money)!.cacheValue
         )
           return true;
       }
@@ -135,7 +135,7 @@ export default {
   <el-popover placement="bottom" trigger="hover" transition="" :width="200">
     <template #reference>
       <el-button
-        :plain = "canClick"
+        :plain="canClick"
         class="buildItem"
         type="success"
         @click="buildItemClick"
@@ -145,7 +145,7 @@ export default {
         }}</span>
       </el-button>
     </template>
-    <span class="tips" >{{ tips }}</span>
+    <span class="tips">{{ tips }}</span>
   </el-popover>
 </template>
 

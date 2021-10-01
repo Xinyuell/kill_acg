@@ -1,8 +1,9 @@
 import {
     store,
-    UnlockBuild, UnlockResource
+    UnlockBuild
   } from "../../store/index";
-  import { EnumResourceItem, EnumBuildItem, BuildInfoList } from "../tables/table";
+  import * as table from "../tables/table";
+import * as ItemType from "../tables/Enum";
   import { buildItemData, resourceItemData } from "../gameMain/gameSave";
   import { StartGuideByID } from "../gameMain/gameUpdate";
   
@@ -15,13 +16,13 @@ import {
     if (data.unlock)
       return;
     switch (data.ID) {
-      case EnumBuildItem.AddMoney: //解锁获得金钱按钮
+      case ItemType.EnumBuildItem.AddMoney: //解锁获得金钱按钮
         if (sourceArr.get(1)!.cacheValue >= 10) {
           store.commit(UnlockBuild, data.ID);
           StartGuideByID(0);
         }
         break;
-      case EnumBuildItem.AddResearch: //解锁获得知识按钮
+      case ItemType.EnumBuildItem.AddResearch: //解锁获得知识按钮
         if (sourceArr.get(1)!.cacheValue >= 20) {
           store.commit(UnlockBuild, data.ID);
           StartGuideByID(1);
@@ -29,7 +30,7 @@ import {
         break;
       default:
         //其他全走require科技的逻辑
-        const Require = BuildInfoList.get(data.ID)!.Require;
+        const Require = table.BuildInfoList.get(data.ID)!.Require;
         if (researchComplete.indexOf(Require) > 0) {
           store.commit(UnlockBuild, data.ID);
         }

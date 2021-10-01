@@ -1,6 +1,6 @@
 import { store } from "../../store";
 import { language } from "../tables/language";
-import { GlobalConfig } from "../tables/table";
+import { GlobalConfig } from "../tables/GlobalConfig";
 import { AddTimeLineLog, EnumTimeLineLogType, GetCurrentLocalDateTime } from "./complain";
 
 export function GetCurrentUTCTime() {

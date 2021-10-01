@@ -1,13 +1,10 @@
 
 <script setup lang="ts">
-import { computed, defineComponent, ref } from "vue";
-import { mapGetters } from "vuex";
+import { computed,  ref } from "vue";
 import BuildPanel from "./Panel/BuildPanel.vue";
-import { ReplaceGameData, store, UpdateGuideTips } from "../store/index";
-import { language } from "../core/tables/language";
+import {store, UpdateGuideTips } from "../store/index";
 import WorkPanel from "./Panel/WorkPanel.vue";
 import ResourcePanel from "./Panel/ResourcePanel.vue";
-import { TimeLineLog } from "../core/system/complain";
 
 import { EnumBuildItem } from "../core/tables/table";
 import MiddlePanel from "./Panel/MiddlePanel.vue";

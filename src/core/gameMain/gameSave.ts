@@ -1,7 +1,9 @@
 import { Base64 } from "js-base64";
 import { State } from "vue";
 import { store } from "../../store";
-import { GlobalConfig, ItemInfoList, ItemType, BuildInfoList, BuildClickType, EnumResearchProp } from "../tables/table";
+import * as table from "../tables/table";
+import * as ItemType from "../tables/Enum";
+import * as GlobalConfig from "../tables/GlobalConfig";
 
 
 export const SaveLocalStorageKey = "kill_acg_game";
@@ -91,7 +93,7 @@ export function initGameData() {
   const gameData: GameData = {
     sourceArr: new Map([]),
     buildArryList: new Map([]),
-    acgProgressValue:GlobalConfig.AcgProgressData.AcgProgressBae,
+    acgProgressValue:GlobalConfig.GlobalConfig.AcgProgressData.AcgProgressBae,
     influenceLevel: 0,
     newsID: new Set(),
     researchUnLockList: [1], //第一个研究默认解锁
@@ -102,7 +104,7 @@ export function initGameData() {
     historyLogID:-1,
   };
   const sourceArr: Map<number, resourceItemData> = new Map([]);
-  ItemInfoList.forEach(function (value, index) {
+  table.default.forEach(function (value, index) {
     sourceArr.set(value.ID, {
       resourceName: value.Name,
       cacheValue: 0,
@@ -112,16 +114,16 @@ export function initGameData() {
       curValue: "0",
       maxValue: value.BaseMax.toString(),
       speed: "0",
-      unlock: (value.Type & ItemType.AutoUnLock) > 0,
+      unlock: (value.Type & ItemType.ItemType.AutoUnLock) > 0,
       ID: value.ID,
     });
   });
   const buildArryList: Map<number, buildItemData> = new Map([]);
-  BuildInfoList.forEach(function (value, index) {
+  table.BuildInfoList.forEach(function (value, index) {
     buildArryList.set(value.ID, {
       buildName: value.Name,
       curValue: 0,
-      unlock: (value.Type & ItemType.AutoUnLock) > 0,
+      unlock: (value.Type & ItemType.ItemType.AutoUnLock) > 0,
       cityName: value.cityName,
       ID: value.ID,
       click: value.OnClickType,
@@ -154,13 +156,13 @@ export interface buildItemData {
   curValue: number;
   unlock: boolean;
   cityName: number;
-  click: BuildClickType;
+  click: table.BuildClickType;
   ID: number;
   baseTips: string;
   upgradeCostRatio: number;
   upgradeCostPower: number;
   /**提供属性，乘以数量 */
-  ResearchProp: Map<EnumResearchProp, number>;
+  ResearchProp: Map<table.EnumResearchProp, number>;
 }
 
 export interface resourceItemData {

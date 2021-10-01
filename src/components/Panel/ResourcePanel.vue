@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, PropType, reactive, ref } from "vue";
 import { ReplaceGameData, store } from "../../store/index";
-import { EnumResearchProp, EnumResourceItem, ItemInfoList } from "../../core/tables/table";
+import * as table from "../../core/tables/table";
 import { stringFormat } from "../../core/utils";
 import { resourceItemData } from "../../core/gameMain/gameSave";
 
@@ -16,48 +16,48 @@ const getData = computed(() => {
 });
 
 const getTips = computed(function () {
-  return (id: EnumResourceItem) => {
-    const data = ItemInfoList.get(id)!;
+  return (id: table.EnumResourceItem) => {
+    const data = table.ItemInfoList.get(id)!;
     switch (id) {
-      case EnumResourceItem.Influence:
+      case table.EnumResourceItem.Influence:
         return stringFormat(
           data.Desc,
           store.state.gameData.influenceLevel.toString()
         );
-      case EnumResourceItem.Money:
-        if(store.state.props.get(EnumResearchProp.MoneyRatio) === undefined)
+      case table.EnumResourceItem.Money:
+        if(store.state.props.get(table.EnumResearchProp.MoneyRatio) === undefined)
           return data.Desc;
         return stringFormat(
           data.Desc,
-          store.state.props.get(EnumResearchProp.MoneyRatio)!.toString()
+          store.state.props.get(table.EnumResearchProp.MoneyRatio)!.toString()
         );
-      case EnumResourceItem.Cost1:
-        if(store.state.props.get(EnumResearchProp.Cost1Ratio) === undefined)
+      case table.EnumResourceItem.Cost1:
+        if(store.state.props.get(table.EnumResearchProp.Cost1Ratio) === undefined)
           return data.Desc;        
         return stringFormat(
           data.Desc,
-          store.state.props.get(EnumResearchProp.Cost1Ratio)!.toString()
+          store.state.props.get(table.EnumResearchProp.Cost1Ratio)!.toString()
         );
-      case EnumResourceItem.Cost2:
-        if(store.state.props.get(EnumResearchProp.Cost2Ratio) === undefined)
+      case table.EnumResourceItem.Cost2:
+        if(store.state.props.get(table.EnumResearchProp.Cost2Ratio) === undefined)
           return data.Desc;           
         return stringFormat(
           data.Desc,
-          store.state.props.get(EnumResearchProp.Cost2Ratio)!.toString()
+          store.state.props.get(table.EnumResearchProp.Cost2Ratio)!.toString()
         );
-      case EnumResourceItem.Believer:
+      case table.EnumResourceItem.Believer:
            return data.Desc;  
-      case EnumResourceItem.People:
+      case table.EnumResourceItem.People:
         return stringFormat(
           data.Desc,
           store.state.gameData.influenceLevel.toString()
         );
-      case EnumResourceItem.Policy:
+      case table.EnumResourceItem.Policy:
         return stringFormat(
           data.Desc,
           store.state.gameData.influenceLevel.toString()
         );
-      case EnumResourceItem.Policy:
+      case table.EnumResourceItem.Policy:
         return stringFormat(
           data.Desc,
           store.state.gameData.influenceLevel.toString()

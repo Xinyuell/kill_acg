@@ -6,7 +6,9 @@ import {
 import { language } from "../tables/language";
 import { ModifyResourceCurValue, store, UpdateAcgProgressValue } from "../../store";
 import { intToString } from "../utils";
-import { GlobalConfig, EnumResearchItem, EnumWorkType } from "../tables/table";
+import * as table from "../tables/table";
+import * as ItemType from "../tables/Enum";
+import * as GlobalConfig from "../tables/GlobalConfig";
 
 export enum EnumTimeLineLogType {
   /**举报log */
@@ -102,26 +104,26 @@ function ShowComplainLog(logstr: string, classIndex: number) {
   logstr += language.comlainLogTips[classIndex];
   const sourceArr = store.state.gameData.sourceArr;
   if (classIndex == 0) {
-    const value = store.getters.getInfluenceItem * GlobalConfig.AcgProgressData.ComplainWrongValueRatio;
+    const value = store.getters.getInfluenceItem * GlobalConfig.GlobalConfig.AcgProgressData.ComplainWrongValueRatio;
     store.commit(ModifyResourceCurValue, -value);
     logstr += "你降低了" + intToString(value) + "点影响力";
   } else if (classIndex <= 3) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.AcgProgressData.ComplainAcgLevel1);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel1);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel1) +
+      intToString(GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel1) +
       "点影响力";
   } else if (classIndex <= 6) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.AcgProgressData.ComplainAcgLevel2);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel2);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel2) +
+      intToString(GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel2) +
       "点影响力";
   } else if (classIndex <= 9) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.AcgProgressData.ComplainAcgLevel3);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel3);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel3) +
+      intToString(GlobalConfig.GlobalConfig.AcgProgressData.ComplainAcgLevel3) +
       "点影响力";
   }
   const log: TimeLineLog = {
@@ -146,7 +148,7 @@ export function randomComplain() {
   }
   if (
     store.state.gameData.researchComplete.indexOf(
-      EnumResearchItem.ComplainUnLock
+      ItemType.EnumResearchItem.ComplainUnLock
     ) < 0
   )
     return;
@@ -166,11 +168,11 @@ function GetRandomComplain() {
   let duration = 1000;
   const researchComplete = store.state.gameData.researchComplete;
   const hasAuto =
-    researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0;
+    researchComplete.indexOf(ItemType.EnumResearchItem.BelieverInfluenceMax2) >= 0;
   const hasAutoLevel1 =
-    researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
+    researchComplete.indexOf(ItemType.EnumResearchItem.AutoComplainLevel1) >= 0;
   const hasAutoLevel2 =
-    researchComplete.indexOf(EnumResearchItem.AutoComplainLevel2) >= 0;
+    researchComplete.indexOf(ItemType.EnumResearchItem.AutoComplainLevel2) >= 0;
   if (random1 < 10) {
     classIndex = 0;
     duration = 1000;
@@ -219,18 +221,18 @@ function GetTimelogParams(classIndex: number, duration: number) {
 export function autoRandomComplain() {
   const researchComplete = store.state.gameData.researchComplete;
   const sourceArr = store.state.gameData.sourceArr;
-  const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
+  const workPeople = store.state.gameData.workConfig[ItemType.EnumWorkType.ComplainWork];
   if (
     store.state.running &&
     !store.state.gameFail &&
-    researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0 &&
+    researchComplete.indexOf(ItemType.EnumResearchItem.BelieverInfluenceMax2) >= 0 &&
     workPeople > 0
   ) {
     const CD = GetAutoComplainCD();
     const hasAutoLevel1 =
-      researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
+      researchComplete.indexOf(ItemType.EnumResearchItem.AutoComplainLevel1) >= 0;
     const hasAutoLevel2 =
-      researchComplete.indexOf(EnumResearchItem.AutoComplainLevel2) >= 0;
+      researchComplete.indexOf(ItemType.EnumResearchItem.AutoComplainLevel2) >= 0;
     const random1 = Math.random() * 100; //大类
     const random2 = Math.floor(Math.random() * 3); //小类
     let classIndex = 1;
@@ -267,7 +269,7 @@ export function autoRandomComplain() {
 }
 
 export function GetAutoComplainCD() {
-  const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
+  const workPeople = store.state.gameData.workConfig[ItemType.EnumWorkType.ComplainWork];
   if (workPeople <= 0) return -1;
   return 200 / Math.pow(workPeople + 50, 0.4);
 }
@@ -279,8 +281,8 @@ export function GetCurrentLocalDateTime(): string;
 export function GetCurrentLocalDateTime(time?: number): string {
   if (time === undefined) {
     return new Date(
-      GlobalConfig.Time.StartDate +
-        store.state.gameData.totalTime * GlobalConfig.Time.VrtulTimeRatio
+      GlobalConfig.GlobalConfig.Time.StartDate +
+        store.state.gameData.totalTime * GlobalConfig.GlobalConfig.Time.VrtulTimeRatio
     ).toLocaleDateString();
   }
   return new Date(time).toLocaleDateString();

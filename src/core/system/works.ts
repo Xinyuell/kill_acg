@@ -1,5 +1,5 @@
 import { store, UpdateWorkConfig } from "../../store";
-import { EnumResourceItem } from "../tables/table";
+import { EnumResourceItem } from "../tables/Enum";
 
 /**
  * 获取正在工作的总人数
@@ -29,7 +29,8 @@ import { EnumResourceItem } from "../tables/table";
   }
 
   export function calculatePeopleCost(){
-    
+    const totalWork = GetTotalWorks();
+
   }
   
   /**

@@ -7,36 +7,31 @@ import {
   UnlockResearch,
   UnlockResource,
 } from "../../store/index";
-import {
-  BuildClickType,
-  EnumResearchItem,
-  EnumResourceItem,
-  IResearchInfo,
-} from "../../core/tables/table";
+import * as table from "../../core/tables/table";
 import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { resourceItemData } from "../../core/gameMain/gameSave";
 
 export default {
   props: {
     researchData: {
-      type: Object as PropType<IResearchInfo>,
+      type: Object as PropType<table.IResearchInfo>,
       required: true,
     },
   },
   methods: {
     researchItemClick: function () {
       //消耗cost 解锁研究。还需要考虑影响力的因素
-      const data: IResearchInfo = (this as any).researchData;
+      const data: table.IResearchInfo = (this as any).researchData;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const cost1Data = sourceArr.get(
-        EnumResourceItem.Cost1
+        table.EnumResourceItem.Cost1
       ) as resourceItemData;
       const cost2Data = sourceArr.get(
-        EnumResourceItem.Cost2
+        table.EnumResourceItem.Cost2
       ) as resourceItemData;
       const influenceData = sourceArr.get(
-        EnumResourceItem.Influence
+        table.EnumResourceItem.Influence
       ) as resourceItemData;
 
       if (data.Condition > influenceData.cacheValue) return;
@@ -51,13 +46,13 @@ export default {
         store.commit(UnlockResearch, data.UnLock);
       }
       CaculateProps();
-      if (data.ID == EnumResearchItem.BelieverBuildLevel1) {
+      if (data.ID == table.EnumResearchItem.BelieverBuildLevel1) {
         StartGuideByID(2); //解锁第一个信徒建筑
       }
-      if(data.ID == EnumResearchItem.ResearchBuildLevel2){
-        store.commit(UnlockResource, EnumResourceItem.Cost2);
+      if(data.ID == table.EnumResearchItem.ResearchBuildLevel2){
+        store.commit(UnlockResource, table.EnumResourceItem.Cost2);
       }
-      if (data.ID === EnumResearchItem.ComplainUnLock) {
+      if (data.ID === table.EnumResearchItem.ComplainUnLock) {
         StartGuideByID(8);
       }
     },

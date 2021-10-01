@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Base64 } from "js-base64";
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
-import { ReplaceGameData, store } from "../../core/store";
+import { ReplaceGameData, store } from "../../store/index";
 import useClipboard from "vue-clipboard3";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { SaveLocalStorageKey } from "../../core/gameSave";

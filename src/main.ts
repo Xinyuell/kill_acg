@@ -4,7 +4,7 @@ import 'element-plus/dist/index.css'
 import "animate.css"
 import App from './App.vue'
 import { router } from './router'
-import { initGameStore } from './core/store'
+import { initGameStore } from './store'
 import VueCustomTooltip, { TooltipOptions } from '@adamdehaven/vue-custom-tooltip'
 
 const app = createApp(App)

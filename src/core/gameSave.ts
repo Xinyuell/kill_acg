@@ -1,6 +1,6 @@
 import { Base64 } from "js-base64";
 import { State } from "vue";
-import { store } from "./store";
+import { store } from "../store/index";
 import {
   BuildClickType,
   BuildInfoList,
@@ -97,7 +97,7 @@ export function initGameData() {
   const gameData: GameData = {
     sourceArr: new Map([]),
     buildArryList: new Map([]),
-    acgProgressValue:GlobalConfig.AcgProgressBae,
+    acgProgressValue:GlobalConfig.AcgProgressData.AcgProgressBae,
     influenceLevel: 0,
     newsID: new Set(),
     researchUnLockList: [1], //第一个研究默认解锁
@@ -120,8 +120,6 @@ export function initGameData() {
       speed: "0",
       unlock: (value.Type & ItemType.AutoUnLock) > 0,
       ID: value.ID,
-      tip_title: value.Desc,
-      tip_content: value.TipsContent,
     });
   });
   const buildArryList: Map<number, buildItemData> = new Map([]);
@@ -193,8 +191,6 @@ export interface resourceItemData {
 
   unlock: boolean;
   ID: number; //
-  tip_title: string;
-  tip_content: string;
 }
 
 

@@ -4,10 +4,11 @@ import BeforeGameVue from "../components/BeforeGame.vue";
 import BuildItemVue from "../components/BaseItem/BuildItem.vuedItem.vue";
 import HomeVue from "../components/Home.vue";
 import MainSceneVue from "../components/MainScene.vue";
-import { SetGameRunning, store } from "../core/store";
+import { SetGameRunning, store } from "../store/index";
 import BuildPanelVue from "../components/Panel/BuildPanel.vue";
 import ResearchPanelVue from "../components/Panel/ResearchPanel.vue";
 import SettingPanelVue from "../components/Panel/SettingPanel.vue";
+import PolicyPanelVue from "../components/Panel/PolicyPanel.vue";
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -43,18 +44,24 @@ export const router = createRouter({
           meta:{isGame:true},
         },
         {
+          path: "policy",
+          name: "policy",
+          component: PolicyPanelVue,
+          meta:{isGame:true},
+        },
+        {
           path: "set",
           name: "set",
           component: SettingPanelVue,
           meta:{isGame:true},
         },
+
       ]
     },
     
   ],
 });
 router.afterEach((to, from) => {
-  // to and from are both route objects. must call `next`.
   if(to.meta.isGame){
     store.commit(SetGameRunning,true)
   }

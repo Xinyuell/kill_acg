@@ -1,36 +1,7 @@
-import { App, State } from "@vue/runtime-core";
-import { createStore } from "vuex";
-import { GameControl } from "./game";
-import {  initGameData } from "./gameSave";
-/**
- * 参数，资源enum：index， 值：value
- */
-export const ModifyResourceCurValue = "modifyResourceCurValue";
-export const ModifyResourceMaxValue = "modifyResourceMaxValue";
-export const SetResourceSpeed = "setResourceSpeed";
-export const SetGameRunning = "setGameRunning";
-export const ReplaceGameData = "replaceGameData";
-export const UpdateNews = "updateNews";
-export const UpdateGuideTips = "updateGuideTips";
-export const CompleteResearch = "completeResearch";
-export const UnlockResearch = "unlockResearch";
-export const UnlockBuild = "unlockBuild";
-export const UnlockResource = "unlockResource";
-export const UpdateWorkConfig = "updateWorkConfig";
-export const UpdateAutoWorkIndex = "updateAutoWorkIndex";
-export const UpdateAcgProgressValue = "updateAcgProgressValue";
+import { State } from "vue";
+import { EnumResearchProp } from "../core/table";
 
-export const store = createStore({
-  state: {
-    running: false,
-    haslog: false,
-    guideTipsID: -1,
-    gameData: initGameData(),
-    openGuide:false,
-    timelineLogs:[],
-    gameFail:false,
-  },
-  mutations: {
+export const mutations = {
     modifyResourceCurValue(state: State, payload: any) {
       if (state.gameData.sourceArr.has(payload.index))
         state.gameData.sourceArr.get(payload.index)!.curValue = payload.value;
@@ -43,7 +14,10 @@ export const store = createStore({
       if (state.gameData.sourceArr.has(payload.index))
         state.gameData.sourceArr.get(payload.index)!.speed = payload.value;
     },
-    setGameRunning(state: State, payload) {
+    updateProps(state:State,payload:Map<EnumResearchProp, number>){
+      state.props = payload;
+    },
+    setGameRunning(state: State, payload: boolean) {
       state.running = payload;
     },
     replaceGameData(state: State, paload: any) {
@@ -71,7 +45,7 @@ export const store = createStore({
       if (state.gameData.sourceArr.has(paload))
         state.gameData.sourceArr.get(paload)!.unlock = true;
     },
-    updateWorkConfig(state: State, paload) {
+    updateWorkConfig(state: State, paload: { index: number; value: number; }) {
       state.gameData.workConfig[paload.index] += paload.value;
       if (state.gameData.workConfig[paload.index] < 0)
         state.gameData.workConfig[paload.index] = 0;
@@ -81,13 +55,6 @@ export const store = createStore({
     },
     updateAcgProgressValue(state:State,paload:number){
       state.gameData.acgProgressValue += paload;
-    }
-  },
-});
+    },
 
-//玩家数据初始化的地方
-export function initGameStore(app: App) {
-  const gameControl = new GameControl();
-  gameControl.Start(store.state);
-  app.use(store);
-}
+  }

@@ -1,5 +1,7 @@
 import { ElMessage } from "element-plus";
+import { AddTimeLineLog, EnumTimeLineLogType, GetCurrentLocalDateTime } from "./complain";
 import { buildItemData, resourceItemData } from "./gameSave";
+import { language } from "./language";
 import {
   ModifyResourceCurValue,
   ModifyResourceMaxValue,
@@ -10,8 +12,9 @@ import {
   UnlockResource,
   UpdateAcgProgressValue,
   UpdateGuideTips,
+  UpdateProps,
   UpdateWorkConfig,
-} from "./store";
+} from "../store/index";
 import {
   BuildInfoList,
   EnumBuildItem,
@@ -25,52 +28,14 @@ import {
 } from "./table";
 import { intToString } from "./utils";
 
-export function acgProgressUpdate(deltaTime: number) {
-  if (store.state.gameData.influenceLevel <= 1) return;
-  store.commit(
-    UpdateAcgProgressValue,
-    deltaTime * GlobalConfig.AcgProgressSpeed
-  );
-  if (store.state.gameData.acgProgressValue >= GlobalConfig.AcgProgressMax) {
-    ElMessage.error({
-      showClose: true,
-      message:
-        "游戏失败了，世界各地都被ACG文化影响，你再也无法杀死ACG了！请重新开始，你将会获得一种稀有的资源——政治背景！",
-    });
-    setTimeout(() => {
-      ElMessage.warning({
-        showClose: true,
-        message: "不过此功能暂未开放！试玩的游戏内容你已经体验完了，谢谢！节后见！",
-      });
-    }, 4000);
-    store.state.gameFail = true;
-  }
-  else if(store.state.gameData.acgProgressValue <= 0){
-    store.state.gameData.acgProgressValue = 0;
-    ElMessage.success({
-      showClose: true,
-      message:
-        "世界各地都的ACG文化都被你消灭了，这个世界回归平静。你的心里充满了感恩和光明。游戏胜利了！",
-    });
-    setTimeout(() => {
-      ElMessage.warning({
-        showClose: true,
-        message: "试玩的游戏内容你已经体验完了，谢谢！节后见！",
-      });
-    }, 4000);
-    store.state.gameFail = true;
-  }
-}
 
-let oldPeople = 0;
+
 let currentPeople = 0;
-export function resourceUpdate(deltaTime: number) {
-  const sourceArr: Map<number, resourceItemData> =
-    store.state.gameData.sourceArr;
-  const buildArryList: Map<number, buildItemData> =
-    store.state.gameData.buildArryList;
-  const workConfig: number[] = store.state.gameData.workConfig;
+/** 重算全局属性，并提交给store */
+export function CaculateProps(){
   const researchComplete: number[] = store.state.gameData.researchComplete;
+  const buildArryList: Map<number, buildItemData> =
+  store.state.gameData.buildArryList;
   const props: Map<EnumResearchProp, number> = new Map();
   //属性是动态算的
   researchComplete.forEach(function (id) {
@@ -97,6 +62,18 @@ export function resourceUpdate(deltaTime: number) {
       });
     }
   });
+  store.commit(UpdateProps,props);
+  return props;
+}
+
+export function resourceUpdate(deltaTime: number) {
+  const sourceArr: Map<number, resourceItemData> =
+    store.state.gameData.sourceArr;
+  const buildArryList: Map<number, buildItemData> =
+    store.state.gameData.buildArryList;
+  const workConfig: number[] = store.state.gameData.workConfig;
+  const researchComplete: number[] = store.state.gameData.researchComplete;
+  const props = CaculateProps();
   updateResourceMaxValue(props, sourceArr);
   //金钱部分先算,如果金钱会扣到零以下则所有工人全部停工
   const isDebts = calculateMoneySpeed(
@@ -235,15 +212,10 @@ function updateResourceValue(
     data.cacheValue = 0; //金钱小于0，上面会设置停工了；影响力小于0游戏结束，TODO 影响力扣的逻辑
   }
   if (data.ID === EnumResourceItem.Influence) {
-    if (data.cacheValue >= 10000) {
-      store.state.gameData.influenceLevel = 4;
-    } else if (data.cacheValue >= 3000) {
-      store.state.gameData.influenceLevel = 3;
-    } else if (data.cacheValue >= 1000) {
-      store.state.gameData.influenceLevel = 2;
-    } else if (data.cacheValue >= 100) {
-      store.state.gameData.influenceLevel = 1;
-    }
+    GlobalConfig.InfluenceLevel.forEach((value,index)=>{
+      if(data.cacheValue >= value)
+      store.state.gameData.influenceLevel = index + 1;//0级无要求 1级是索引0
+    })
   }
   const strValue = intToString(data.cacheValue);
   if (strValue !== data.curValue) {
@@ -278,18 +250,18 @@ function calculateMoneySpeed(
       (researchProps.get(EnumResearchProp.Cost1Ratio)
         ? researchProps.get(EnumResearchProp.Cost1Ratio)!
         : 0)) *
-    GlobalConfig.Cost1MoneyRatio;
+    GlobalConfig.Resource.Cost1MoneyRatio;
   num2 *=
     (1 +
       (researchProps.get(EnumResearchProp.Cost2Ratio)
         ? researchProps.get(EnumResearchProp.Cost2Ratio)!
         : 0)) *
-    GlobalConfig.Cost2MoneyRatio;
+    GlobalConfig.Resource.Cost2MoneyRatio;
   //工人支出、cost1转化、cost2转化
 
   //影响力收入
   let num7: number = sourceArr.get(EnumResourceItem.Influence)!.cacheValue; //影响力总数
-  let num8 = workConfig[EnumWorkType.MoneyWork] * GlobalConfig.GetMoneyRatio; //金钱工人数量
+  let num8 = workConfig[EnumWorkType.MoneyWork] * GlobalConfig.Resource.GetMoneyRatio; //金钱工人数量
   if (researchProps.has(EnumResearchProp.InfluenceMoney)) {
     num7 *= researchProps.get(EnumResearchProp.InfluenceMoney)!; //影响力转化金钱
   } else num7 = 0;
@@ -337,7 +309,7 @@ function setResourceSpeed(
       data.cacheSpeed = num6;
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
-      data.cacheSpeed = Math.max(0.1,Math.pow(data.cacheValue, 0.5) * GlobalConfig.BaseBelieverRatio
+      data.cacheSpeed = Math.max(0.1,Math.pow(data.cacheValue, 0.5) * GlobalConfig.Resource.BaseBelieverRatio
       );
       break;
     case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
@@ -346,7 +318,7 @@ function setResourceSpeed(
         const dataBeliever = sourceArr.get(EnumResourceItem.Believer)!;
         data.cacheSpeed = Math.max(
           0.1,
-          Math.pow(dataBeliever.cacheValue, 0.5) * GlobalConfig.BaseBelieverRatio
+          Math.pow(dataBeliever.cacheValue, 0.5) * GlobalConfig.Resource.BaseBelieverRatio
         );
         if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
           //信徒达到最大值

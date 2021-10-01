@@ -5,7 +5,7 @@ import {
 } from "element-plus";
 import { GameControl } from "./game";
 import { language } from "./language";
-import { ModifyResourceCurValue, store, UpdateAcgProgressValue } from "./store";
+import { ModifyResourceCurValue, store, UpdateAcgProgressValue } from "../store";
 import {
   EnumResearchItem,
   EnumResourceItem,
@@ -108,28 +108,26 @@ function ShowComplainLog(logstr: string, classIndex: number) {
   logstr += language.comlainLogTips[classIndex];
   const sourceArr = store.state.gameData.sourceArr;
   if (classIndex == 0) {
-    const value =
-      sourceArr.get(EnumResourceItem.Influence)!.cacheValue *
-      GlobalConfig.ComplainWrongValueRatio;
+    const value = store.getters.getInfluenceItem * GlobalConfig.AcgProgressData.ComplainWrongValueRatio;
     store.commit(ModifyResourceCurValue, -value);
     logstr += "你降低了" + intToString(value) + "点影响力";
   } else if (classIndex <= 3) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.ComplainAcgLevel1);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.AcgProgressData.ComplainAcgLevel1);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.ComplainAcgLevel1) +
+      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel1) +
       "点影响力";
   } else if (classIndex <= 6) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.ComplainAcgLevel2);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.AcgProgressData.ComplainAcgLevel2);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.ComplainAcgLevel2) +
+      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel2) +
       "点影响力";
   } else if (classIndex <= 9) {
-    store.commit(UpdateAcgProgressValue, -GlobalConfig.ComplainAcgLevel3);
+    store.commit(UpdateAcgProgressValue, -GlobalConfig.AcgProgressData.ComplainAcgLevel3);
     logstr +=
       "ACG文化降低了" +
-      intToString(GlobalConfig.ComplainAcgLevel3) +
+      intToString(GlobalConfig.AcgProgressData.ComplainAcgLevel3) +
       "点影响力";
   }
   const log: TimeLineLog = {
@@ -280,13 +278,15 @@ export function GetAutoComplainCD() {
   return 200 / Math.pow(workPeople + 50, 0.4);
 }
 
+/**获取指定毫秒数转化的时间戳 */
 export function GetCurrentLocalDateTime(time: number): string;
+/**获取当前的时间戳 */
 export function GetCurrentLocalDateTime(): string;
 export function GetCurrentLocalDateTime(time?: number): string {
   if (time === undefined) {
     return new Date(
-      GlobalConfig.StartData +
-        store.state.gameData.totalTime * GlobalConfig.VrtulTimeRatio
+      GlobalConfig.Time.StartDate +
+        store.state.gameData.totalTime * GlobalConfig.Time.VrtulTimeRatio
     ).toLocaleDateString();
   }
   return new Date(time).toLocaleDateString();

@@ -1,6 +1,5 @@
 import { Base64 } from "js-base64";
 import { router } from "../router";
-import { ModifyResourceCurValue, UpdateNews } from "./store";
 import {
   BuildClickType,
   BuildInfoList,
@@ -9,8 +8,9 @@ import {
   ItemType,
 } from "./table";
 import { intToString } from "./utils";
-import { store } from "./store";
-import { acgProgressUpdate, resourceUpdate } from "./gameUpdate";
+import { store } from "../store";
+import { resourceUpdate } from "./gameUpdate";
+import { acgProgressUpdate } from "./acgUpdate";
 import {
   GameData,
   getCurrentSaveGameData,
@@ -29,7 +29,6 @@ import { autoRandomComplain, randomComplain } from "./complain";
 import { updateHistory } from "./history";
 
 export class GameControl {
-  timer: number;
   resourceIDMap: Map<number, number>;
   buildIDMap: Map<number, [number, number]>;
 
@@ -41,7 +40,6 @@ export class GameControl {
   constructor() {
     this.resourceIDMap = new Map<number, number>();
     this.buildIDMap = new Map<number, [number, number]>();
-    this.timer = 0;
 
     this.now = Date.now();
     this.totalTime = 0;
@@ -49,13 +47,13 @@ export class GameControl {
 
   public Start(state: State) {
     setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey]);
-    this.timer = setInterval(() => {
+    setInterval(() => {
       this.update();
-    }, GlobalConfig.UpdateTime);
+    }, GlobalConfig.Time.UpdateTime);
 
     setInterval(() => {
       this.saveGame();
-    }, GlobalConfig.SaveTime);
+    }, GlobalConfig.Time.SaveTime);
 
     setTimeout(() => {
       this.randomNews();

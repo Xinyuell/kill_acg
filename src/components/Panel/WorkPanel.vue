@@ -6,7 +6,7 @@ import {
   store,
   UpdateAutoWorkIndex,
   UpdateWorkConfig,
-} from "../../core/store";
+} from "../../store/index";
 import {
   EnumResearchItem,
   EnumResourceItem,
@@ -148,9 +148,9 @@ function clickAdd(e: MouseEvent, index: number) {
   //如果金钱小于0
   const moneyData = store.state.gameData.sourceArr.get(EnumResourceItem.Money)!;
   let max = moneyData.cacheValue + moneyData.cacheSpeed; // TODO 需要考虑工人的消耗
-  if (index === EnumWorkType.Cost1Work) max /= GlobalConfig.Cost1MoneyRatio;
+  if (index === EnumWorkType.Cost1Work) max /= GlobalConfig.Resource.Cost1MoneyRatio;
   else index === EnumWorkType.Cost2Work;
-  max /= GlobalConfig.Cost2MoneyRatio;
+  max /= GlobalConfig.Resource.Cost2MoneyRatio;
   max = Math.floor(max);
   if (max < 0) return;
   value = Math.min(value, max); //取更小的，如果钱不够了最大能加的人则有限

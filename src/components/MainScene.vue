@@ -3,7 +3,7 @@
 import { computed, defineComponent, ref } from "vue";
 import { mapGetters } from "vuex";
 import BuildPanel from "./Panel/BuildPanel.vue";
-import { ReplaceGameData, store, UpdateGuideTips } from "../core/store";
+import { ReplaceGameData, store, UpdateGuideTips } from "../store/index";
 import { language } from "../core/language";
 import WorkPanel from "./Panel/WorkPanel.vue";
 import ResourcePanel from "./Panel/ResourcePanel.vue";

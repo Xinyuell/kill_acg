@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
-import { store } from "../core/store";
+import { store } from "../store/index";
 import { router } from "../router";
 import SaveGameItem from "./BaseItem/SaveGameItem.vue";
 

@@ -32,7 +32,7 @@ const complete = computed(() => {
     <el-collapse v-model="activeNames">
       <el-collapse-item name="0" class="Collapsetitle">
         <template #title>
-          <h3 class="CollapsetitleText">未完成</h3>
+          <h3 class="CollapsetitleText">政策</h3>
         </template>
         <ul>
           <template v-for="data in unlock" :key="data.ID">
@@ -42,7 +42,7 @@ const complete = computed(() => {
       </el-collapse-item>
       <el-collapse-item name="1" class="Collapsetitle">
         <template #title>
-          <h3 class="CollapsetitleText">已完成</h3>
+          <h3 class="CollapsetitleText">法案</h3>
         </template>
         <ul>
           <template v-for="data in complete" :key="data.ID">

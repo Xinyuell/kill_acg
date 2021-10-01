@@ -3,23 +3,21 @@ import { getCurrentInstance, PropType, reactive, ref } from "vue";
 import {
   ModifyResourceCurValue,
   store,
-  UnlockResearch,
   UnlockResource,
-} from "../../core/store";
+} from "../../store/index";
 import {
   BuildClickType,
   EnumBuildItem,
   EnumResourceItem,
   GlobalConfig,
-  IBuildInfo,
 } from "../../core/table";
 import { buildItemData, resourceItemData } from "../../core/gameSave";
-import { StartGuideByID } from "../../core/gameUpdate";
+import { CaculateProps, StartGuideByID } from "../../core/gameUpdate";
 import { intToString } from "../../core/utils";
 
 function getUpgradeCost(data: buildItemData) {
   const cost =
-    GlobalConfig.BuildUpgradeBase *
+    GlobalConfig.Resource.BuildUpgradeBase *
     (data.curValue * data.upgradeCostRatio +
       Math.pow(data.upgradeCostPower, data.curValue));
   return cost;
@@ -72,24 +70,25 @@ export default {
           sourceArr.get(EnumResourceItem.Money)!.cacheValue -= cost;
           data.curValue++;
           buildGuideTips(data);
+          CaculateProps();
           break;
         case BuildClickType.AddInfluence:
           sourceArr.get(EnumResourceItem.Influence)!.cacheValue +=
-            GlobalConfig.ClickAddBase;
+            GlobalConfig.Resource.ClickAddBase;
           break;
         case BuildClickType.AddMoeny:
           sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
-            GlobalConfig.ClickAddBase * GlobalConfig.GetMoneyRatio;
+            GlobalConfig.Resource.ClickAddBase * GlobalConfig.Resource.GetMoneyRatio;
           break;
         case BuildClickType.AddResearch:
           if (
             sourceArr.get(EnumResourceItem.Money)!.cacheValue >=
-            GlobalConfig.Cost1MoneyRatio
+            GlobalConfig.Resource.Cost1MoneyRatio
           ) {
             sourceArr.get(EnumResourceItem.Cost1)!.cacheValue +=
-              GlobalConfig.ClickAddBase;
+              GlobalConfig.Resource.ClickAddBase;
             sourceArr.get(EnumResourceItem.Money)!.cacheValue -=
-              GlobalConfig.Cost1MoneyRatio;
+              GlobalConfig.Resource.Cost1MoneyRatio;
           }
           break;
       }

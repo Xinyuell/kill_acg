@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, PropType, reactive, ref } from "vue";
 import { resourceItemData } from "../../core/gameSave";
-import { ReplaceGameData, store } from "../../core/store";
+import { ReplaceGameData, store } from "../../store/index";
+import { EnumResourceItem, ItemInfoList } from "../../core/table";
+import { stringFormat } from "../../core/utils";
 
 const getData = computed(() => {
   const sourceArr: Map<number, resourceItemData> =
@@ -11,6 +13,56 @@ const getData = computed(() => {
     if (value.unlock) data.push(value);
   });
   return data;
+});
+
+const getTips = computed(function () {
+  return (id: EnumResourceItem) => {
+    const data = ItemInfoList.get(id)!;
+    switch (id) {
+      case EnumResourceItem.Influence:
+        return stringFormat(
+          data.Desc,
+          store.state.gameData.influenceLevel.toString()
+        );
+      case EnumResourceItem.Money:
+        return stringFormat(
+          data.Desc,
+          store.state.gameData.influenceLevel.toString()
+        );
+      case EnumResourceItem.Cost1:
+        return stringFormat(
+          data.Desc,
+          store.state.gameData.influenceLevel.toString()
+        );
+      case EnumResourceItem.Cost2:
+        return stringFormat(
+          data.Desc,
+          store.state.gameData.influenceLevel.toString()
+        );
+      case EnumResourceItem.Believer:
+        return stringFormat(
+          data.Desc,
+          store.state.gameData.influenceLevel.toString()
+        );
+      case EnumResourceItem.People:
+        return stringFormat(
+          data.Desc,
+          store.state.gameData.influenceLevel.toString()
+        );
+      case EnumResourceItem.Policy:
+        return stringFormat(
+          data.Desc,
+          store.state.gameData.influenceLevel.toString()
+        );
+      case EnumResourceItem.Policy:
+        return stringFormat(
+          data.Desc,
+          store.state.gameData.influenceLevel.toString()
+        );
+      default:
+        break;
+    }
+  };
 });
 </script>
 
@@ -29,12 +81,9 @@ const getData = computed(() => {
             placement="bottom"
             trigger="hover"
             :width="200"
-            transition=""
+            transition="124"
           >
-            <span  class="tips" 
-              >{{ row.tip_title }} <br />
-              {{ row.tip_content }}</span
-            >
+            <span class="tips">{{ getTips(row.ID) }}</span>
             <template #reference>
               <span>{{ row.resourceName }}</span>
             </template>
@@ -56,7 +105,7 @@ const getData = computed(() => {
 
       <el-table-column width="90">
         <template #default="{ row }">
-              <span>{{ row.speed + "/s" }}</span>
+          <span>{{ row.speed + "/s" }}</span>
         </template>
       </el-table-column>
     </el-table>

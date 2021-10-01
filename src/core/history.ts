@@ -1,12 +1,12 @@
 import { AddTimeLineLog, EnumTimeLineLogType, GetCurrentLocalDateTime } from "./complain";
 import { language } from "./language";
-import { store } from "./store";
+import { store } from "../store/index";
 import { GlobalConfig } from "./table";
 
 export function GetCurrentUTCTime() {
     const time =
-      GlobalConfig.StartData +
-      store.state.gameData.totalTime * GlobalConfig.VrtulTimeRatio;
+      GlobalConfig.Time.StartDate +
+      store.state.gameData.totalTime * GlobalConfig.Time.VrtulTimeRatio;
     return time;
 }
   

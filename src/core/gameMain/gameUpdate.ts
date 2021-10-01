@@ -6,22 +6,21 @@ import {
   ModifyResourceMaxValue,
   SetResourceSpeed,
   store,
-  UnlockBuild,
   UnlockResearch,
-  UnlockResource,
   UpdateAcgProgressValue,
   UpdateGuideTips,
   UpdateProps,
   UpdateWorkConfig,
 } from "../../store/index";
 import { intToString } from "../utils";
-import { autoWork, GetTotalWorks } from "../system/works";
-import { EnumResearchProp, ResearchInfoList, EnumResourceItem, GlobalConfig, EnumWorkType, EnumBuildItem, BuildInfoList } from "../tables/table";
+import { autoWork } from "../system/works";
+import { EnumResearchProp, ResearchInfoList, EnumResourceItem, GlobalConfig, EnumWorkType } from "../tables/table";
 import { buildItemData, resourceItemData } from "./gameSave";
+import { checkResourceUnlock, checkBuildUnlock } from "./checkBuildUnlock";
+import { calculateMoneySpeed } from "./calculateMoneySpeed";
 
 
 
-let currentPeople = 0;
 /** 重算全局属性，并提交给store */
 export function CaculateProps(){
   const researchComplete: number[] = store.state.gameData.researchComplete;
@@ -129,8 +128,6 @@ function updateResourceMaxValue(
   });
 }
 
-
-
 //根据速度更新资源的值
 function updateResourceValue(
   data: resourceItemData,
@@ -159,60 +156,6 @@ function updateResourceValue(
     });
   }
   //自动工人的计算逻辑
-}
-
-/**
- * 先算金钱
- */
-function calculateMoneySpeed(
-  sourceArr: Map<number, resourceItemData>,
-  buildArryList: Map<number, buildItemData>,
-  workConfig: number[],
-  researchProps: Map<EnumResearchProp, number>,
-  deltaTime: number
-) {
-  const moneyData = sourceArr.get(EnumResourceItem.Money)!;
-  let num1 = workConfig[EnumWorkType.Cost1Work]; //动漫知识工人
-  let num2 = workConfig[EnumWorkType.Cost2Work]; //游戏知识工人
-  let num3 = sourceArr.get(EnumResourceItem.Believer)!.cacheValue; //信徒数量
-  let num4 = GetTotalWorks(); //正在工作的工人数量
-  let num5 = Math.max(0, num4 - num3); //从众正在工作的数量,至少0，说明信徒没安排买
-  let num6 = num5 * 1; //TODO 每个从众额外消耗多少金钱用分段函数
-  //工人数量 * 效率加成 * 金钱消耗倍率 = 最终消耗金钱
-  num1 *=
-    (1 +
-      (researchProps.get(EnumResearchProp.Cost1Ratio)
-        ? researchProps.get(EnumResearchProp.Cost1Ratio)!
-        : 0)) *
-    GlobalConfig.Resource.Cost1MoneyRatio;
-  num2 *=
-    (1 +
-      (researchProps.get(EnumResearchProp.Cost2Ratio)
-        ? researchProps.get(EnumResearchProp.Cost2Ratio)!
-        : 0)) *
-    GlobalConfig.Resource.Cost2MoneyRatio;
-  //工人支出、cost1转化、cost2转化
-
-  //影响力收入
-  let num7: number = sourceArr.get(EnumResourceItem.Influence)!.cacheValue; //影响力总数
-  let num8 = workConfig[EnumWorkType.MoneyWork] * GlobalConfig.Resource.GetMoneyRatio; //金钱工人数量
-  if (researchProps.has(EnumResearchProp.InfluenceMoney)) {
-    num7 *= researchProps.get(EnumResearchProp.InfluenceMoney)!; //影响力转化金钱
-  } else num7 = 0;
-  if (researchProps.has(EnumResearchProp.MoneyRatio)) {
-    num8 *= 1 + researchProps.get(EnumResearchProp.MoneyRatio)!; //金钱工人总收入
-  }
-  let num9 = num8 + num7 - num6 - num1 - num2; //金钱工人收入+影响力收入 - 从众工人支持-研究1消耗-研究2消耗
-  moneyData.cacheSpeed = num9;
-  let isDebts = false;
-  if (num9 * deltaTime + moneyData.cacheValue <= 0) {
-    //这一帧金钱会扣到0以下，所有工人全部停工
-    for (let i = 0; i < workConfig.length; i++) {
-      workConfig[i] = 0;
-    }
-    isDebts = true;
-  }
-  return isDebts;
 }
 
 //设置各个资源的速率
@@ -275,53 +218,4 @@ export function StartGuideByID(ID: number) {
   store.state.openGuide = true;
 }
 
-//建筑的解锁
-function checkBuildUnlock(
-  data: buildItemData,
-  sourceArr: Map<number, resourceItemData>,
-  buildArryList: Map<number, buildItemData>,
-  researchComplete: number[]
-) {
-  if (data.unlock) return;
-  switch (data.ID) {
-    case EnumBuildItem.AddMoney: //解锁获得金钱按钮
-      if (sourceArr.get(1)!.cacheValue >= 10) {
-        store.commit(UnlockBuild, data.ID);
-        StartGuideByID(0);
-      }
-      break;
-    case EnumBuildItem.AddResearch: //解锁获得知识按钮
-      if (sourceArr.get(1)!.cacheValue >= 20) {
-        store.commit(UnlockBuild, data.ID);
-        StartGuideByID(1);
-      }
-      break;
-    default:
-      //其他全走require科技的逻辑
-      const Require = BuildInfoList.get(data.ID)!.Require;
-      if (researchComplete.indexOf(Require) > 0) {
-        store.commit(UnlockBuild, data.ID);
-      }
-      break;
-  }
-}
 
-//资源的解锁检查
-function checkResourceUnlock(
-  data: resourceItemData,
-  sourceArr: Map<number, resourceItemData>
-) {
-  //影响力提升等级和各种解锁
-
-  if (data.unlock) return;
-  switch (data.ID) {
-    case EnumResourceItem.Money: //解锁金钱，需要影响力大于10
-      if (sourceArr.get(1)!.cacheValue >= 10)
-        store.commit(UnlockResource, EnumResourceItem.Money);
-      break;
-    case EnumResourceItem.Cost1: //解锁知识，影响力大于20
-      if (sourceArr.get(1)!.cacheValue >= 20)
-        store.commit(UnlockResource, EnumResourceItem.Cost1);
-      break;
-  }
-}

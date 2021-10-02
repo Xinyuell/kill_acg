@@ -1,48 +1,82 @@
-import { store, UpdateProps, ModifyResourceMaxValue, ModifyResourceCurValue, SetResourceSpeed, UpdateGuideTips } from "../../store/index";
+import {
+  store,
+  UpdateProps,
+  ModifyResourceMaxValue,
+  ModifyResourceCurValue,
+  SetResourceSpeed,
+  UpdateGuideTips,
+} from "../../store/index";
 import { intToString } from "../utils";
 import { autoWork } from "../system/works";
 import { ResearchInfoList } from "../tables/table";
-import { EnumResearchProp, EnumResourceItem, EnumWorkType } from "../tables/Enum";
+import {
+  EnumPolicyItem,
+  EnumResearchProp,
+  EnumResourceItem,
+  EnumWorkType,
+} from "../tables/Enum";
 import { buildItemData, resourceItemData } from "./gameSave";
 import { checkResourceUnlock } from "../system/resource";
 import { calculateMoneySpeed } from "./calculateMoneySpeed";
 import { checkBuildUnlock } from "../system/build";
 import { InfluenceLevel, Resource } from "../tables/GlobalConfig";
 
+/** 递减属性的百分比算法 */
+export function GetReduceProp(level: number, prop: number) {
+  return 1 - Math.pow(1 - prop, level);
+}
 
+function SetPolicyProp(researchProp:Map<EnumResearchProp, number>,props:Map<EnumResearchProp, number>,IsReduceProp:boolean | undefined, level:number){
+  researchProp.forEach(function (value, key) {
+    if (IsReduceProp) {
+      props.set(
+        key,
+        GetReduceProp(level, value) +
+          (props.get(key) === undefined ? 0 : props.get(key)!)
+      );
+    } else {
+      props.set(
+        key,
+        value * level +
+          (props.get(key) === undefined ? 0 : props.get(key)!)
+      );
+    }
+  });
+}
 
 /** 重算全局属性，并提交给store */
-export function CaculateProps(){
-  const researchComplete: number[] = store.state.gameData.researchComplete;
-  const buildArryList: Map<number, buildItemData> =
-  store.state.gameData.buildArryList;
+export function CaculateProps() {
   const props: Map<EnumResearchProp, number> = new Map();
   //属性是动态算的
-  researchComplete.forEach(function (id) {
+  store.state.gameData.researchComplete.forEach(function (id) {
     const researchProp = ResearchInfoList.get(id)!.ResearchProp;
     if (researchProp !== undefined) {
-      researchProp.forEach(function (value, key) {
-        props.set(
-          key,
-          value + (props.get(key) === undefined ? 0 : props.get(key)!)
-        );
-      });
+      SetPolicyProp(researchProp,props,false,1);
     }
   });
   //建筑增加的属性
-  buildArryList.forEach(function (buildData, key) {
+  store.state.gameData.buildArryList.forEach(function (buildData, key) {
     const researchProp = buildData.ResearchProp;
     if (researchProp !== undefined) {
-      researchProp.forEach(function (value, key) {
-        props.set(
-          key,
-          value * buildData.curValue +
-            (props.get(key) === undefined ? 0 : props.get(key)!)
-        );
-      });
+      SetPolicyProp(researchProp,props,false,buildData.curValue);
     }
   });
-  store.commit(UpdateProps,props);
+  //政策
+  store.state.gameData.policyArryList.forEach(function (policyItemData, key) {
+    const researchProp = policyItemData.ResearchProp;
+    if (researchProp !== undefined) {
+      SetPolicyProp(researchProp,props,policyItemData.IsReduceProp,policyItemData.level);
+    }
+  });
+  //政治背景
+  store.state.gameData.LawArryList.forEach(function (lawItemData, key) {
+    const researchProp = lawItemData.ResearchProp;
+    if (researchProp !== undefined) {
+      SetPolicyProp(researchProp,props,lawItemData.IsReduceProp,lawItemData.level);
+    }
+  });
+
+  store.commit(UpdateProps, props);
   return props;
 }
 
@@ -133,10 +167,10 @@ function updateResourceValue(
     data.cacheValue = 0; //金钱小于0，上面会设置停工了；影响力小于0游戏结束，TODO 影响力扣的逻辑
   }
   if (data.ID === EnumResourceItem.Influence) {
-    InfluenceLevel.forEach((value,index)=>{
-      if(data.cacheValue >= value)
-      store.state.gameData.influenceLevel = index + 1;//0级无要求 1级是索引0
-    })
+    InfluenceLevel.forEach((value, index) => {
+      if (data.cacheValue >= value)
+        store.state.gameData.influenceLevel = index + 1; //0级无要求 1级是索引0
+    });
   }
   const strValue = intToString(data.cacheValue);
   if (strValue !== data.curValue) {
@@ -175,7 +209,9 @@ function setResourceSpeed(
       data.cacheSpeed = num6;
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
-      data.cacheSpeed = Math.max(0.1,Math.pow(data.cacheValue, 0.5) * Resource.BaseBelieverRatio
+      data.cacheSpeed = Math.max(
+        0.1,
+        Math.pow(data.cacheValue, 0.5) * Resource.BaseBelieverRatio
       );
       break;
     case EnumResourceItem.People: //从众的公式 ，负债也会导致出生率停止
@@ -206,5 +242,3 @@ export function StartGuideByID(ID: number) {
   store.commit(UpdateGuideTips, ID);
   store.state.openGuide = true;
 }
-
-

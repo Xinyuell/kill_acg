@@ -8,14 +8,19 @@ import {
 import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString } from "../../core/utils";
 import { buildItemData, resourceItemData } from "../../core/gameMain/gameSave";
-import { BuildClickType, EnumBuildItem, EnumResourceItem } from "../../core/tables/Enum";
+import {
+  BuildClickType,
+  EnumBuildItem,
+  EnumResourceItem,
+} from "../../core/tables/Enum";
 import { CityBuildCostBase, Resource } from "../../core/tables/GlobalConfig";
 
 function getUpgradeCost(data: buildItemData) {
   const cost =
     Resource.BuildUpgradeBase *
-    (data.curValue * data.upgradeCostRatio +
-      Math.pow(data.upgradeCostPower, data.curValue)) + CityBuildCostBase[data.cityName]!;
+      (data.curValue * data.upgradeCostRatio +
+        Math.pow(data.upgradeCostPower, data.curValue)) +
+    CityBuildCostBase[data.cityName]!;
   return cost;
 }
 
@@ -42,6 +47,7 @@ function buildGuideTips(data: buildItemData) {
   if (data.ID === EnumBuildItem.ResearchLevel2 && data.curValue === 1) {
     StartGuideByID(7);
   }
+
 }
 
 export default {
@@ -58,15 +64,14 @@ export default {
       const data: buildItemData = (this as any).buildData;
       switch (data.click) {
         case BuildClickType.Upgrade:
-          if(import.meta.env.DEV){
+          if (import.meta.env.DEV) {
             data.curValue++;
             buildGuideTips(data);
             CaculateProps();
             return;
           }
           const cost = getUpgradeCost(data);
-          if (cost > sourceArr.get(EnumResourceItem.Money)!.cacheValue)
-            return;
+          if (cost > sourceArr.get(EnumResourceItem.Money)!.cacheValue) return;
           sourceArr.get(EnumResourceItem.Money)!.cacheValue -= cost;
           data.curValue++;
           buildGuideTips(data);
@@ -78,8 +83,7 @@ export default {
           break;
         case BuildClickType.AddMoeny:
           sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
-            Resource.ClickAddBase *
-            Resource.GetMoneyRatio;
+            Resource.ClickAddBase * Resource.GetMoneyRatio;
           break;
         case BuildClickType.AddResearch:
           if (
@@ -110,9 +114,7 @@ export default {
         ) {
           str +=
             "当前金钱" +
-            intToString(
-              sourceArr.get(EnumResourceItem.Money)!.cacheValue
-            ) +
+            intToString(sourceArr.get(EnumResourceItem.Money)!.cacheValue) +
             "无法升级\n";
         }
       }

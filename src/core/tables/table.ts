@@ -1,4 +1,11 @@
-import { IItemInfo, IBuildInfo, IResearchInfo, IWorkInfo } from "./ITableInfo";
+import {
+  IItemInfo,
+  IBuildInfo,
+  IResearchInfo,
+  IWorkInfo,
+  IPolicyInfo,
+  ILawInfo,
+} from "./ITableInfo";
 import {
   EnumResourceItem,
   ItemType,
@@ -7,6 +14,8 @@ import {
   EnumResearchItem,
   EnumResearchProp,
   EnumWorkType,
+  EnumPolicyItem,
+  EnumLawItem,
 } from "./Enum";
 
 export const ItemInfoList: Map<number, IItemInfo> = new Map([
@@ -16,7 +25,6 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       ID: EnumResourceItem.Influence,
       Name: "影响力",
       Desc: "当前影响力等级：{0}级，每单位工作基础值为1\n影响力解锁游戏进程",
-      TipsContent: "",
       BaseMax: 100,
       Type: ItemType.AutoUnLock,
     },
@@ -27,7 +35,6 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       ID: EnumResourceItem.Money,
       Name: "金钱",
       Desc: "当前金钱收集效率：{0}%，每单位工作基础值为2\n你只是为了消灭ACG文化才收集了一点点钱",
-      TipsContent: "",
       BaseMax: -1,
       Type: ItemType.None,
     },
@@ -38,7 +45,6 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       ID: EnumResourceItem.Cost1,
       Name: "动漫知识",
       Desc: "当前动漫知识研究效率：{0}%，每单位工作基础值为1\n每转化1点动漫知识需要消耗2点金钱",
-      TipsContent: "",
       BaseMax: -1,
       Type: ItemType.Research,
     },
@@ -50,7 +56,6 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       Name: "游戏知识",
       Desc: "当前游戏知识研究效率：{0}%，每单位工作基础值为1\n每转化1点游戏知识需要消耗10点金钱\n游戏的荼毒更深，所以需要更多的氪金才能获得",
       BaseMax: -1,
-      TipsContent: "",
       Type: ItemType.Research,
     },
   ],
@@ -61,7 +66,6 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       Name: "信徒",
       Desc: "安排信徒工作，提供工作基础值\n信徒的增长速度和自身的人数相关，由于聚众效应，人越多增长越快",
       BaseMax: 10,
-      TipsContent: "",
       Type: ItemType.None,
     },
   ],
@@ -72,7 +76,6 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       Name: "从众",
       Desc: "按排信徒工作，提供工作基础值，并额外消耗1点金钱每人\n从众和信徒的增长速度一样，信徒达到上限后，从众增加速度翻倍。",
       BaseMax: 10,
-      TipsContent: "",
       Type: ItemType.None,
     },
   ],
@@ -83,7 +86,6 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       Name: "政策点",
       Desc: "当前政策点获取效率：{0}%，每单位工作基础值为0.1\n每1点政策点需要消耗10点金钱、动漫和游戏知识\n颁布新政除了消耗政策点，你还需要有一定的政治背景才能推行。",
       BaseMax: -1,
-      TipsContent: "",
       Type: ItemType.None,
     },
   ],
@@ -93,8 +95,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
       ID: EnumResourceItem.Political,
       Name: "政治背景",
       Desc: "提高全局资源的速度，当前全局效率提升{0}%\n这是一种重置资源，在政治分页重置游戏获得，获得数量与信徒数量相关\n当前重置游戏将获得{1}点资源",
-      BaseMax: +1,
-      TipsContent: "",
+      BaseMax: -1,
       Type: ItemType.None,
     },
   ],
@@ -755,6 +756,115 @@ export const WorkInfoList: Map<number, IWorkInfo> = new Map([
       Name: "开会",
       Desc: "信徒/从众开会商讨政策，获得政策点\n每个信徒/从众消耗10点金钱、动漫知识和游戏知识，提升0.1点政策点每秒",
       Type: ItemType.None,
+    },
+  ],
+]);
+
+export const PolicyInfoList: Map<number, IPolicyInfo> = new Map([
+  [
+    EnumPolicyItem.ReduceInfluenceBuildCost,
+    {
+      ID: EnumPolicyItem.ReduceInfluenceBuildCost,
+      Name: "扶持教育",
+      Desc: "政府大力扶持教育产业\n每级降低信徒、从众类建筑成本蠕变0.1\n当前降低了{0}",
+      Condition: [0, 1, 2, 3, 4, 5],
+      Cost: 10 * 1000,
+      UpgradeRatio: 4,
+      ResearchProp: new Map([[EnumResearchProp.ReduceInfluenceBuildCost, 0.1]]),
+    },
+  ],
+  [
+    EnumPolicyItem.ReduceMoneyBuildCost,
+    {
+      ID: EnumPolicyItem.ReduceMoneyBuildCost,
+      Name: "扶持经济",
+      Desc: "政府大力扶持经济产业\n每级降低金钱类建筑成本蠕变0.1\n当前降低了{0}",
+      Condition: [0, 1, 2, 3, 4, 5],
+      Cost: 10 * 1000,
+      UpgradeRatio: 4,
+      ResearchProp: new Map([[EnumResearchProp.ReduceMoneyBuildCost, 0.1]]),
+    },
+  ],
+  [
+    EnumPolicyItem.ReduceResearchBuildCost,
+    {
+      ID: EnumPolicyItem.ReduceResearchBuildCost,
+      Name: "扶持正统文化",
+      Desc: "政府大力扶持正统文化产业\n每级降低研究类建筑成本蠕变0.1\n当前降低了{0}",
+      Condition: [0, 1, 2, 3, 4, 5],
+      Cost: 10 * 1000,
+      UpgradeRatio: 4,
+      ResearchProp: new Map([[EnumResearchProp.ReduceResearchBuildCost, 0.1]]),
+    },
+  ],
+  [
+    EnumPolicyItem.ReduceAcgProgressSpeedRatio,
+    {
+      ID: EnumPolicyItem.ReduceAcgProgressSpeedRatio,
+      Name: "打击ACG文化",
+      Desc: "政府大力打击ACG文化产业\n每级ACG影响速度降低5%\n当前降低{0}%",
+      Condition: [0, 1, 2, 3, 4, 5],
+      Cost: 10 * 1000,
+      UpgradeRatio: 4,
+      ResearchProp: new Map([
+        [EnumResearchProp.ReduceAcgProgressSpeedRatio, 0.05],
+      ]),
+      IsReduceProp:true,
+    },
+  ],
+]);
+
+export const LawInfoList: Map<number, ILawInfo> = new Map([
+  [
+    EnumLawItem.ComplainCD,
+    {
+      ID: EnumLawItem.ComplainCD,
+      Name: "自律公约",
+      Desc: "从严落实各项管理新规，把握好政治方向、舆论导向、价值取向\n每级提高举报CD因子0.02，降低举报CD\n当前提高{0}",
+      Cost: 50,
+      ResearchProp: new Map([[EnumResearchProp.ComplainCD, 0.02]]),
+    },
+  ],
+  [
+    EnumLawItem.ComplainAcgRatio,
+    {
+      ID: EnumLawItem.ComplainAcgRatio,
+      Name: "严格审查",
+      Desc: "越做审核工作，越倾向严格\n每级提高举报效果10%\n当前提高{0}%",
+      Cost: 50,
+      ResearchProp: new Map([[EnumResearchProp.ComplainAcgRatio, 0.1]]),
+    },
+  ],
+  [
+    EnumLawItem.WorkBaseRatio,
+    {
+      ID: EnumLawItem.WorkBaseRatio,
+      Name: "996",
+      Desc: "996是一种福报\n每级提高工作效果基础值10%\n当前提高{0}%",
+      Cost: 100,
+      ResearchProp: new Map([[EnumResearchProp.ReduceInfluenceBuildCost, 0.1]]),
+    },
+  ],
+  [
+    EnumLawItem.MoneyCostRatio,
+    {
+      ID: EnumLawItem.MoneyCostRatio,
+      Name: "共同富裕",
+      Desc: "先富带动后富\n每级降低工作金钱转化消耗5%\n当前降低消耗{0}",
+      Cost: 100,
+      ResearchProp: new Map([[EnumResearchProp.MoneyCostRatio, 0.05]]),
+      IsReduceProp:true,
+    },
+  ],
+  [
+    EnumLawItem.ResearchCostRatio,
+    {
+      ID: EnumLawItem.ResearchCostRatio,
+      Name: "学术包装",
+      Desc: "这不是造假，只是一种暂时性的合理包装\n每级降低工作知识转化消耗5%\n当前降低消耗{0}",
+      Cost: 100,
+      ResearchProp: new Map([[EnumResearchProp.ResearchCostRatio, 0.05]]),
+      IsReduceProp:true,
     },
   ],
 ]);

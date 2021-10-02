@@ -23,6 +23,9 @@ export default {
     researchItemClick: function () {
       //消耗cost 解锁研究。还需要考虑影响力的因素
       const data: IResearchInfo = (this as any).researchData;
+      const complete = store.state.gameData.researchComplete;
+      if(complete.indexOf(data.ID) >= 0)
+        return;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const cost1Data = sourceArr.get(
@@ -57,6 +60,10 @@ export default {
       }
       if (data.ID === EnumResearchItem.ComplainUnLock) {
         StartGuideByID(8);
+      }
+      if (data.ID === EnumResearchItem.ResearchBuildLevel3) {
+        store.commit(UnlockResource, EnumResourceItem.Policy);
+        store.commit(UnlockResource, EnumResourceItem.Political);
       }
     },
   },

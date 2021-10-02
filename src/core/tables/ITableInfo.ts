@@ -1,4 +1,9 @@
-import { ItemType, BuildClickType, EnumResearchItem, EnumResearchProp } from "./Enum";
+import {
+  ItemType,
+  BuildClickType,
+  EnumResearchItem,
+  EnumResearchProp,
+} from "./Enum";
 
 interface IBaseInfo {
   ID: number;
@@ -9,7 +14,6 @@ interface IBaseInfo {
 export interface IItemInfo extends IBaseInfo {
   BaseMax: number;
   Type: ItemType;
-  TipsContent: string;
 }
 
 export interface IBuildInfo extends IBaseInfo {
@@ -28,6 +32,7 @@ export interface IBuildInfo extends IBaseInfo {
   ResearchProp: Map<EnumResearchProp, number>;
 }
 
+/** 政策 */
 export interface IResearchInfo extends IBaseInfo {
   /**动漫知识消耗 */
   Cost1: number;
@@ -45,9 +50,13 @@ export interface IPolicyInfo extends IBaseInfo {
   /**消耗的政策点 */
   Cost: number;
   /**需要的政治背景等级 */
-  Condition: number;
+  Condition: number[];
   /** * 解锁后增加的资源属性 */
   ResearchProp?: Map<EnumResearchProp, number>;
+  /** * 消耗系数 */
+  UpgradeRatio: number;
+  /** 是否是递减属性 */
+  IsReduceProp?: boolean;
 }
 
 export interface ILawInfo extends IBaseInfo {
@@ -55,6 +64,8 @@ export interface ILawInfo extends IBaseInfo {
   Cost: number;
   /** * 解锁后增加的资源属性 */
   ResearchProp?: Map<EnumResearchProp, number>;
+  /** 是否是递减属性 */
+  IsReduceProp?: boolean;
 }
 
 export interface IWorkInfo extends IBaseInfo {

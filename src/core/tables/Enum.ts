@@ -1,3 +1,5 @@
+import exp from "constants";
+
 export enum ItemType {
   None = 0,
   /** * 是否研究资源 */
@@ -124,6 +126,48 @@ export enum EnumResearchProp {
   PeopleMax,
   /** * 信徒自动举报错误率百分比 */
   AutoComplainWrongRatio,
+  /** 影响力建筑成本蠕变 */
+  ReduceInfluenceBuildCost,
+  /** 金钱建筑成本蠕变 */
+  ReduceMoneyBuildCost,
+  /** 研究建筑成本蠕变 */
+  ReduceResearchBuildCost,
+  /** 降低ACG进度条的速度 */
+  ReduceAcgProgressSpeedRatio,
+  /** 举报CD */
+  ComplainCD,
+  /** 举报效率提高 */
+  ComplainAcgRatio,
+  /** 工作的基础值提高百分比 */
+  WorkBaseRatio,
+  /** 工作金钱消耗降低百分比 */
+  MoneyCostRatio,
+  /** 工作知识消耗降低百分比 */
+  ResearchCostRatio,
+}
+
+export enum EnumPolicyItem {
+  /** 影响力建筑成本蠕变 */
+  ReduceInfluenceBuildCost,
+  /** 金钱建筑成本蠕变 */
+  ReduceMoneyBuildCost,
+  /** 研究建筑成本蠕变 */
+  ReduceResearchBuildCost,
+  /** 降低ACG进度条的速度 */
+  ReduceAcgProgressSpeedRatio,
+}
+
+export enum EnumLawItem {
+  /** 举报CD */
+  ComplainCD,
+  /** 举报效率提高 */
+  ComplainAcgRatio,
+  /** 工作的基础值提高百分比 */
+  WorkBaseRatio,
+  /** 工作金钱消耗降低百分比 */
+  MoneyCostRatio,
+  /** 工作知识消耗降低百分比 */
+  ResearchCostRatio,
 }
 
 export enum EnumBuildItem {

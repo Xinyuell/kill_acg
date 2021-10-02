@@ -1,29 +1,26 @@
 <script setup lang="ts">
 import { computed, PropType, reactive, ref } from "vue";
-import BuildItem from "../BaseItem/BuildItem.vue";
-import {  store } from "../../store/index";
-import { ResearchInfoList } from "../../core/tables/table";
-import ResearchItem from "../BaseItem/ResearchItem.vue";
+import { store } from "../../store/index";
+import { PolicyInfoList, ResearchInfoList } from "../../core/tables/table";
 import { IResearchInfo } from "../../core/tables/ITableInfo";
+import { lawItemData, policyItemData } from "../../core/gameMain/gameSave";
+import PolicyItem from "../BaseItem/PolicyItem.vue";
+import LawItem from "../BaseItem/LawItem.vue";
 
 const activeNames = ref(["0"]);
-const unlock = computed(() => {
-    const data:IResearchInfo[] = [];
-    const unlocklist:number[] = store.state.gameData.researchUnLockList;
-    const complete:number[] = store.state.gameData.researchComplete;
-    unlocklist.forEach(function(id:number){
-        if(complete.indexOf(id) < 0)
-            data.push(ResearchInfoList.get(id)!)
-    });
-
+const policyArry = computed(() => {
+  const data: policyItemData[] = [];
+  store.state.gameData.policyArryList.forEach(function (value, key) {
+    data.push(value);
+  });
   return data;
 });
-const complete = computed(() => {
-    const data:IResearchInfo[] = [];
-    const complete:number[] = store.state.gameData.researchComplete;
-    complete.forEach(function(id:number){
-        data.push(ResearchInfoList.get(id)!)
-    });
+
+const lawList = computed(() => {
+  const data: lawItemData[] = [];
+  store.state.gameData.LawArryList.forEach(function (value, key) {
+    data.push(value);
+  });
   return data;
 });
 </script>
@@ -36,8 +33,8 @@ const complete = computed(() => {
           <h3 class="CollapsetitleText">政策</h3>
         </template>
         <ul>
-          <template v-for="data in unlock" :key="data.ID">
-            <ResearchItem :research-data="data"></ResearchItem>
+          <template v-for="data in policyArry" :key="data.ID">
+            <PolicyItem class="item" :policy-item-data="data"></PolicyItem>
           </template>
         </ul>
       </el-collapse-item>
@@ -46,24 +43,21 @@ const complete = computed(() => {
           <h3 class="CollapsetitleText">法案</h3>
         </template>
         <ul>
-          <template v-for="data in complete" :key="data.ID">
-            <ResearchItem class="buildItem" :research-data="data"></ResearchItem>
+          <template v-for="data in lawList" :key="data.ID">
+            <LawItem class="item" :law-item-data="data"></LawItem>
           </template>
         </ul>
       </el-collapse-item>
     </el-collapse>
-
-    
   </div>
 </template>
 
 <style scoped>
-
 .resourcePanel {
   width: 6remx;
   margin: 0.3rem;
 }
-.buildItem {
+.item {
   display: inline;
 }
 </style>

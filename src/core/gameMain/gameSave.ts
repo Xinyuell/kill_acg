@@ -1,10 +1,15 @@
 import { Base64 } from "js-base64";
 import { State } from "vue";
 import { store } from "../../store";
-import { ItemInfoList, BuildInfoList } from "../tables/table";
+import {
+  ItemInfoList,
+  BuildInfoList,
+  PolicyInfoList,
+  LawInfoList,
+} from "../tables/table";
 import { ItemType, BuildClickType, EnumResearchProp } from "../tables/Enum";
 import { AcgProgressData } from "../tables/GlobalConfig";
-
+import { ILawInfo, IPolicyInfo } from "../tables/ITableInfo";
 
 export const SaveLocalStorageKey = "kill_acg_game";
 
@@ -22,7 +27,9 @@ export function setStoreGameDataByBase64(
   if (
     saveGameData === undefined ||
     saveGameData.sourceArr === undefined ||
-    saveGameData.buildArryList === undefined
+    saveGameData.buildArryList === undefined ||
+    saveGameData.PoliticalData === undefined ||
+    saveGameData.policyArryList === undefined
   ) {
     state.haslog = false;
     return false;
@@ -36,6 +43,7 @@ export function setStoreGameDataByBase64(
   gameData.newsID = new Set(saveGameData.newsID);
   gameData.totalTime = saveGameData.totalTime;
   gameData.historyLogID = saveGameData.historyLogID;
+  gameData.PoliticalData = saveGameData.PoliticalData;
 
   saveGameData.sourceArr.forEach(function (value) {
     if (gameData.sourceArr.has(value.ID)) {
@@ -50,17 +58,28 @@ export function setStoreGameDataByBase64(
       gameData.buildArryList.get(value.ID)!.unlock = value.unlock;
     }
   });
+  saveGameData.policyArryList.forEach(function (value) {
+    if (gameData.policyArryList.has(value.ID)) {
+      gameData.policyArryList.get(value.ID)!.level = value.level;
+    }
+  });
+  saveGameData.PoliticalData.LawLevel.forEach(function (value) {
+    if (gameData.LawArryList.has(value.ID)) {
+      gameData.LawArryList.get(value.ID)!.level = value.level;
+    }
+  });
   state.haslog = true;
   return true;
 }
 
 export function getCurrentSaveGameData() {
   if (!store.state.running) return;
-  if(store.state.gameFail) return;
+  if (store.state.gameFail) return;
   const gameData: GameData = store.state.gameData;
   const saveGameData: ISaveGameData = {
     sourceArr: [],
     buildArryList: [],
+    policyArryList: [],
     acgProgressValue: gameData.acgProgressValue,
     influenceLevel: gameData.influenceLevel,
     researchUnLockList: gameData.researchUnLockList,
@@ -69,7 +88,8 @@ export function getCurrentSaveGameData() {
     autoWorkIndex: gameData.autoWorkIndex,
     newsID: Array.from(gameData.newsID),
     totalTime: gameData.totalTime,
-    historyLogID:gameData.historyLogID,
+    historyLogID: gameData.historyLogID,
+    PoliticalData: gameData.PoliticalData,
   };
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
@@ -85,6 +105,19 @@ export function getCurrentSaveGameData() {
       ID: value.ID,
     });
   });
+  gameData.policyArryList.forEach(function (value, key) {
+    saveGameData.policyArryList.push({
+      ID: value.ID,
+      level: value.level,
+    });
+  });
+  saveGameData.PoliticalData.LawLevel.length = 0;
+  gameData.LawArryList.forEach(function (value, key) {
+    saveGameData.PoliticalData.LawLevel.push({
+      ID: value.ID,
+      level: value.level,
+    });
+  });
   return saveGameData;
 }
 
@@ -93,7 +126,7 @@ export function initGameData() {
   const gameData: GameData = {
     sourceArr: new Map([]),
     buildArryList: new Map([]),
-    acgProgressValue:AcgProgressData.AcgProgressBae,
+    acgProgressValue: AcgProgressData.AcgProgressBae,
     influenceLevel: 0,
     newsID: new Set(),
     researchUnLockList: [1], //第一个研究默认解锁
@@ -101,11 +134,18 @@ export function initGameData() {
     workConfig: [0, 0, 0, 0, 0],
     autoWorkIndex: -1,
     totalTime: 0,
-    historyLogID:-1,
+    historyLogID: -1,
+    PoliticalData: {
+      value: 0,
+      restartTime: 0,
+      totalTimes: 0,
+      LawLevel: [],
+    },
+    policyArryList: new Map([]),
+    LawArryList: new Map([]),
   };
-  const sourceArr: Map<number, resourceItemData> = new Map([]);
   ItemInfoList.forEach(function (value, index) {
-    sourceArr.set(value.ID, {
+    gameData.sourceArr.set(value.ID, {
       resourceName: value.Name,
       cacheValue: 0,
       cacheSpeed: 0,
@@ -118,9 +158,8 @@ export function initGameData() {
       ID: value.ID,
     });
   });
-  const buildArryList: Map<number, buildItemData> = new Map([]);
   BuildInfoList.forEach(function (value, index) {
-    buildArryList.set(value.ID, {
+    gameData.buildArryList.set(value.ID, {
       buildName: value.Name,
       curValue: 0,
       unlock: (value.Type & ItemType.AutoUnLock) > 0,
@@ -134,18 +173,43 @@ export function initGameData() {
     });
   });
 
-  gameData.sourceArr = sourceArr;
-  gameData.buildArryList = buildArryList;
+  LawInfoList.forEach(function (value, index) {
+    gameData.LawArryList.set(value.ID, {
+      Name: value.Name,
+      level: 0,
+      ID: value.ID,
+      Desc: value.Desc,
+      Cost: value.Cost,
+    });
+  });
+
+  PolicyInfoList.forEach(function (value, index) {
+    gameData.policyArryList.set(value.ID, {
+      Name: value.Name,
+      level: 0,
+      ID: value.ID,
+      Desc: value.Desc,
+      UpgradeRatio: value.UpgradeRatio,
+      Cost: value.Cost,
+      Condition: value.Condition,
+    });
+  });
+
   return gameData;
 }
 
-interface ISaveBuildPanelData {
+interface ISavePolicyData {
+  level: number;
+  ID: number;
+}
+
+interface ISaveBuildData {
   curValue: number;
   unlock: boolean;
   ID: number;
 }
 
-interface ISaveResourcePanelData {
+interface ISaveResourceData {
   cacheValue: number;
   unlock: boolean;
   ID: number; //
@@ -187,19 +251,32 @@ export interface resourceItemData {
   ID: number; //
 }
 
+export interface policyItemData extends IPolicyInfo {
+  /** 政策的等级 */
+  level: number;
+}
+
+export interface lawItemData extends ILawInfo {
+  /** 政策的等级 */
+  level: number;
+}
+
 interface ISaveGameData {
-  sourceArr: ISaveResourcePanelData[];
-  buildArryList: ISaveBuildPanelData[];
+  sourceArr: ISaveResourceData[];
+  buildArryList: ISaveBuildData[];
+  policyArryList: ISavePolicyData[];
   acgProgressValue: number;
   influenceLevel: number;
   researchUnLockList: number[];
   researchComplete: number[];
   workConfig: number[];
   autoWorkIndex: number;
+  /**政治背景值、永久解锁的政治背景等级 */
+  PoliticalData: PoliticalData;
   /**
    * 记录最后一个显示的历史
    */
-   historyLogID: number;
+  historyLogID: number;
   /**
    * 已获得新闻的ID（加属性的才记录）
    */
@@ -210,7 +287,21 @@ interface ISaveGameData {
   totalTime: number;
 }
 
+/**重置资源 */
+export interface PoliticalData {
+  /**政治背景值 */
+  value: number;
+  /**重置次数 */
+  restartTime: number;
+  /**总游戏时长 */
+  totalTimes: number;
+  /**法案的存档信息 */
+  LawLevel: ISavePolicyData[];
+}
+
 export interface GameData {
+  /**政治背景值、永久解锁的政治背景等级 */
+  PoliticalData: PoliticalData;
   /**
    * 所有资源的信息
    */
@@ -219,6 +310,10 @@ export interface GameData {
    * 所有建筑的信息
    */
   buildArryList: Map<number, buildItemData>;
+  /** 当前政策信息 */
+  policyArryList: Map<number, policyItemData>;
+  /** 当前法案的信息 */
+  LawArryList: Map<number, lawItemData>;
   /**
    * acg全局进度
    */
@@ -249,7 +344,7 @@ export interface GameData {
   workConfig: number[];
   autoWorkIndex: number;
   /**
-   * 游戏的总时间
+   * 当前游戏的总时间
    */
   totalTime: number;
 }

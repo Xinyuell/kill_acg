@@ -17,17 +17,18 @@ import {
 } from "../tables/Enum";
 import { buildItemData, resourceItemData } from "./gameSave";
 import { checkResourceUnlock } from "../system/resource";
-import { calculateMoneySpeed } from "./calculateMoneySpeed";
+import { calculateMoneySpeed } from "./calculateSpeed";
 import { checkBuildUnlock } from "../system/build";
 import { InfluenceLevel, Resource } from "../tables/GlobalConfig";
 
 /** 递减属性的百分比算法 */
-export function GetReduceProp(level: number, prop: number) {
-  return 1 - Math.pow(1 - prop, level);
+function GetReduceProp(level: number, prop: number) {
+  return Math.pow(1 - prop, level);
 }
 
 function SetPolicyProp(researchProp:Map<EnumResearchProp, number>,props:Map<EnumResearchProp, number>,IsReduceProp:boolean | undefined, level:number){
   researchProp.forEach(function (value, key) {
+    //TODO 如果递减属性有两个来源的话需要额外处理，目前没有
     if (IsReduceProp) {
       props.set(
         key,
@@ -91,6 +92,13 @@ export function resourceUpdate(deltaTime: number) {
   updateResourceMaxValue(props, sourceArr);
   //金钱部分先算,如果金钱会扣到零以下则所有工人全部停工
   const isDebts = calculateMoneySpeed(
+    sourceArr,
+    buildArryList,
+    workConfig,
+    props,
+    deltaTime
+  );
+  const isResearchDebts = calculateMoneySpeed(
     sourceArr,
     buildArryList,
     workConfig,
@@ -195,18 +203,6 @@ function setResourceSpeed(
     case EnumResourceItem.Influence: //影响力的速度公式：每个安排工作的提升1点 后面可能考虑科技
       const num1 = workConfig[EnumWorkType.InfluenceWork];
       data.cacheSpeed = num1;
-      break;
-    case EnumResourceItem.Cost1: //动漫知识的公式,工人转化*建筑提升
-      let num5 = workConfig[EnumWorkType.Cost1Work];
-      if (researchProps.has(EnumResearchProp.Cost1Ratio))
-        num5 *= 1 + researchProps.get(EnumResearchProp.Cost1Ratio)!;
-      data.cacheSpeed = num5;
-      break;
-    case EnumResourceItem.Cost2: //游戏知识的公式，工人转化*建筑提升
-      let num6 = workConfig[EnumWorkType.Cost2Work];
-      if (researchProps.has(EnumResearchProp.Cost2Ratio))
-        num6 *= 1 + researchProps.get(EnumResearchProp.Cost2Ratio)!;
-      data.cacheSpeed = num6;
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率
       data.cacheSpeed = Math.max(

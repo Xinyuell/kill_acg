@@ -7,6 +7,8 @@ export const Resource = {
   Cost1MoneyRatio: 2,
   /** * 金钱转化游戏知识基础倍率 */
   Cost2MoneyRatio: 10,
+  /** * 政策需要金钱、知识的效率 */
+  PolicyCostBaseRatio: 10,
   /** * 基础的出生率0.05 */
   BaseBelieverRatio: import.meta.env.DEV ? 1 : 0.05,
   /** * 信徒满人数后，从众的额外出生率倍率 */
@@ -66,11 +68,4 @@ export const PoliticalLevel = [
   10000 /** * 4级50000点政治背景*/, 50000,
 ];
 
-export const CityBuildCostBase = [
-  10,
-  100,
-  1000,
-  5000,
-  20000,
-  100000
-]
+export const CityBuildCostBase = [10, 100, 1000, 5000, 20000, 100000];

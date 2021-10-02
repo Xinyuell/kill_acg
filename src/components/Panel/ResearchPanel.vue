@@ -15,7 +15,6 @@ const unlock = computed(() => {
         if(complete.indexOf(id) < 0)
             data.push(ResearchInfoList.get(id)!)
     });
-
   return data;
 });
 const complete = computed(() => {

@@ -1,7 +1,5 @@
 import VueRouter, { createRouter, createWebHashHistory } from "vue-router";
-import AppVue from "../App.vue";
 import BeforeGameVue from "../components/BeforeGame.vue";
-import BuildItemVue from "../components/BaseItem/BuildItem.vuedItem.vue";
 import HomeVue from "../components/Home.vue";
 import MainSceneVue from "../components/MainScene.vue";
 import { SetGameRunning, store } from "../store/index";

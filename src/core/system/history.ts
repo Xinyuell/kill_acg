@@ -17,7 +17,6 @@ export function updateHistory(){
     for(let i= currentLogID + 1;i<historyLogs.length-1;i++){
         const data = historyLogs[i];
         if(GetCurrentUTCTime() >= data.time){
-            console.log(data.time, GetCurrentLocalDateTime(data.time))
             AddTimeLineLog({
                 timestamp: GetCurrentLocalDateTime(data.time),
                 iconType: "success" ,

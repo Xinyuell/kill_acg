@@ -35,9 +35,11 @@ export default {
         EnumResourceItem.Influence
       ) as resourceItemData;
 
-      if (data.Condition > influenceData.cacheValue) return;
-      if (data.Cost1 > cost1Data.cacheValue) return;
-      if (data.Cost2 > cost2Data.cacheValue) return;
+      if (!import.meta.env.DEV) {
+        if (data.Condition > influenceData.cacheValue) return;
+        if (data.Cost1 > cost1Data.cacheValue) return;
+        if (data.Cost2 > cost2Data.cacheValue) return;
+      }
 
       cost1Data.cacheValue -= data.Cost1;
       cost2Data.cacheValue -= data.Cost2;
@@ -50,7 +52,7 @@ export default {
       if (data.ID == EnumResearchItem.BelieverBuildLevel1) {
         StartGuideByID(2); //解锁第一个信徒建筑
       }
-      if(data.ID == EnumResearchItem.ResearchBuildLevel2){
+      if (data.ID == EnumResearchItem.ResearchBuildLevel2) {
         store.commit(UnlockResource, EnumResourceItem.Cost2);
       }
       if (data.ID === EnumResearchItem.ComplainUnLock) {
@@ -62,17 +64,13 @@ export default {
 </script>
 
 <template>
-  <el-popover placement="bottom" trigger="hover" >
+  <el-popover placement="bottom" trigger="hover" :width="250">
     <template #reference>
-      <el-button
-        class="buildItem"
-        type="info"
-        plain
-        @click="researchItemClick"
+      <el-button class="buildItem" type="info" plain @click="researchItemClick"
         >{{ researchData.Name }}
       </el-button>
     </template>
-    <span  class="tips" >{{ researchData.Desc }}</span>
+    <span class="tips">{{ researchData.Desc }}</span>
   </el-popover>
 </template>
 

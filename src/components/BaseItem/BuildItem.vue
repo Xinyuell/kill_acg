@@ -9,13 +9,13 @@ import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString } from "../../core/utils";
 import { buildItemData, resourceItemData } from "../../core/gameMain/gameSave";
 import { BuildClickType, EnumBuildItem, EnumResourceItem } from "../../core/tables/Enum";
-import { Resource } from "../../core/tables/GlobalConfig";
+import { CityBuildCostBase, Resource } from "../../core/tables/GlobalConfig";
 
 function getUpgradeCost(data: buildItemData) {
   const cost =
     Resource.BuildUpgradeBase *
     (data.curValue * data.upgradeCostRatio +
-      Math.pow(data.upgradeCostPower, data.curValue));
+      Math.pow(data.upgradeCostPower, data.curValue)) + CityBuildCostBase[data.cityName]!;
   return cost;
 }
 
@@ -58,7 +58,12 @@ export default {
       const data: buildItemData = (this as any).buildData;
       switch (data.click) {
         case BuildClickType.Upgrade:
-          //TODO 建筑的升级检查
+          if(import.meta.env.DEV){
+            data.curValue++;
+            buildGuideTips(data);
+            CaculateProps();
+            return;
+          }
           const cost = getUpgradeCost(data);
           if (cost > sourceArr.get(EnumResourceItem.Money)!.cacheValue)
             return;

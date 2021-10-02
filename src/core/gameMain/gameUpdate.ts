@@ -53,7 +53,7 @@ export function resourceUpdate(deltaTime: number) {
     store.state.gameData.buildArryList;
   const workConfig: number[] = store.state.gameData.workConfig;
   const researchComplete: number[] = store.state.gameData.researchComplete;
-  const props = CaculateProps();
+  const props = store.state.props;
   updateResourceMaxValue(props, sourceArr);
   //金钱部分先算,如果金钱会扣到零以下则所有工人全部停工
   const isDebts = calculateMoneySpeed(

@@ -12,7 +12,7 @@ export const Resource = {
   /** * 信徒满人数后，从众的额外出生率倍率 */
   PeopleBelieverMaxRatio: 2,
   /** * 全局建筑基础消耗10 */
-  BuildUpgradeBase: import.meta.env.DEV ? 0.1 : 5,
+  BuildUpgradeBase: 10,
 };
 //时间相关
 export const Time = {
@@ -62,8 +62,15 @@ export const InfluenceLevel = [
 /**政治背景等级 */
 export const PoliticalLevel = [
   /** * 1级100点政治背景 */
-  500, /** * 2级1000点政治背景*/
-  2000, /** * 3级10000点政治背景*/
-  10000, /** * 4级50000点政治背景*/
-  50000,
+  500 /** * 2级1000点政治背景*/, 2000 /** * 3级10000点政治背景*/,
+  10000 /** * 4级50000点政治背景*/, 50000,
 ];
+
+export const CityBuildCostBase = [
+  10,
+  100,
+  1000,
+  5000,
+  20000,
+  100000
+]

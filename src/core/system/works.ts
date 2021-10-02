@@ -27,11 +27,6 @@ import { EnumResourceItem } from "../tables/Enum";
       )!.cacheValue;
     return result;
   }
-
-  export function calculatePeopleCost(){
-    const totalWork = GetTotalWorks();
-
-  }
   
   /**
    * 安排自动工作

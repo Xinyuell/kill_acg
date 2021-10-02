@@ -7,7 +7,7 @@ export const Resource = {
   Cost1MoneyRatio: 2,
   /** * 金钱转化游戏知识基础倍率 */
   Cost2MoneyRatio: 10,
-  /** * 政策需要金钱、知识的效率 */
+  /** * 政策需要金钱、知识的倍率 */
   PolicyCostBaseRatio: 10,
   /** * 基础的出生率0.05 */
   BaseBelieverRatio: import.meta.env.DEV ? 1 : 0.05,
@@ -15,9 +15,11 @@ export const Resource = {
   PeopleBelieverMaxRatio: 2,
   /** * 全局建筑基础消耗10 */
   BuildUpgradeBase: 10,
+  /** 政策转化基础值 */
+  PolicyAddBase:0.1,
 };
 //时间相关
-export const Time = {
+export const GameTime = {
   /** * 游戏时间,找一个有意义时间 */
   StartDate: Date.UTC(2016, 6, 1),
   /** * 自动存档时间 */

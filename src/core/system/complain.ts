@@ -11,7 +11,7 @@ import {
 } from "../../store";
 import { intToString } from "../utils";
 import { EnumResearchItem, EnumWorkType } from "../tables/Enum";
-import  { AcgProgressData, Time } from "../tables/GlobalConfig";
+import  { AcgProgressData, GameTime } from "../tables/GlobalConfig";
 
 export enum EnumTimeLineLogType {
   /**举报log */
@@ -294,8 +294,8 @@ export function GetCurrentLocalDateTime(): string;
 export function GetCurrentLocalDateTime(time?: number): string {
   if (time === undefined) {
     return new Date(
-      Time.StartDate +
-        store.state.gameData.totalTime * Time.VrtulTimeRatio
+      GameTime.StartDate +
+        store.state.gameData.totalTime * GameTime.VrtulTimeRatio
     ).toLocaleDateString();
   }
   return new Date(time).toLocaleDateString();

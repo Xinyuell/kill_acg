@@ -47,7 +47,6 @@ function buildGuideTips(data: buildItemData) {
   if (data.ID === EnumBuildItem.ResearchLevel2 && data.curValue === 1) {
     StartGuideByID(7);
   }
-
 }
 
 export default {

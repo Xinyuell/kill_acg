@@ -131,7 +131,7 @@ export function initGameData() {
     newsID: new Set(),
     researchUnLockList: [1], //第一个研究默认解锁
     researchComplete: [],
-    workConfig: [0, 0, 0, 0, 0],
+    workConfig: [0, 0, 0, 0, 0, 0],
     autoWorkIndex: -1,
     totalTime: 0,
     historyLogID: -1,

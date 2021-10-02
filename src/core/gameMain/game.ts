@@ -12,7 +12,7 @@ import {
   getCurrentSaveGameData,
 } from "./gameSave";
 import { resourceUpdate } from "./gameUpdate";
-import { Time } from "../tables/GlobalConfig";
+import { GameTime } from "../tables/GlobalConfig";
 
 export class GameControl {
   resourceIDMap: Map<number, number>;
@@ -35,11 +35,11 @@ export class GameControl {
     setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey]);
     setInterval(() => {
       this.update();
-    }, Time.UpdateTime);
+    }, GameTime.UpdateTime);
 // 
     setInterval(() => {
       this.saveGame();
-    }, Time.SaveTime);
+    }, GameTime.SaveTime);
 
     setTimeout(() => {
       this.randomNews();

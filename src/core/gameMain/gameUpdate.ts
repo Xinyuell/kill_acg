@@ -17,7 +17,7 @@ import {
 } from "../tables/Enum";
 import { buildItemData, resourceItemData } from "./gameSave";
 import { checkResourceUnlock } from "../system/resource";
-import { calculateMoneySpeed } from "./calculateSpeed";
+import { calculateMoneySpeed, calculatePolicySpeed } from "./calculateSpeed";
 import { checkBuildUnlock } from "../system/build";
 import { InfluenceLevel, Resource } from "../tables/GlobalConfig";
 
@@ -26,7 +26,12 @@ function GetReduceProp(level: number, prop: number) {
   return Math.pow(1 - prop, level);
 }
 
-function SetPolicyProp(researchProp:Map<EnumResearchProp, number>,props:Map<EnumResearchProp, number>,IsReduceProp:boolean | undefined, level:number){
+function SetPolicyProp(
+  researchProp: Map<EnumResearchProp, number>,
+  props: Map<EnumResearchProp, number>,
+  IsReduceProp: boolean | undefined,
+  level: number
+) {
   researchProp.forEach(function (value, key) {
     //TODO 如果递减属性有两个来源的话需要额外处理，目前没有
     if (IsReduceProp) {
@@ -38,8 +43,7 @@ function SetPolicyProp(researchProp:Map<EnumResearchProp, number>,props:Map<Enum
     } else {
       props.set(
         key,
-        value * level +
-          (props.get(key) === undefined ? 0 : props.get(key)!)
+        value * level + (props.get(key) === undefined ? 0 : props.get(key)!)
       );
     }
   });
@@ -52,28 +56,38 @@ export function CaculateProps() {
   store.state.gameData.researchComplete.forEach(function (id) {
     const researchProp = ResearchInfoList.get(id)!.ResearchProp;
     if (researchProp !== undefined) {
-      SetPolicyProp(researchProp,props,false,1);
+      SetPolicyProp(researchProp, props, false, 1);
     }
   });
   //建筑增加的属性
   store.state.gameData.buildArryList.forEach(function (buildData, key) {
     const researchProp = buildData.ResearchProp;
     if (researchProp !== undefined) {
-      SetPolicyProp(researchProp,props,false,buildData.curValue);
+      SetPolicyProp(researchProp, props, false, buildData.curValue);
     }
   });
   //政策
   store.state.gameData.policyArryList.forEach(function (policyItemData, key) {
     const researchProp = policyItemData.ResearchProp;
     if (researchProp !== undefined) {
-      SetPolicyProp(researchProp,props,policyItemData.IsReduceProp,policyItemData.level);
+      SetPolicyProp(
+        researchProp,
+        props,
+        policyItemData.IsReduceProp,
+        policyItemData.level
+      );
     }
   });
   //政治背景
   store.state.gameData.LawArryList.forEach(function (lawItemData, key) {
     const researchProp = lawItemData.ResearchProp;
     if (researchProp !== undefined) {
-      SetPolicyProp(researchProp,props,lawItemData.IsReduceProp,lawItemData.level);
+      SetPolicyProp(
+        researchProp,
+        props,
+        lawItemData.IsReduceProp,
+        lawItemData.level
+      );
     }
   });
 
@@ -98,7 +112,8 @@ export function resourceUpdate(deltaTime: number) {
     props,
     deltaTime
   );
-  const isResearchDebts = calculateMoneySpeed(
+  //再算两种知识和政策的速率
+  const isResearchDebts = calculatePolicySpeed(
     sourceArr,
     buildArryList,
     workConfig,
@@ -199,9 +214,12 @@ function setResourceSpeed(
   isDebts: boolean
 ) {
   if (!data.unlock) return;
+  let num2 = researchProps.get(EnumResearchProp.WorkBaseRatio)
+    ? researchProps.get(EnumResearchProp.WorkBaseRatio)!
+    : 0; //法案提供的工作基础值百分比
   switch (data.ID) {
     case EnumResourceItem.Influence: //影响力的速度公式：每个安排工作的提升1点 后面可能考虑科技
-      const num1 = workConfig[EnumWorkType.InfluenceWork];
+      const num1 = workConfig[EnumWorkType.InfluenceWork] * (1 + num2);
       data.cacheSpeed = num1;
       break;
     case EnumResourceItem.Believer: //信徒的公式，每个现有信徒乘以出生率

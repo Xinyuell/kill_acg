@@ -31,13 +31,14 @@ export function calculateMoneySpeed(
 
   let num12 = workConfig[EnumWorkType.PolicyWork]; //政策工人的数量
 
-  //工人数量 * 效率加成 * 金钱消耗倍率 = 最终消耗金钱
+  //工人数量 * 效率加成 * 金钱消耗倍率 * 降低金钱转化消耗 * 基础值加成 = 最终消耗金钱
   num1 *=
     (1 +
       (researchProps.get(EnumResearchProp.Cost1Ratio)
         ? researchProps.get(EnumResearchProp.Cost1Ratio)!
         : 0)) *
     Resource.Cost1MoneyRatio *
+    (1 + num11) *
     num10;
   num2 *=
     (1 +
@@ -45,6 +46,7 @@ export function calculateMoneySpeed(
         ? researchProps.get(EnumResearchProp.Cost2Ratio)!
         : 0)) *
     Resource.Cost2MoneyRatio *
+    (1 + num11) *
     num10;
   num12 *=
     (1 +
@@ -52,7 +54,8 @@ export function calculateMoneySpeed(
         ? researchProps.get(EnumResearchProp.PolicyRatio)!
         : 0)) *
     Resource.PolicyCostBaseRatio *
-    num10;//政策转化消耗的金钱、工人数量乘以政策转化率乘以消耗乘以减消耗
+    (1 + num11) *
+    num10; //
 
   //工人支出、cost1转化、cost2转化
   //影响力收入
@@ -74,6 +77,7 @@ export function calculateMoneySpeed(
       workConfig[i] = 0;
     }
     isDebts = true;
+    moneyData.cacheSpeed = num7;
   }
   return isDebts;
 }
@@ -85,14 +89,63 @@ export function calculatePolicySpeed(
   workConfig: number[],
   researchProps: Map<EnumResearchProp, number>,
   deltaTime: number
-){
-  const cost1 = sourceArr.get(EnumResourceItem.Cost1);
-  const cost2 = sourceArr.get(EnumResourceItem.Cost2);
+) {
+  const cost1 = sourceArr.get(EnumResourceItem.Cost1)!;
+  const cost2 = sourceArr.get(EnumResourceItem.Cost2)!;
+  const policy = sourceArr.get(EnumResourceItem.Policy)!;
+  if(!cost1.unlock){//没解锁直接return
+    return;
+  }
+
   let num1 = workConfig[EnumWorkType.Cost1Work]; //动漫知识工人
   let num2 = workConfig[EnumWorkType.Cost2Work]; //游戏知识工人
   let num3 = workConfig[EnumWorkType.PolicyWork]; //政策工人
-  //先算动漫、游戏知识的产出速度，再算政策工人的消耗速度
-  
+  let num4 = researchProps.get(EnumResearchProp.Cost1Ratio)
+    ? researchProps.get(EnumResearchProp.Cost1Ratio)!
+    : 0; //动漫转化效率提升
+  let num5 = researchProps.get(EnumResearchProp.Cost2Ratio)
+    ? researchProps.get(EnumResearchProp.Cost2Ratio)!
+    : 0; //游戏转化效率提升
+ 
+  let num8 = researchProps.get(EnumResearchProp.WorkBaseRatio)
+    ? researchProps.get(EnumResearchProp.WorkBaseRatio)!
+    : 0; //法案提供的工作基础值百分比
+  //先算动漫、游戏知识的产出速度=人数*动漫效率*基础值提升
+  num1 *= (1 + num4) * (1 + num8);
+  num2 *= (1 + num5) * (1 + num8);
 
+  if(!cost2.unlock){
+    cost1.cacheSpeed = num1;
+    return false;
+  }
+  if(!policy.unlock || num3 < 1){
+    cost1.cacheSpeed = num1;
+    cost2.cacheSpeed = num2;
+    return false;
+  }
+  //政策资源解锁了且安排了一个人，才考虑消耗问问题
+  let num6 = researchProps.get(EnumResearchProp.PolicyRatio)
+  ? researchProps.get(EnumResearchProp.PolicyRatio)!
+  : 0; //政策转化效率提升
+let num7 = researchProps.get(EnumResearchProp.ResearchCostRatio)
+  ? researchProps.get(EnumResearchProp.ResearchCostRatio)!
+  : 1; //法案提供的金钱转化消耗降低，递减属性，默认是1
 
+  //政策消耗数值=人数*策略效率*消耗知识的倍率 * 消耗降低百分比 * 基础值提升
+  num3 *= (1 + num6) * Resource.PolicyCostBaseRatio * num7 * (1 + num8);
+  cost1.cacheSpeed = num1 - num3;
+  cost2.cacheSpeed = num2 - num3;
+  policy.cacheSpeed = num3 * Resource.PolicyAddBase;
+  //如果知识的速度加上当前的值，小于0，清楚政策的工人就可以了
+  let isDebts = false;
+  if (
+    cost1.cacheSpeed * deltaTime + cost1.cacheValue <= 0 || cost2.cacheSpeed * deltaTime + cost2.cacheValue <= 0
+  ) {
+    workConfig[EnumWorkType.PolicyWork] = 0;
+    isDebts = true;//此时知识的速度就不用减去消耗了
+    cost1.cacheSpeed = num1;
+    cost2.cacheSpeed = num2;
+    policy.cacheSpeed = 0;
+  }
+  return isDebts;
 }

@@ -2,7 +2,7 @@
 import { computed, PropType, reactive, ref } from "vue";
 import { ReplaceGameData, store } from "../../store/index";
 import { ItemInfoList } from "../../core/tables/table";
-import { EnumResourceItem, EnumResearchProp } from "../../core/tables/Enum";
+import { EnumResourceItem, EnumResearchProp, EnumWorkType } from "../../core/tables/Enum";
 import { intToString, stringFormat } from "../../core/utils";
 import { resourceItemData } from "../../core/gameMain/gameSave";
 import { Resource } from "../../core/tables/GlobalConfig";
@@ -24,6 +24,13 @@ const getTips = computed(function () {
     const workBaseRatio = researchProps.get(EnumResearchProp.WorkBaseRatio)
       ? researchProps.get(EnumResearchProp.WorkBaseRatio)!
       : 0; //法案提供的工作基础值百分比
+    const moneyCostRatio = researchProps.get(EnumResearchProp.MoneyCostRatio)
+      ? researchProps.get(EnumResearchProp.MoneyCostRatio)!
+      : 0; //法案提供的工作金钱消耗降低
+    const researchCostRatio = researchProps.get(EnumResearchProp.ResearchCostRatio)
+      ? researchProps.get(EnumResearchProp.ResearchCostRatio)!
+      : 0; //法案提供的工作知识消耗降低
+
     switch (id) {
       case EnumResourceItem.Influence:
         return stringFormat(
@@ -38,7 +45,7 @@ const getTips = computed(function () {
         return stringFormat(
           data.Desc,
           intToString(ratio1 * 100, 0),
-          intToString(Resource.GetMoneyRatio * (1 + workBaseRatio))
+          intToString(Resource.GetMoneyRatio * (1 + workBaseRatio)),
         );
       case EnumResourceItem.Cost1:
         const ratio2 = researchProps.get(EnumResearchProp.Cost1Ratio)
@@ -47,7 +54,8 @@ const getTips = computed(function () {
         return stringFormat(
           data.Desc,
           intToString(ratio2 * 100, 0),
-          intToString(1 * (1 + workBaseRatio))
+          intToString(1 * (1 + workBaseRatio)),
+          intToString(Resource.Cost1MoneyRatio * (1 - moneyCostRatio))
         );
       case EnumResourceItem.Cost2:
         const ratio3 = researchProps.get(EnumResearchProp.Cost2Ratio)
@@ -56,7 +64,8 @@ const getTips = computed(function () {
         return stringFormat(
           data.Desc,
           intToString(ratio3 * 100, 0),
-          intToString(1 * (1 + workBaseRatio))
+          intToString(1 * (1 + workBaseRatio)),
+          intToString(Resource.Cost2MoneyRatio * (1 - moneyCostRatio))
         );
       case EnumResourceItem.Believer:
         return data.Desc;
@@ -69,15 +78,20 @@ const getTips = computed(function () {
         return stringFormat(
           data.Desc,
           intToString(ratio4 * 100, 0),
-          intToString(Resource.PolicyAddBase * (1 + workBaseRatio))
+          intToString(Resource.PolicyAddBase * (1 + workBaseRatio), 2),
+          intToString(Resource.PolicyCostBaseRatio * (1 - moneyCostRatio)),
+          intToString(Resource.PolicyCostBaseRatio * (1 - researchCostRatio))
         );
       case EnumResourceItem.Political:
-        return data.Desc;//TODO 描述序列化
+        const prop = store.state.props.get(EnumResearchProp.PoliticalAllRatio) ? store.state.props.get(EnumResearchProp.PoliticalAllRatio)!  : 0;
+        return stringFormat(data.Desc,intToString(prop * 100)); //TODO 描述序列化
       default:
         break;
     }
   };
 });
+
+
 </script>
 
 <template>
@@ -94,7 +108,7 @@ const getTips = computed(function () {
           <el-popover
             placement="bottom"
             trigger="hover"
-            :width="200"
+            :width="350"
             transition="124"
           >
             <span class="tips">{{ getTips(row.ID) }}</span>

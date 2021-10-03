@@ -24,7 +24,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Influence,
       Name: "影响力",
-      Desc: "当前影响力等级：{0}级，工作基础值为{1}\n影响力解锁游戏进程",
+      Desc: "当前影响力等级：{0}级\n每单位工作基础值为{1}\n影响力解锁游戏进程",
       BaseMax: 100,
       Type: ItemType.AutoUnLock,
     },
@@ -34,7 +34,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Money,
       Name: "金钱",
-      Desc: "当前金钱收集效率：{0}%，工作基础值为{1}\n你只是为了消灭ACG文化才收集了一点点钱",
+      Desc: "当前金钱收集效率：{0}%\n每单位工作基础值为{1}\n你只是为了消灭ACG文化才收集了一点点钱",
       BaseMax: -1,
       Type: ItemType.None,
     },
@@ -44,7 +44,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Cost1,
       Name: "动漫知识",
-      Desc: "当前动漫知识研究效率：{0}%，工作基础值为{1}\n每转化1点动漫知识需要消耗2点金钱",
+      Desc: "当前动漫知识研究效率：{0}%\n每单位工作基础值为{1}\n每转化1点动漫知识需要消耗{2}点金钱",
       BaseMax: -1,
       Type: ItemType.Research,
     },
@@ -54,7 +54,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Cost2,
       Name: "游戏知识",
-      Desc: "当前游戏知识研究效率：{0}%，工作基础值为{1}\n每转化1点游戏知识需要消耗10点金钱\n游戏的荼毒更深，所以需要更多的氪金才能获得",
+      Desc: "当前游戏知识研究效率：{0}%\n每单位工作基础值为{1}\n每转化1点游戏知识需要消耗{2}点金钱\n游戏的荼毒更深，所以需要更多的氪金才能获得",
       BaseMax: -1,
       Type: ItemType.Research,
     },
@@ -74,7 +74,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.People,
       Name: "从众",
-      Desc: "安排从众工作，提供工作基础值，并额外消耗1点金钱每人\n从众和信徒的增长速度一样，信徒达到上限后，从众增加速度翻倍。",
+      Desc: "安排从众工作，提供工作基础值，并额外消耗1点金钱每人\n从众和信徒的增长速度一样，信徒达到上限后，从众增长速度翻倍。",
       BaseMax: 10,
       Type: ItemType.None,
     },
@@ -84,7 +84,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Policy,
       Name: "政策点",
-      Desc: "当前政策点获取效率：{0}%，每单位工作基础值为{1}\n每1点政策点需要消耗10点金钱、动漫和游戏知识\n颁布新政除了消耗政策点，你还需要有一定的政治背景才能推行。",
+      Desc: "当前政策点获取效率：{0}%\n每单位工作基础值为{1}\n每1点政策点需要消耗{2}点金钱, {3}动漫和游戏知识\n颁布新政除了消耗政策点，你还需要有一定的政治背景才能推行。",
       BaseMax: -1,
       Type: ItemType.None,
     },
@@ -94,7 +94,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Political,
       Name: "政治背景",
-      Desc: "提高全局资源的速度，当前全局效率提升{0}%\n这是一种重置资源，在政治分页重置游戏获得，获得数量与信徒数量相关\n当前重置游戏将获得{1}点资源",
+      Desc: "提高全局资源的速度，当前全局效率提升{0}%\n这是一种重置资源，在政治分页重置游戏获得，获得数量与信徒数量相关",
       BaseMax: -1,
       Type: ItemType.None,
     },
@@ -842,7 +842,7 @@ export const LawInfoList: Map<number, ILawInfo> = new Map([
       Name: "996",
       Desc: "996是一种福报\n每级提高工作效果基础值10%\n当前提高{0}%",
       Cost: 100,
-      ResearchProp: new Map([[EnumResearchProp.ReduceInfluenceBuildCost, 0.1]]),
+      ResearchProp: new Map([[EnumResearchProp.WorkBaseRatio, 0.1]]),
     },
   ],
   [
@@ -850,7 +850,7 @@ export const LawInfoList: Map<number, ILawInfo> = new Map([
     {
       ID: EnumLawItem.MoneyCostRatio,
       Name: "共同富裕",
-      Desc: "先富带动后富\n每级降低工作金钱转化消耗5%\n当前降低消耗{0}",
+      Desc: "先富带动后富\n每级降低工作金钱转化消耗5%\n当前降低消耗{0}%",
       Cost: 100,
       ResearchProp: new Map([[EnumResearchProp.MoneyCostRatio, 0.05]]),
       IsReduceProp:true,
@@ -861,7 +861,7 @@ export const LawInfoList: Map<number, ILawInfo> = new Map([
     {
       ID: EnumLawItem.ResearchCostRatio,
       Name: "学术包装",
-      Desc: "这不是造假，只是一种暂时性的合理包装\n每级降低工作知识转化消耗5%\n当前降低消耗{0}",
+      Desc: "这不是造假，只是一种暂时性的合理包装\n每级降低工作知识转化消耗5%\n当前降低消耗{0}%",
       Cost: 100,
       ResearchProp: new Map([[EnumResearchProp.ResearchCostRatio, 0.05]]),
       IsReduceProp:true,

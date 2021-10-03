@@ -10,6 +10,7 @@ import {
   setStoreGameDataByBase64,
   SaveLocalStorageKey,
   getCurrentSaveGameData,
+  SaveGame,
 } from "./gameSave";
 import { CalculateProps, resourceUpdate } from "./gameUpdate";
 import { GameTime } from "../tables/GlobalConfig";
@@ -33,11 +34,11 @@ export class GameControl {
 
   public Start(state: State) {
     setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey]);
-    CalculateProps();//初始化要重算一次属性
+    CalculateProps(); //初始化要重算一次属性
     setInterval(() => {
       this.update();
     }, GameTime.UpdateTime);
-// 
+    //
     setInterval(() => {
       this.saveGame();
     }, GameTime.SaveTime);
@@ -77,14 +78,7 @@ export class GameControl {
     });
   }
   private saveGame() {
-    if (!store.state.running) return;
-    if (store.state.gameFail) {
-      return;
-    }
-    const saveGameData = getCurrentSaveGameData();
-    const code = Base64.encode(JSON.stringify(saveGameData));
-    window.localStorage.setItem(SaveLocalStorageKey, code);
-    store.state.haslog = true;
+    SaveGame();
   }
 
   private update() {

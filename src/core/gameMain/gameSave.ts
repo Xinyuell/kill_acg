@@ -72,6 +72,18 @@ export function setStoreGameDataByBase64(
   return true;
 }
 
+export function SaveGame(){
+  if (!store.state.running) return;
+  if (store.state.gameFail) {
+    return;
+  }
+  const saveGameData = getCurrentSaveGameData();
+  if (saveGameData === undefined) return;
+  const code = Base64.encode(JSON.stringify(saveGameData));
+  window.localStorage.setItem(SaveLocalStorageKey, code);
+  store.state.haslog = true;
+}
+
 export function getCurrentSaveGameData() {
   if (!store.state.running) return;
   if (store.state.gameFail) return;

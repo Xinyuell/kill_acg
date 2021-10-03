@@ -4,9 +4,12 @@ import { ResetStore, store } from "../../store/index";
 import { PolicyInfoList, ResearchInfoList } from "../../core/tables/table";
 import { IResearchInfo } from "../../core/tables/ITableInfo";
 import {
+  getCurrentSaveGameData,
   initGameData,
   lawItemData,
   policyItemData,
+  SaveGame,
+  SaveLocalStorageKey,
 } from "../../core/gameMain/gameSave";
 import PolicyItem from "../BaseItem/PolicyItem.vue";
 import LawItem from "../BaseItem/LawItem.vue";
@@ -15,6 +18,8 @@ import { router } from "../../router";
 import { GetPoliticalCount } from "../../core/gameMain/acgUpdate";
 import { EnumResourceItem } from "../../core/tables/Enum";
 import { intToString } from "../../core/utils";
+import { Base64 } from "js-base64";
+import { CalculateProps } from "../../core/gameMain/gameUpdate";
 
 const activeNames = ref(["0", "1"]);
 const policyArry = computed(() => {
@@ -53,7 +58,9 @@ function onClearClick() {
             store.state.gameData.PoliticalData.restartTime
           );
           const LawArryList = store.state.gameData.LawArryList;
-          PoliticalData.value = store.state.gameData.sourceArr.get(EnumResourceItem.Political)!.cacheValue + newPoliticalValue;
+          PoliticalData.value =
+            store.state.gameData.sourceArr.get(EnumResourceItem.Political)!
+              .cacheValue + newPoliticalValue;
           PoliticalData.restartTime++;
           PoliticalData.totalTimes += store.state.gameData.totalTime;
           PoliticalData.LawLevel.length = 0;
@@ -64,12 +71,19 @@ function onClearClick() {
             });
           });
           ResetStore();
-          
+
           store.state.gameData.PoliticalData = PoliticalData;
           store.state.gameData.LawArryList = LawArryList;
-          const resourcePolitical = store.state.gameData.sourceArr.get(EnumResourceItem.Political)!;
+          const resourcePolitical = store.state.gameData.sourceArr.get(
+            EnumResourceItem.Political
+          )!;
           resourcePolitical.cacheValue = PoliticalData.value;
           resourcePolitical.unlock = true;
+          CalculateProps();
+          store.state.haslog = true;
+          store.state.running = true;
+          SaveGame();
+          store.state.running = false;
           router.push("/introduction");
         }
       },

@@ -144,6 +144,8 @@ export enum EnumResearchProp {
   MoneyCostRatio,
   /** 工作知识消耗降低百分比 */
   ResearchCostRatio,
+    /** 政治背景加速全局效率 */
+  PoliticalAllRatio,
 }
 
 export enum EnumPolicyItem {

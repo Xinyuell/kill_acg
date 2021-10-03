@@ -59,15 +59,15 @@ export default {
       str += data.Desc;
       switch (data.ID) {
         case EnumLawItem.ComplainCD:
-          return stringFormat(str, (data.level * 0.02).toString());
+          return stringFormat(str, intToString( (data.level * 0.02),2) );
         case EnumLawItem.ComplainAcgRatio:
-          return stringFormat(str, (data.level * 10).toString());
+          return stringFormat(str, intToString((data.level * 10),2));
         case EnumLawItem.WorkBaseRatio:
-          return stringFormat(str, (data.level * 10).toString());
+          return stringFormat(str, intToString((data.level * 10),2));
         case EnumLawItem.MoneyCostRatio:
-          return stringFormat(str, ((1 - Math.pow(0.95, data.level)) * 100).toString());
+          return stringFormat(str, intToString((1 - Math.pow(0.95, data.level)) * 100));
         case EnumLawItem.ResearchCostRatio:
-          return stringFormat(str, ((1 - Math.pow(0.95, data.level)) * 100).toString());
+          return stringFormat(str, intToString((1 - Math.pow(0.95, data.level)) * 100) );
       }
       return str;
     },

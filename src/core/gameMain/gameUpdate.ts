@@ -90,7 +90,13 @@ export function CalculateProps() {
       );
     }
   });
-
+  if (store.state.gameData.sourceArr.get(EnumResourceItem.Political)) {
+    const value = store.state.gameData.sourceArr.get(
+      EnumResourceItem.Political
+    )!.cacheValue;
+    const prop = Math.log(value + 10) / 2 - 1;
+    props.set(EnumResearchProp.PoliticalAllRatio, prop);
+  }
   store.commit(UpdateProps, props);
   return props;
 }
@@ -243,6 +249,9 @@ function setResourceSpeed(
       }
       break;
   }
+  //这里再乘以全局速度加成,
+  const propAllRatio = store.state.props.get(EnumResearchProp.PoliticalAllRatio) ? store.state.props.get(EnumResearchProp.PoliticalAllRatio)!  : 0;
+  data.cacheSpeed *= 1 + propAllRatio;
   const strValue = intToString(data.cacheSpeed, 2);
   if (strValue !== data.speed) {
     store.commit(SetResourceSpeed, {

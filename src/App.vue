@@ -21,7 +21,7 @@
   margin: 0.2px;
 }
 span.tips{
-  white-space: pre-line;
+  white-space: pre-wrap;
   font-size:0.25rem;
 }
 </style>

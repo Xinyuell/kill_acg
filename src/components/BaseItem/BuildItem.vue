@@ -11,17 +11,33 @@ import { buildItemData, resourceItemData } from "../../core/gameMain/gameSave";
 import {
   BuildClickType,
   EnumBuildItem,
+  EnumResearchProp,
   EnumResourceItem,
+  ItemType,
 } from "../../core/tables/Enum";
 import { CityBuildCostBase, Resource } from "../../core/tables/GlobalConfig";
 
 function getUpgradeCost(data: buildItemData) {
-  const cost =
+  let cost =
     Resource.BuildUpgradeBase *
-      (data.curValue * data.upgradeCostRatio +
-        Math.pow(data.upgradeCostPower, data.curValue)) +
+      (data.curValue * data.UpgradeCostRatio +
+        Math.pow(data.UpgradeCostPower, data.curValue)) +
     CityBuildCostBase[data.cityName]!;
-  return cost;
+  let reduce = 1;
+  if ((data.Type & ItemType.InfluenceBuild) > 0) {
+    reduce -= store.state.props.get(EnumResearchProp.ReduceInfluenceBuildCost)
+      ? store.state.props.get(EnumResearchProp.ReduceInfluenceBuildCost)!
+      : 0;
+  } else if ((data.Type & ItemType.MoneyBuild) > 0) {
+    reduce -= store.state.props.get(EnumResearchProp.ReduceMoneyBuildCost)
+      ? store.state.props.get(EnumResearchProp.ReduceMoneyBuildCost)!
+      : 0;
+  } else if ((data.Type & ItemType.ResearchBuild) > 0) {
+    reduce -= store.state.props.get(EnumResearchProp.ReduceResearchBuildCost)
+      ? store.state.props.get(EnumResearchProp.ReduceResearchBuildCost)!
+      : 0;
+  }
+  return cost * reduce;
 }
 
 function buildGuideTips(data: buildItemData) {
@@ -61,7 +77,7 @@ export default {
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const data: buildItemData = (this as any).buildData;
-      switch (data.click) {
+      switch (data.OnClickType) {
         case BuildClickType.Upgrade:
           if (import.meta.env.DEV) {
             data.curValue++;
@@ -103,7 +119,7 @@ export default {
     tips: function () {
       const data: buildItemData = (this as any).buildData;
       let str = "";
-      if (data.click === BuildClickType.Upgrade) {
+      if (data.OnClickType === BuildClickType.Upgrade) {
         str += "消耗" + intToString(getUpgradeCost(data)) + "金钱\n";
         const sourceArr: Map<number, resourceItemData> =
           store.state.gameData.sourceArr;
@@ -117,12 +133,12 @@ export default {
             "无法升级\n";
         }
       }
-      str += data.baseTips;
+      str += data.Desc;
       return str;
     },
     canClick: function () {
       const data: buildItemData = (this as any).buildData;
-      if (data.click === BuildClickType.Upgrade) {
+      if (data.OnClickType === BuildClickType.Upgrade) {
         const sourceArr: Map<number, resourceItemData> =
           store.state.gameData.sourceArr;
         if (
@@ -146,7 +162,7 @@ export default {
         class="buildItem"
         type="success"
         @click="buildItemClick"
-        >{{ buildData.buildName }}
+        >{{ buildData.Name }}
         <span class="buildCount" v-show="buildData.curValue > 0">{{
           buildData.curValue
         }}</span>

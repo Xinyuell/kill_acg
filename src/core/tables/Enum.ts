@@ -2,12 +2,14 @@ import exp from "constants";
 
 export enum ItemType {
   None = 0,
-  /** * 是否研究资源 */
-  Research = 1 << 0,
   /** * 是否初始解锁 */
-  AutoUnLock = 1 << 1,
-  /** * 是否可升级 */
-  Upgrade = 1 << 2,
+  AutoUnLock = 1 << 0,
+  /** * 是否影响力建筑 */
+  InfluenceBuild = 1 << 1,
+  /** * 是否金钱建筑 */
+  MoneyBuild = 1 << 2,
+  /** * 是否研究建筑 */
+  ResearchBuild = 1 << 3,
 }
 export enum BuildClickType {
   None,
@@ -144,7 +146,7 @@ export enum EnumResearchProp {
   MoneyCostRatio,
   /** 工作知识消耗降低百分比 */
   ResearchCostRatio,
-    /** 政治背景加速全局效率 */
+  /** 政治背景加速全局效率 */
   PoliticalAllRatio,
 }
 

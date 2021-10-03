@@ -69,12 +69,8 @@ export default {
           "无法升级\n";
       }
       str += data.Desc;
-      if (data.IsReduceProp) {
-        const value = (1 - Math.pow(0.95, data.level)) * 100;
-        return stringFormat(str, value.toString());
-      } else {
-        return stringFormat(str, (data.level * 0.1).toString());
-      }
+      const value = (1 - Math.pow(0.95, data.level));
+      return stringFormat(str, intToString(value * 100));
     },
     canClick: function () {
       const data: policyItemData = (this as any).policyItemData;

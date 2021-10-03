@@ -156,18 +156,18 @@ function updateResourceMaxValue(
     let data: resourceItemData | undefined = undefined;
     if (enumKey === EnumResearchProp.BelieverMax) {
       data = sourceArr.get(EnumResourceItem.Believer)!;
-      data.cacheMaxValue = data.baseMaxValue + prop;
+      data.cacheMaxValue = data.BaseMax + prop;
     }
     if (enumKey === EnumResearchProp.PeopleMax) {
       data = sourceArr.get(EnumResourceItem.People)!;
       data.cacheMaxValue =
-        sourceArr.get(EnumResourceItem.People)!.baseMaxValue + prop;
+        sourceArr.get(EnumResourceItem.People)!.BaseMax + prop;
     }
     if (enumKey === EnumResearchProp.BelieverAddInfluenceMax) {
       //影响力上限等于基础值+信徒属性加成*当前信徒总数
       data = sourceArr.get(EnumResourceItem.Influence)!;
       data.cacheMaxValue =
-        sourceArr.get(EnumResourceItem.People)!.baseMaxValue +
+        sourceArr.get(EnumResourceItem.People)!.BaseMax +
         prop * sourceArr.get(EnumResourceItem.Believer)!.cacheValue;
     }
     if (data === undefined) return;

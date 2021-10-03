@@ -9,7 +9,7 @@ import {
 } from "../tables/table";
 import { ItemType, BuildClickType, EnumResearchProp } from "../tables/Enum";
 import { AcgProgressData } from "../tables/GlobalConfig";
-import { ILawInfo, IPolicyInfo } from "../tables/ITableInfo";
+import { IBuildInfo, IItemInfo, ILawInfo, IPolicyInfo } from "../tables/ITableInfo";
 
 export const SaveLocalStorageKey = "kill_acg_game";
 
@@ -158,30 +158,34 @@ export function initGameData() {
   };
   ItemInfoList.forEach(function (value, index) {
     gameData.sourceArr.set(value.ID, {
-      resourceName: value.Name,
+      Name: value.Name,
       cacheValue: 0,
       cacheSpeed: 0,
       cacheMaxValue: value.BaseMax,
-      baseMaxValue: value.BaseMax,
+      BaseMax: value.BaseMax,
       curValue: "0",
       maxValue: value.BaseMax.toString(),
       speed: "0",
       unlock: (value.Type & ItemType.AutoUnLock) > 0,
       ID: value.ID,
+      Type:value.Type,
+      Desc:value.Desc,
     });
   });
   BuildInfoList.forEach(function (value, index) {
     gameData.buildArryList.set(value.ID, {
-      buildName: value.Name,
+      Name: value.Name,
       curValue: 0,
       unlock: (value.Type & ItemType.AutoUnLock) > 0,
       cityName: value.cityName,
       ID: value.ID,
-      click: value.OnClickType,
-      baseTips: value.Desc,
-      upgradeCostRatio: value.UpgradeCostRatio,
-      upgradeCostPower: value.UpgradeCostPower,
+      OnClickType: value.OnClickType,
+      Desc: value.Desc,
+      UpgradeCostRatio: value.UpgradeCostRatio,
+      UpgradeCostPower: value.UpgradeCostPower,
       ResearchProp: value.ResearchProp,
+      Type:value.Type,
+      Require:value.Require
     });
   });
 
@@ -229,30 +233,18 @@ interface ISaveResourceData {
   ID: number; //
 }
 
-export interface buildItemData {
-  buildName: string;
+export interface buildItemData extends IBuildInfo {
   curValue: number;
   unlock: boolean;
-  cityName: number;
-  click: BuildClickType;
-  ID: number;
-  baseTips: string;
-  upgradeCostRatio: number;
-  upgradeCostPower: number;
-  /**提供属性，乘以数量 */
-  ResearchProp: Map<EnumResearchProp, number>;
 }
 
-export interface resourceItemData {
-  resourceName: string;
+export interface resourceItemData extends IItemInfo {
   /**当前值：真实数值 */
   cacheValue: number;
   /**当前增长速度：真实数值 */
   cacheSpeed: number;
   /**当前最大值：真实数值 */
   cacheMaxValue: number;
-  /**基础最大值：填表 */
-  baseMaxValue: number;
 
   /**当前值：显示值，字符串，有变化的才更新，忽视较小的数 */
   curValue: string;
@@ -262,7 +254,6 @@ export interface resourceItemData {
   speed: string;
 
   unlock: boolean;
-  ID: number; //
 }
 
 export interface policyItemData extends IPolicyInfo {

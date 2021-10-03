@@ -113,7 +113,7 @@ const getTips = computed(function () {
           >
             <span class="tips">{{ getTips(row.ID) }}</span>
             <template #reference>
-              <span>{{ row.resourceName }}</span>
+              <span>{{ row.Name }}</span>
             </template>
           </el-popover>
         </template>

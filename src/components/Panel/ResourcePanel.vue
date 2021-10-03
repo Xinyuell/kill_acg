@@ -3,8 +3,9 @@ import { computed, PropType, reactive, ref } from "vue";
 import { ReplaceGameData, store } from "../../store/index";
 import { ItemInfoList } from "../../core/tables/table";
 import { EnumResourceItem, EnumResearchProp } from "../../core/tables/Enum";
-import { stringFormat } from "../../core/utils";
+import { intToString, stringFormat } from "../../core/utils";
 import { resourceItemData } from "../../core/gameMain/gameSave";
+import { Resource } from "../../core/tables/GlobalConfig";
 
 const getData = computed(() => {
   const sourceArr: Map<number, resourceItemData> =
@@ -19,50 +20,59 @@ const getData = computed(() => {
 const getTips = computed(function () {
   return (id: EnumResourceItem) => {
     const data = ItemInfoList.get(id)!;
+    const researchProps = store.state.props;
+    const workBaseRatio = researchProps.get(EnumResearchProp.WorkBaseRatio)
+      ? researchProps.get(EnumResearchProp.WorkBaseRatio)!
+      : 0; //法案提供的工作基础值百分比
     switch (id) {
       case EnumResourceItem.Influence:
         return stringFormat(
           data.Desc,
-          store.state.gameData.influenceLevel.toString()
+          store.state.gameData.influenceLevel.toString(),
+          intToString(1 * (1 + workBaseRatio))
         );
       case EnumResourceItem.Money:
-        if(store.state.props.get(EnumResearchProp.MoneyRatio) === undefined)
-          return data.Desc;
+        const ratio1 = researchProps.get(EnumResearchProp.MoneyRatio)
+          ? researchProps.get(EnumResearchProp.MoneyRatio)!
+          : 0;
         return stringFormat(
           data.Desc,
-          store.state.props.get(EnumResearchProp.MoneyRatio)!.toString()
+          intToString(ratio1 * 100, 0),
+          intToString(Resource.GetMoneyRatio * (1 + workBaseRatio))
         );
       case EnumResourceItem.Cost1:
-        if(store.state.props.get(EnumResearchProp.Cost1Ratio) === undefined)
-          return data.Desc;        
+        const ratio2 = researchProps.get(EnumResearchProp.Cost1Ratio)
+          ? researchProps.get(EnumResearchProp.Cost1Ratio)!
+          : 0;
         return stringFormat(
           data.Desc,
-          store.state.props.get(EnumResearchProp.Cost1Ratio)!.toString()
+          intToString(ratio2 * 100, 0),
+          intToString(1 * (1 + workBaseRatio))
         );
       case EnumResourceItem.Cost2:
-        if(store.state.props.get(EnumResearchProp.Cost2Ratio) === undefined)
-          return data.Desc;           
+        const ratio3 = researchProps.get(EnumResearchProp.Cost2Ratio)
+          ? researchProps.get(EnumResearchProp.Cost2Ratio)!
+          : 0;
         return stringFormat(
           data.Desc,
-          store.state.props.get(EnumResearchProp.Cost2Ratio)!.toString()
+          intToString(ratio3 * 100, 0),
+          intToString(1 * (1 + workBaseRatio))
         );
       case EnumResourceItem.Believer:
-           return data.Desc;  
+        return data.Desc;
       case EnumResourceItem.People:
-        return stringFormat(
-          data.Desc,
-          store.state.gameData.influenceLevel.toString()
-        );
+        return data.Desc;
       case EnumResourceItem.Policy:
+        const ratio4 = researchProps.get(EnumResearchProp.PolicyRatio)
+          ? researchProps.get(EnumResearchProp.PolicyRatio)!
+          : 0;
         return stringFormat(
           data.Desc,
-          store.state.gameData.influenceLevel.toString()
+          intToString(ratio4 * 100, 0),
+          intToString(Resource.PolicyAddBase * (1 + workBaseRatio))
         );
-      case EnumResourceItem.Policy:
-        return stringFormat(
-          data.Desc,
-          store.state.gameData.influenceLevel.toString()
-        );
+      case EnumResourceItem.Political:
+        return data.Desc;//TODO 描述序列化
       default:
         break;
     }

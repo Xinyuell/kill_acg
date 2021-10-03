@@ -180,6 +180,7 @@ export function initGameData() {
       ID: value.ID,
       Desc: value.Desc,
       Cost: value.Cost,
+      ResearchProp:value.ResearchProp,
     });
   });
 
@@ -192,6 +193,7 @@ export function initGameData() {
       UpgradeRatio: value.UpgradeRatio,
       Cost: value.Cost,
       Condition: value.Condition,
+      ResearchProp:value.ResearchProp,
     });
   });
 

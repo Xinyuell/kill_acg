@@ -50,7 +50,7 @@ function SetPolicyProp(
 }
 
 /** 重算全局属性，并提交给store */
-export function CaculateProps() {
+export function CalculateProps() {
   const props: Map<EnumResearchProp, number> = new Map();
   //属性是动态算的
   store.state.gameData.researchComplete.forEach(function (id) {

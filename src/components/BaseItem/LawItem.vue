@@ -5,7 +5,7 @@ import {
   store,
   UnlockResource,
 } from "../../store/index";
-import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
+import { CalculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString, stringFormat } from "../../core/utils";
 import { lawItemData, resourceItemData } from "../../core/gameMain/gameSave";
 import { EnumLawItem, EnumResourceItem } from "../../core/tables/Enum";
@@ -29,14 +29,14 @@ export default {
       const data: lawItemData = (this as any).lawItemData;
       if (import.meta.env.DEV) {
         data.level++;
-        CaculateProps();
+        CalculateProps();
         return;
       }
       const cost = getUpgradeCost(data);
       if (cost > sourceArr.get(EnumResourceItem.Political)!.cacheValue) return;
       sourceArr.get(EnumResourceItem.Political)!.cacheValue -= cost;
       data.level++;
-      CaculateProps();
+      CalculateProps();
     },
   },
 

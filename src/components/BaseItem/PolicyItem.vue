@@ -5,7 +5,7 @@ import {
   store,
   UnlockResource,
 } from "../../store/index";
-import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
+import { CalculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString, stringFormat } from "../../core/utils";
 import {
   buildItemData,
@@ -40,14 +40,14 @@ export default {
       const data: policyItemData = (this as any).policyItemData;
       if (import.meta.env.DEV) {
         data.level++;
-        CaculateProps();
+        CalculateProps();
         return;
       }
       const cost = getUpgradeCost(data);
       if (cost > sourceArr.get(EnumResourceItem.Policy)!.cacheValue) return;
       sourceArr.get(EnumResourceItem.Policy)!.cacheValue -= cost;
       data.level++;
-      CaculateProps();
+      CalculateProps();
       //TODO 升级有什么提示 或者解锁
     },
   },

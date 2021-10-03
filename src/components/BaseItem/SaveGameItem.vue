@@ -5,6 +5,7 @@ import { ReplaceGameData, store } from "../../store/index";
 import useClipboard from "vue-clipboard3";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { router } from "../../router";
+import { initGameData } from "../../core/gameMain/gameSave";
 
 const textarea = ref("");
 function onImportClick() {
@@ -61,18 +62,35 @@ async function onExportClick() {
   }
 }
 function onClearClick() {
-  ElMessageBox.alert("清除存档，重置你的所有进度", "危险操作！", {
+  ElMessageBox.alert("清除存档，删除你的所有进度，重新开始游戏，并且无法撤销！请先至少导出一份存档再执行此操作", "警告！危险操作！", {
     confirmButtonText: "OK",
     callback: (action: string) => {
-      if(action === "confirm"){
+      if (action === "confirm") {
         window.localStorage.clear();
+        store.state.haslog = false;
+        store.state.running = false;
+        store.state.guideTipsID = -1;
+        store.state.gameData = initGameData();
+        store.state.openGuide = false;
+        store.state.timelineLogs = [];
+        store.state.gameFail = false;
+        store.state.props = new Map();
         router.push("/");
       }
     },
   });
 }
 
+function onOpenClearClick() {
+  switchValue.value = !switchValue.value;
+  if (switchValue.value) {
+    switchBtnText.value = "隐藏删除";
+  } else switchBtnText.value = "清空进度";
+}
+
 const { toClipboard } = useClipboard();
+const switchValue = ref(false);
+const switchBtnText = ref("清空进度");
 </script>
 
 <template>
@@ -84,8 +102,16 @@ const { toClipboard } = useClipboard();
     <el-button class="button" type="primary" @click="onExportClick" plain
       >导出存档</el-button
     >
-    <el-button class="button" type="danger" @click="onClearClick" plain
-      >重置游戏</el-button
+    <el-button class="button" type="danger" @click="onOpenClearClick" plain>{{
+      switchBtnText
+    }}</el-button>
+    <el-button
+      class="button"
+      type="danger"
+      @click="onClearClick"
+      plain
+      v-show="switchValue"
+      >确认删除</el-button
     >
     <el-link
       href="https://github.com/Xinyuell/xinyuell.github.io"

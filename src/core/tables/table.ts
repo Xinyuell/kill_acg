@@ -24,7 +24,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Influence,
       Name: "影响力",
-      Desc: "当前影响力等级：{0}级，每单位工作基础值为1\n影响力解锁游戏进程",
+      Desc: "当前影响力等级：{0}级，工作基础值为{1}\n影响力解锁游戏进程",
       BaseMax: 100,
       Type: ItemType.AutoUnLock,
     },
@@ -34,7 +34,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Money,
       Name: "金钱",
-      Desc: "当前金钱收集效率：{0}%，每单位工作基础值为2\n你只是为了消灭ACG文化才收集了一点点钱",
+      Desc: "当前金钱收集效率：{0}%，工作基础值为{1}\n你只是为了消灭ACG文化才收集了一点点钱",
       BaseMax: -1,
       Type: ItemType.None,
     },
@@ -44,7 +44,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Cost1,
       Name: "动漫知识",
-      Desc: "当前动漫知识研究效率：{0}%，每单位工作基础值为1\n每转化1点动漫知识需要消耗2点金钱",
+      Desc: "当前动漫知识研究效率：{0}%，工作基础值为{1}\n每转化1点动漫知识需要消耗2点金钱",
       BaseMax: -1,
       Type: ItemType.Research,
     },
@@ -54,7 +54,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Cost2,
       Name: "游戏知识",
-      Desc: "当前游戏知识研究效率：{0}%，每单位工作基础值为1\n每转化1点游戏知识需要消耗10点金钱\n游戏的荼毒更深，所以需要更多的氪金才能获得",
+      Desc: "当前游戏知识研究效率：{0}%，工作基础值为{1}\n每转化1点游戏知识需要消耗10点金钱\n游戏的荼毒更深，所以需要更多的氪金才能获得",
       BaseMax: -1,
       Type: ItemType.Research,
     },
@@ -74,7 +74,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.People,
       Name: "从众",
-      Desc: "按排信徒工作，提供工作基础值，并额外消耗1点金钱每人\n从众和信徒的增长速度一样，信徒达到上限后，从众增加速度翻倍。",
+      Desc: "安排从众工作，提供工作基础值，并额外消耗1点金钱每人\n从众和信徒的增长速度一样，信徒达到上限后，从众增加速度翻倍。",
       BaseMax: 10,
       Type: ItemType.None,
     },
@@ -84,7 +84,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Policy,
       Name: "政策点",
-      Desc: "当前政策点获取效率：{0}%，每单位工作基础值为0.1\n每1点政策点需要消耗10点金钱、动漫和游戏知识\n颁布新政除了消耗政策点，你还需要有一定的政治背景才能推行。",
+      Desc: "当前政策点获取效率：{0}%，每单位工作基础值为{1}\n每1点政策点需要消耗10点金钱、动漫和游戏知识\n颁布新政除了消耗政策点，你还需要有一定的政治背景才能推行。",
       BaseMax: -1,
       Type: ItemType.None,
     },
@@ -750,9 +750,9 @@ export const WorkInfoList: Map<number, IWorkInfo> = new Map([
     },
   ],
   [
-    EnumWorkType.ComplainWork,
+    EnumWorkType.PolicyWork,
     {
-      ID: EnumWorkType.ComplainWork,
+      ID: EnumWorkType.PolicyWork,
       Name: "开会",
       Desc: "信徒/从众开会商讨政策，获得政策点\n每个信徒/从众消耗10点金钱、动漫知识和游戏知识，提升0.1点政策点每秒",
       Type: ItemType.None,

@@ -5,7 +5,7 @@ import {
   store,
   UnlockResource,
 } from "../../store/index";
-import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
+import { CalculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { intToString } from "../../core/utils";
 import { buildItemData, resourceItemData } from "../../core/gameMain/gameSave";
 import {
@@ -66,7 +66,7 @@ export default {
           if (import.meta.env.DEV) {
             data.curValue++;
             buildGuideTips(data);
-            CaculateProps();
+            CalculateProps();
             return;
           }
           const cost = getUpgradeCost(data);
@@ -74,7 +74,7 @@ export default {
           sourceArr.get(EnumResourceItem.Money)!.cacheValue -= cost;
           data.curValue++;
           buildGuideTips(data);
-          CaculateProps();
+          CalculateProps();
           break;
         case BuildClickType.AddInfluence:
           sourceArr.get(EnumResourceItem.Influence)!.cacheValue +=

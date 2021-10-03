@@ -11,7 +11,7 @@ import {
   SaveLocalStorageKey,
   getCurrentSaveGameData,
 } from "./gameSave";
-import { resourceUpdate } from "./gameUpdate";
+import { CalculateProps, resourceUpdate } from "./gameUpdate";
 import { GameTime } from "../tables/GlobalConfig";
 
 export class GameControl {
@@ -33,6 +33,7 @@ export class GameControl {
 
   public Start(state: State) {
     setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey]);
+    CalculateProps();//初始化要重算一次属性
     setInterval(() => {
       this.update();
     }, GameTime.UpdateTime);

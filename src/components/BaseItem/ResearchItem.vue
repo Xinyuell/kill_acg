@@ -7,7 +7,7 @@ import {
   UnlockResearch,
   UnlockResource,
 } from "../../store/index";
-import { CaculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
+import { CalculateProps, StartGuideByID } from "../../core/gameMain/gameUpdate";
 import { resourceItemData } from "../../core/gameMain/gameSave";
 import { IResearchInfo } from "../../core/tables/ITableInfo";
 import { EnumResearchItem, EnumResourceItem } from "../../core/tables/Enum";
@@ -51,7 +51,7 @@ export default {
       if (data.UnLock.length > 0) {
         store.commit(UnlockResearch, data.UnLock);
       }
-      CaculateProps();
+      CalculateProps();
       if (data.ID == EnumResearchItem.BelieverBuildLevel1) {
         StartGuideByID(2); //解锁第一个信徒建筑
       }

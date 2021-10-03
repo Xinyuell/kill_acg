@@ -52,7 +52,7 @@ export interface IPolicyInfo extends IBaseInfo {
   /**需要的政治背景等级 */
   Condition: number[];
   /** * 解锁后增加的资源属性 */
-  ResearchProp?: Map<EnumResearchProp, number>;
+  ResearchProp: Map<EnumResearchProp, number>;
   /** * 消耗系数 */
   UpgradeRatio: number;
   /** 是否是递减属性 */
@@ -63,7 +63,7 @@ export interface ILawInfo extends IBaseInfo {
   /**消耗的政治背景 */
   Cost: number;
   /** * 解锁后增加的资源属性 */
-  ResearchProp?: Map<EnumResearchProp, number>;
+  ResearchProp: Map<EnumResearchProp, number>;
   /** 是否是递减属性 */
   IsReduceProp?: boolean;
 }

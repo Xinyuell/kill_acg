@@ -15,7 +15,7 @@ import { GetAutoComplainCD } from "../../core/system/complain";
 import { resourceItemData } from "../../core/gameMain/gameSave";
 import { GetTotalPeople, GetTotalWorks } from "../../core/system/works";
 import { IWorkInfo } from "../../core/tables/ITableInfo";
-import * as Enum from "../../core/tables/Enum"
+import * as Enum from "../../core/tables/Enum";
 import { Resource } from "../../core/tables/GlobalConfig";
 
 export interface IWorkConfig extends IWorkInfo {
@@ -25,17 +25,23 @@ export interface IWorkConfig extends IWorkInfo {
 }
 const IsShow = computed(function () {
   return (id: number) => {
-    if (id < 3) return true;
+    if (id < Enum.EnumWorkType.Cost2Work) return true;
     const researchComplete = store.state.gameData.researchComplete;
     if (
-      id == 3 &&
+      id == Enum.EnumWorkType.Cost2Work &&
       researchComplete.indexOf(Enum.EnumResearchItem.ResearchBuildLevel2) < 0
     ) {
       return false;
     }
     if (
-      id == 4 &&
+      id == Enum.EnumWorkType.ComplainWork &&
       researchComplete.indexOf(Enum.EnumResearchItem.BelieverInfluenceMax2) < 0
+    ) {
+      return false;
+    }
+    if (
+      id == Enum.EnumWorkType.PolicyWork &&
+      researchComplete.indexOf(Enum.EnumResearchItem.ResearchBuildLevel3) < 0
     ) {
       return false;
     }
@@ -147,8 +153,7 @@ function clickAdd(e: MouseEvent, index: number) {
     Enum.EnumResourceItem.Money
   )!;
   let max = moneyData.cacheValue + moneyData.cacheSpeed; // TODO 需要考虑工人的消耗
-  if (index === Enum.EnumWorkType.Cost1Work)
-    max /= Resource.Cost1MoneyRatio;
+  if (index === Enum.EnumWorkType.Cost1Work) max /= Resource.Cost1MoneyRatio;
   else index === Enum.EnumWorkType.Cost2Work;
   max /= Resource.Cost2MoneyRatio;
   max = Math.floor(max);
@@ -265,156 +270,6 @@ function clickSub5(e: any) {
           ></el-radio>
         </li>
       </template>
-      <!-- <li class="worktab">
-        <span class="title"> {{ getData[0].Name }}</span>
-        <span class="number">
-          {{
-            intToString(store.state.gameData.workConfig[getData[0].ID], 0)
-          }}</span
-        >
-        <el-button
-          type="info"
-          @click="clickSub1"
-          icon="el-icon-d-arrow-left"
-          size="mini"
-          circle
-        >
-        </el-button>
-        <el-button
-          type="info"
-          icon="el-icon-d-arrow-right"
-          size="mini"
-          circle
-          @click="clickAdd1"
-        ></el-button>
-        <el-radio
-          style="margin-left: 0.2rem"
-          v-model="radio"
-          @change="radioChange"
-          :label="getData[0].ID"
-          ><span></span
-        ></el-radio>
-      </li>
-      <li class="worktab">
-        <span class="title"> {{ getData[1].Name }}</span>
-        <span class="number">
-          {{
-            intToString(store.state.gameData.workConfig[getData[1].ID], 0)
-          }}</span
-        >
-        <el-button
-          @click="clickSub2"
-          type="info"
-          icon="el-icon-d-arrow-left"
-          size="mini"
-          circle
-        >
-        </el-button>
-        <el-button
-          type="info"
-          icon="el-icon-d-arrow-right"
-          size="mini"
-          @click="clickAdd2"
-          circle
-        ></el-button>
-        <el-radio
-          style="margin-left: 0.2rem"
-          v-model="radio"
-          @change="radioChange"
-          :label="getData[1].ID"
-          ><span></span
-        ></el-radio>
-      </li>
-      <li class="worktab">
-        <span class="title"> {{ getData[2].Name }}</span>
-        <span class="number">
-          {{
-            intToString(store.state.gameData.workConfig[getData[2].ID], 0)
-          }}</span
-        >
-        <el-button
-          type="info"
-          @click="clickSub3"
-          icon="el-icon-d-arrow-left"
-          size="mini"
-          circle
-        >
-        </el-button>
-        <el-button
-          type="info"
-          icon="el-icon-d-arrow-right"
-          size="mini"
-          @click="clickAdd3"
-          circle
-        ></el-button>
-        <el-radio
-          style="margin-left: 0.2rem"
-          v-model="radio"
-          @change="radioChange"
-          :label="getData[2].ID"
-          ><span></span
-        ></el-radio>
-      </li>
-      <li class="worktab" v-if="showCost2">
-        <span class="title"> {{ getData[3].Name }}</span>
-        <span class="number">
-          {{
-            intToString(store.state.gameData.workConfig[getData[3].ID], 0)
-          }}</span
-        >
-        <el-button
-          type="info"
-          @click="clickSub4"
-          icon="el-icon-d-arrow-left"
-          size="mini"
-          circle
-        >
-        </el-button>
-        <el-button
-          type="info"
-          icon="el-icon-d-arrow-right"
-          size="mini"
-          circle
-          @click="clickAdd4"
-        ></el-button>
-        <el-radio
-          style="margin-left: 0.2rem"
-          v-model="radio"
-          @change="radioChange"
-          :label="getData[3].ID"
-          ><span></span
-        ></el-radio>
-      </li>
-      <li class="worktab" v-if="showComplain">
-        <span class="title"> {{ getData[4].Name }}</span>
-        <span class="number">
-          {{
-            intToString(store.state.gameData.workConfig[getData[4].ID], 0)
-          }}</span
-        >
-        <el-button
-          type="info"
-          @click="clickSub5"
-          icon="el-icon-d-arrow-left"
-          size="mini"
-          circle
-        >
-        </el-button>
-        <el-button
-          type="info"
-          icon="el-icon-d-arrow-right"
-          size="mini"
-          circle
-          @click="clickAdd5"
-        ></el-button>
-        <el-radio
-          style="margin-left: 0.2rem"
-          v-model="radio"
-          @change="radioChange"
-          :label="getData[4].ID"
-          ><span></span
-        ></el-radio>
-      </li> -->
     </ul>
   </div>
 </template>

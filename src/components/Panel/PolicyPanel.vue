@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { computed, PropType, reactive, ref } from "vue";
-import { store } from "../../store/index";
+import { ResetStore, store } from "../../store/index";
 import { PolicyInfoList, ResearchInfoList } from "../../core/tables/table";
 import { IResearchInfo } from "../../core/tables/ITableInfo";
-import { initGameData, lawItemData, policyItemData } from "../../core/gameMain/gameSave";
+import {
+  initGameData,
+  lawItemData,
+  policyItemData,
+} from "../../core/gameMain/gameSave";
 import PolicyItem from "../BaseItem/PolicyItem.vue";
 import LawItem from "../BaseItem/LawItem.vue";
 import { ElMessageBox } from "element-plus";
 import { router } from "../../router";
+import { GetPoliticalCount } from "../../core/gameMain/acgUpdate";
+import { EnumResourceItem } from "../../core/tables/Enum";
+import { intToString } from "../../core/utils";
 
 const activeNames = ref(["0", "1"]);
 const policyArry = computed(() => {
@@ -27,17 +34,61 @@ const lawList = computed(() => {
 });
 
 function onClearClick() {
-  ElMessageBox.alert("这将重新开始游戏，请在发展停滞不前的时候使用（ACG文化胜利也会强制进行此步骤）。除了政治背景、法案等级之外的所有升级、建筑、资源均会清零。将根据当前的信徒数量获得政治背景，政治背景是一种稀缺资源，可以提高全局资源效率以及解锁法案，祝你投个好胎！", "注意！", {
-    confirmButtonText: "OK",
-    callback: (action: string) => {
-      if (action === "confirm") {
-        //TODO 重置的逻辑 
-        router.push("/");
-      }
-    },
-  });
+  ElMessageBox.alert(
+    "这将重新开始游戏，请在发展停滞不前的时候使用<br>ACG文化影响力达到满值也会自动重置<br>除<strong>政治背景、法案</strong>等级外，所有升级、建筑、资源均会清零<br>将根据当前的<strong>信徒数量</strong>和<strong>总重置次数</strong>获得政治背景<br>政治背景可以提高全局资源效率以及解锁法案<br>祝你投个好胎！",
+    "注意！",
+    {
+      dangerouslyUseHTMLString: true,
+      confirmButtonText: "OK",
+      callback: (action: string) => {
+        if (action === "confirm") {
+          const PoliticalData = store.state.gameData.PoliticalData;
+          let believer = 0;
+          if (store.state.gameData.sourceArr.has(EnumResourceItem.Believer))
+            believer = store.state.gameData.sourceArr.get(
+              EnumResourceItem.Believer
+            )!.cacheValue;
+          const newPoliticalValue = GetPoliticalCount(
+            Math.floor(believer),
+            store.state.gameData.PoliticalData.restartTime
+          );
+          const LawArryList = store.state.gameData.LawArryList;
+          PoliticalData.value = store.state.gameData.sourceArr.get(EnumResourceItem.Political)!.cacheValue + newPoliticalValue;
+          PoliticalData.restartTime++;
+          PoliticalData.totalTimes += store.state.gameData.totalTime;
+          PoliticalData.LawLevel.length = 0;
+          store.state.gameData.LawArryList.forEach(function (lawItemData, id) {
+            PoliticalData.LawLevel.push({
+              ID: lawItemData.ID,
+              level: lawItemData.level,
+            });
+          });
+          ResetStore();
+          
+          store.state.gameData.PoliticalData = PoliticalData;
+          store.state.gameData.LawArryList = LawArryList;
+          const resourcePolitical = store.state.gameData.sourceArr.get(EnumResourceItem.Political)!;
+          resourcePolitical.cacheValue = PoliticalData.value;
+          resourcePolitical.unlock = true;
+          router.push("/introduction");
+        }
+      },
+    }
+  );
 }
 
+const tips = computed(() => {
+  let believer = 0;
+  if (store.state.gameData.sourceArr.has(EnumResourceItem.Believer))
+    believer = store.state.gameData.sourceArr.get(
+      EnumResourceItem.Believer
+    )!.cacheValue;
+  const value = GetPoliticalCount(
+    Math.floor(believer),
+    store.state.gameData.PoliticalData.restartTime
+  );
+  return "当前重置将获得" + intToString(value, 0) + "点政治背景";
+});
 </script>
 
 <template>
@@ -62,19 +113,35 @@ function onClearClick() {
             <LawItem class="item" :law-item-data="data"></LawItem>
           </template>
         </ul>
-        <el-button
-          class="button"
-          type="danger"
-          @click="onClearClick"
-          plain
-          >进入下周目</el-button
+
+        <el-popover
+          placement="bottom"
+          trigger="hover"
+          transition=""
+          :width="250"
         >
+          <template #reference>
+            <el-button
+              class="elbutton"
+              type="danger"
+              @click="onClearClick"
+              plain
+              >进入下周目</el-button
+            >
+          </template>
+          <span class="tips">{{ tips }}</span>
+        </el-popover>
       </el-collapse-item>
     </el-collapse>
   </div>
 </template>
 
 <style scoped>
+.elbutton {
+  margin-left: 0.4rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+}
 .resourcePanel {
   width: 6remx;
   margin: 0.3rem;

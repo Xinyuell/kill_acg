@@ -84,6 +84,7 @@ export class GameControl {
     const saveGameData = getCurrentSaveGameData();
     const code = Base64.encode(JSON.stringify(saveGameData));
     window.localStorage.setItem(SaveLocalStorageKey, code);
+    store.state.haslog = true;
   }
 
   private update() {

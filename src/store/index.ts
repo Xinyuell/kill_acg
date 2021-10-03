@@ -40,6 +40,16 @@ export const store = createStore<State>({
   getters:getters,
 });
 
+export function ResetStore(){
+  store.state.haslog = false;
+  store.state.running = false;
+  store.state.guideTipsID = -1;
+  store.state.gameData = initGameData();
+  store.state.openGuide = false;
+  store.state.timelineLogs = [];
+  store.state.gameFail = false;
+  store.state.props = new Map();
+}
 
 //玩家数据初始化的地方
 export function initGameStore(app: App) {

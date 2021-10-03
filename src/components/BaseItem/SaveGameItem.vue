@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Base64 } from "js-base64";
 import { getCurrentInstance, PropType, reactive, ref } from "vue";
-import { ReplaceGameData, store } from "../../store/index";
+import { ReplaceGameData, ResetStore, store } from "../../store/index";
 import useClipboard from "vue-clipboard3";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { router } from "../../router";
@@ -67,14 +67,7 @@ function onClearClick() {
     callback: (action: string) => {
       if (action === "confirm") {
         window.localStorage.clear();
-        store.state.haslog = false;
-        store.state.running = false;
-        store.state.guideTipsID = -1;
-        store.state.gameData = initGameData();
-        store.state.openGuide = false;
-        store.state.timelineLogs = [];
-        store.state.gameFail = false;
-        store.state.props = new Map();
+        ResetStore()
         router.push("/");
       }
     },
@@ -96,17 +89,17 @@ const switchBtnText = ref("清空进度");
 <template>
   <div>
     <el-input v-model="textarea" :rows="5" type="textarea" />
-    <el-button class="button" type="primary" @click="onImportClick" plain
+    <el-button class="elbutton" type="primary" @click="onImportClick" plain
       >导入存档</el-button
     >
-    <el-button class="button" type="primary" @click="onExportClick" plain
+    <el-button class="elbutton" type="primary" @click="onExportClick" plain
       >导出存档</el-button
     >
-    <el-button class="button" type="danger" @click="onOpenClearClick" plain>{{
+    <el-button class="elbutton" type="danger" @click="onOpenClearClick" plain>{{
       switchBtnText
     }}</el-button>
     <el-button
-      class="button"
+      class="elbutton"
       type="danger"
       @click="onClearClick"
       plain
@@ -124,7 +117,7 @@ const switchBtnText = ref("清空进度");
 </template>
 
 <style scoped>
-.button {
+.elbutton {
   margin-left: 0.2rem;
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;

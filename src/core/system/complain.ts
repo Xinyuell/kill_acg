@@ -10,8 +10,13 @@ import {
   UpdateAcgProgressValue,
 } from "../../store";
 import { intToString } from "../utils";
-import { EnumResearchItem, EnumResearchProp, EnumWorkType } from "../tables/Enum";
-import  { AcgProgressData, GameTime } from "../tables/GlobalConfig";
+import {
+  EnumResearchItem,
+  EnumResearchProp,
+  EnumResourceItem,
+  EnumWorkType,
+} from "../tables/Enum";
+import { AcgProgressData, GameTime } from "../tables/GlobalConfig";
 
 export enum EnumTimeLineLogType {
   /**举报log */
@@ -86,6 +91,11 @@ export function AddTimeLineLog(log: TimeLineLog) {
       });
     }
   }
+  if (
+    log.logType === EnumTimeLineLogType.Complain &&
+    store.state.setting.closeLog
+  )
+    return;
   store.state.timelineLogs.unshift(log);
 }
 
@@ -105,45 +115,38 @@ function onNotiClick(this: NotificationParamsTyped) {
 
 function ShowComplainLog(logstr: string, classIndex: number) {
   logstr += language.comlainLogTips[classIndex];
-  const prop = store.state.props.get(EnumResearchProp.ComplainAcgRatio) ? store.state.props.get(EnumResearchProp.ComplainAcgRatio)! : 0;
+  const prop = store.state.props.get(EnumResearchProp.ComplainAcgRatio)
+    ? store.state.props.get(EnumResearchProp.ComplainAcgRatio)!
+    : 0;
   const sourceArr = store.state.gameData.sourceArr;
+  const curMoney = sourceArr.get(EnumResourceItem.Money)!.cacheValue;
   if (classIndex == 0) {
     const value =
-      store.getters.getInfluenceItem *
-      AcgProgressData.ComplainWrongValueRatio;
+      store.getters.getInfluenceItem * AcgProgressData.ComplainWrongValueRatio;
     store.commit(ModifyResourceCurValue, -value);
     logstr += "你降低了" + intToString(value) + "点影响力";
-  } else if (classIndex <= 3) {
-    const value = AcgProgressData.ComplainAcgLevel1 * (1+prop);
-    store.commit(
-      UpdateAcgProgressValue,
-      -value
-    );
+  } else {
+    let value = 0;
+    if (classIndex <= 3) {
+      value = AcgProgressData.ComplainAcgLevel1 * (1 + prop);
+    } else if (classIndex <= 6) {
+      value = AcgProgressData.ComplainAcgLevel2 * (1 + prop);
+    } else if (classIndex <= 9) {
+      value = AcgProgressData.ComplainAcgLevel3 * (1 + prop);
+    }
+    store.commit(UpdateAcgProgressValue, -value);
+    store.commit(ModifyResourceCurValue, {
+      index: EnumResourceItem.Money,
+      value: curMoney + value * 0.01,
+    });
     logstr +=
       "ACG文化降低了" +
       intToString(value) +
-      "点影响力";
-  } else if (classIndex <= 6) {
-    const value = AcgProgressData.ComplainAcgLevel2 * (1+prop);
-    store.commit(
-      UpdateAcgProgressValue,
-      -value
-    );
-    logstr +=
-      "ACG文化降低了" +
-      intToString(value) +
-      "点影响力";
-  } else if (classIndex <= 9) {
-    const value = AcgProgressData.ComplainAcgLevel3 * (1+prop);
-    store.commit(
-      UpdateAcgProgressValue,
-      -value
-    );
-    logstr +=
-      "ACG文化降低了" +
-      intToString(value) +
-      "点影响力";
+      "点影响力。你获得了" +
+      intToString(value * 0.01) +
+      "的金钱奖励";
   }
+
   const log: TimeLineLog = {
     timestamp: GetCurrentLocalDateTime(),
     iconType: classIndex > 0 ? "success" : "warning",
@@ -288,8 +291,10 @@ export function autoRandomComplain() {
 export function GetAutoComplainCD() {
   const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
   if (workPeople <= 0) return -1;
-  const prop = store.state.props.get(EnumResearchProp.ComplainCD) ? store.state.props.get(EnumResearchProp.ComplainCD)! : 0
-  return 200 / Math.pow(workPeople + 50, (0.4 + prop));
+  const prop = store.state.props.get(EnumResearchProp.ComplainCD)
+    ? store.state.props.get(EnumResearchProp.ComplainCD)!
+    : 0;
+  return 200 / Math.pow(workPeople + 50, 0.4 + prop);
 }
 
 /**获取指定毫秒数转化的时间戳 */

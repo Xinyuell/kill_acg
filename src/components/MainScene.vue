@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
-import { computed,  ref } from "vue";
-import {store, UpdateGuideTips } from "../store/index";
+import { computed, ref } from "vue";
+import { store, UpdateGuideTips } from "../store/index";
 import BuildPanel from "./Panel/BuildPanel.vue";
 import WorkPanel from "./Panel/WorkPanel.vue";
 import ResourcePanel from "./Panel/ResourcePanel.vue";
@@ -16,13 +16,7 @@ const headerHeight = computed(() => {
   if (store.state.gameData.influenceLevel >= 2) base += 0.6;
   return base + "rem";
 });
-const activeIndex = ref("/game/build");
-function handleSelect(key: string, keyPath: any) {}
 
-function testclick() {
-  store.commit(UpdateGuideTips, Math.floor(Math.random() * 10));
-  store.state.openGuide = true;
-}
 const workShow = computed(() => {
   const buildItemData = store.state.gameData.buildArryList.get(
     EnumBuildItem.InfluenceLevel1
@@ -36,31 +30,50 @@ const dialogVisible = ref(false);
 </script>
 
 <template>
-  <el-row>
-    <el-col :span="6" class="hidden-sm-and-down"> </el-col>
-    <el-col :height="headerHeight" :span="12" class="hidden-sm-and-down">
-      <AcgProgress />
-    </el-col>
-    <el-col :height="headerHeight" :span="24" class="hidden-md-and-up">
+  <el-row justify="center">
+    <el-col :height="headerHeight" :xs="18" :sm="18" :md="24" :lg="12" :xl="12">
       <AcgProgress />
     </el-col>
   </el-row>
-  <el-row style="margin-top: 1rem" class="hidden-sm-and-down">
-    <el-col :span="4"> </el-col>
-    <el-col :span="5" class="mainCol" style="line-height: 0.1rem">
+  <el-row justify="center">
+    <el-col
+      :span="4"
+      class="mainCol"
+      :xs="24"
+      :sm="24"
+      :md="24"
+      :lg="6"
+      :xl="4"
+    >
       <ResourcePanel />
-      <WorkPanel v-if="workShow" />
+      <WorkPanel v-if="workShow" style="line-height: 0.1rem" />
     </el-col>
-    <el-col :span="6" class="mainCol">
+    <el-col
+      :span="6"
+      class="mainCol"
+      :xs="24"
+      :sm="24"
+      :md="24"
+      :lg="8"
+      :xl="6"
+    >
       <MiddlePanel />
       <router-view></router-view>
     </el-col>
-    <el-col :span="5" class="mainCol">
+    <el-col
+      :span="4"
+      class="mainCol"
+      :xs="24"
+      :sm="24"
+      :md="24"
+      :lg="6"
+      :xl="4"
+    >
       <LogPanel />
     </el-col>
   </el-row>
 
-  <el-row style="margin-top: 1rem" class="hidden-md-and-up">
+  <!-- <el-row  class="hidden-lg-and-up">
     <el-col :span="24" class="mainCol" style="line-height: 0.1rem">
       <ResourcePanel />
       <WorkPanel v-if="workShow" />
@@ -72,7 +85,7 @@ const dialogVisible = ref(false);
     <el-col :span="24" class="mainCol">
       <LogPanel />
     </el-col>
-  </el-row>
+  </el-row> -->
 
   <el-drawer
     v-model="store.state.openGuide"
@@ -88,16 +101,16 @@ const dialogVisible = ref(false);
         >指引【ESC关闭】</span
       >
     </template>
-    <el-scrollbar height="8rem">
-      <span
-        style="
-          font-size: 0.3rem;
-          line-height: 0.5rem;
-          display: inline-block;
-          white-space: pre-line;
-        "
-        >{{ language.guideTips[store.state.guideTipsID] }}</span
-      >
+    <el-scrollbar height="2rem">
+        <span
+          style="
+            font-size: 0.3rem;
+            line-height: 0.5rem;
+            display: inline-block;
+            white-space: pre-line;
+          "
+          >{{ language.guideTips[store.state.guideTipsID] }}</span
+        >
     </el-scrollbar>
   </el-drawer>
 </template>

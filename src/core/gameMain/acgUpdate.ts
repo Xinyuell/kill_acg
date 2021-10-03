@@ -14,6 +14,7 @@ import { CalculateProps } from "./gameUpdate";
 
 /** 当前获取的政治背景的值,传入信徒人数和重置次数 */
 export function GetPoliticalCount(count: number) {
+  if (count <= 400) return 0;
   let speed = 1;
   const curRatio =
     store.state.gameData.acgProgressValue / AcgProgressData.AcgProgressMax;
@@ -26,7 +27,7 @@ export function GetPoliticalCount(count: number) {
   } else if (curRatio <= 0.4) {
     speed = 1.5;
   }
-  return (count / 3) * speed;
+  return ((count - 400) / 2) * speed;
 }
 
 export function ResetGame() {

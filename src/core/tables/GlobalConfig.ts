@@ -36,7 +36,7 @@ export const AcgProgressData = {
   /** * acg进度的基础值，50亿 */
   AcgProgressBae: 5 * 1000 * 1000 * 1000,
   /** * acg进度的速度，1百万 */
-  AcgProgressSpeed: import.meta.env.DEV ? 1000 * 1000 * 1000 : 1 * 1000 * 1000,
+  AcgProgressSpeed: import.meta.env.DEV ? 100 * 1000 * 1000 : 1 * 1000 * 1000,
   /** * 举报失败降低影响力百分比 */
   ComplainWrongValueRatio: 0.1,
   /** * 1级举报降低ACG影响力1百万 */

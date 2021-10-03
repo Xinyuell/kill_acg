@@ -9,7 +9,7 @@ import {
   lawItemData,
   policyItemData,
   SaveGame,
-  SaveLocalStorageKey,
+  SaveLocalStorageGameDataKey,
 } from "../../core/gameMain/gameSave";
 import PolicyItem from "../BaseItem/PolicyItem.vue";
 import LawItem from "../BaseItem/LawItem.vue";

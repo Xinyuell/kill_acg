@@ -8,7 +8,7 @@ import language from "../tables/language";
 import { acgProgressUpdate } from "./acgUpdate";
 import {
   setStoreGameDataByBase64,
-  SaveLocalStorageKey,
+  SaveLocalStorageGameDataKey,
   getCurrentSaveGameData,
   SaveGame,
 } from "./gameSave";
@@ -33,7 +33,10 @@ export class GameControl {
   }
 
   public Start(state: State) {
-    setStoreGameDataByBase64(state, window.localStorage[SaveLocalStorageKey]);
+    setStoreGameDataByBase64(
+      state,
+      window.localStorage[SaveLocalStorageGameDataKey]
+    );
     CalculateProps(); //初始化要重算一次属性
     setInterval(() => {
       this.update();
@@ -68,10 +71,11 @@ export class GameControl {
     if (store.state.gameFail) {
       return;
     }
+    if (store.state.setting.closeNew) return;
     const newsIndex = Math.floor(Math.random() * language.news.length);
     ElMessage.success({
       message: "今日新闻：" + language.news[newsIndex],
-      duration: 10000,
+      duration: 6000,
       showClose: true,
       center: true,
       iconClass: "success",

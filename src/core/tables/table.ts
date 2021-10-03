@@ -94,7 +94,7 @@ export const ItemInfoList: Map<number, IItemInfo> = new Map([
     {
       ID: EnumResourceItem.Political,
       Name: "政治背景",
-      Desc: "提高全局资源的速度，当前全局效率提升{0}%\n这是一种重置资源，在政治分页重置游戏获得，获得数量与信徒数量相关",
+      Desc: "提高全局资源的速度，当前全局效率提升{0}%\n这是一种重置资源，在政治分页重置游戏获得，获得数量与信徒数量相关、ACG文化影响力有关",
       BaseMax: -1,
       Type: ItemType.None,
     },
@@ -351,8 +351,8 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.BelieverBuildLevel1,
       Name: "心理诊所",
-      Desc: "拯救问题青年的场所\n解锁心理诊所建筑\n消耗50点动漫知识",
-      Cost1: 50,
+      Desc: "拯救问题青年的场所\n解锁心理诊所建筑\n消耗30点动漫知识",
+      Cost1: 30,
       Cost2: 0,
       UnLock: [
         EnumResearchItem.MoneyBuildLevel1,
@@ -366,8 +366,8 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.MoneyBuildLevel1,
       Name: "印刷店",
-      Desc: "解锁印刷店建筑，这将有助于信徒金钱工作的效率",
-      Cost1: 100,
+      Desc: "解锁印刷店建筑，这将有助于信徒金钱工作的效率\n消耗50点动漫知识",
+      Cost1: 50,
       Cost2: 0,
       UnLock: [],
       Condition: 0,
@@ -379,7 +379,7 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       ID: EnumResearchItem.ResearchBuildLevel1,
       Name: "书店",
       Desc: "解锁书店建筑，这将有助于信徒研究工作的效率\n消耗100点动漫知识",
-      Cost1: 200,
+      Cost1: 100,
       Cost2: 0,
       UnLock: [
         EnumResearchItem.BelieverInfluenceMax1,
@@ -518,9 +518,9 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.MoneyBuildLevel3,
       Name: "房地产公司",
-      Desc: "解锁房地产公司，进一步提高信徒/从众的工作效率\n消耗1M的动漫知识游戏知识",
-      Cost1: 1000 * 1000,
-      Cost2: 1000 * 1000,
+      Desc: "解锁房地产公司，进一步提高信徒/从众的工作效率\n消耗500K的动漫知识游戏知识",
+      Cost1: 500 * 1000,
+      Cost2: 500 * 1000,
       UnLock: [],
       Condition: 0,
     },
@@ -530,9 +530,9 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.InfluenceMoneyLevel4,
       Name: "病毒营销",
-      Desc: "影响力已经非常的高了\n影响力额外增加0.06的金钱速度\n消耗2M的动漫知识游戏知识",
-      Cost1: 2 * 1000 * 1000,
-      Cost2: 2 * 1000 * 1000,
+      Desc: "影响力已经非常的高了\n影响力额外增加0.06的金钱速度\n消耗1M的动漫知识游戏知识",
+      Cost1: 1 * 1000 * 1000,
+      Cost2: 1 * 1000 * 1000,
       UnLock: [EnumResearchItem.ResearchBuildLevel3],
       Condition: 0,
       ResearchProp: new Map([[EnumResearchProp.InfluenceMoney, 0.06]]),
@@ -543,9 +543,9 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     {
       ID: EnumResearchItem.ResearchBuildLevel3,
       Name: "政策顾问",
-      Desc: "高价聘请已退休的政府人员作为政策顾问\n解锁政策顾问，信徒们可以开会获得政策点\n消耗5M的动漫知识游戏知识",
-      Cost1: 5 * 1000 * 1000,
-      Cost2: 5 * 1000 * 1000,
+      Desc: "高价聘请已退休的政府人员作为政策顾问\n解锁政策顾问，信徒们可以开会获得政策点\n解锁政治面板，可以手动重置了\n消耗2M的动漫知识游戏知识",
+      Cost1: 2 * 1000 * 1000,
+      Cost2: 2 * 1000 * 1000,
       UnLock: [EnumResearchItem.BelieverInfluenceMax3],
       Condition: 0,
     },

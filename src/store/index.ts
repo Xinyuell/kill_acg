@@ -35,9 +35,16 @@ export const store = createStore<State>({
     timelineLogs:[],
     gameFail:false,
     props:new Map<EnumResearchProp,number>([]),
+    setting:{
+      closeGuide :false,
+      closeLog:false,
+      closeNew:false,
+      hasShowAcgGuide:false,
+    }
   },
   mutations:mutations,
   getters:getters,
+  
 });
 
 export function ResetStore(){

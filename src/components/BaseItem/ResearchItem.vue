@@ -64,6 +64,7 @@ export default {
       if (data.ID === EnumResearchItem.ResearchBuildLevel3) {
         store.commit(UnlockResource, EnumResourceItem.Policy);
         store.commit(UnlockResource, EnumResourceItem.Political);
+        StartGuideByID(9);
       }
     },
   },

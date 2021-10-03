@@ -94,7 +94,8 @@ export function CalculateProps() {
     const value = store.state.gameData.sourceArr.get(
       EnumResourceItem.Political
     )!.cacheValue;
-    const prop = Math.log(value + 10) / 2 - 1;
+    let prop = 0;
+    if (value > 0) prop = Math.log(value + 10) / 2 - 1;
     props.set(EnumResearchProp.PoliticalAllRatio, prop);
   }
   store.commit(UpdateProps, props);
@@ -200,6 +201,10 @@ function updateResourceValue(
       if (data.cacheValue >= value)
         store.state.gameData.influenceLevel = index + 1; //0级无要求 1级是索引0
     });
+    if(store.state.gameData.influenceLevel > 1 && !store.state.setting.hasShowAcgGuide){
+      StartGuideByID(10);
+      store.state.setting.hasShowAcgGuide = true;
+    }
   }
   const strValue = intToString(data.cacheValue);
   if (strValue !== data.curValue) {
@@ -242,7 +247,7 @@ function setResourceSpeed(
           0.1,
           Math.pow(dataBeliever.cacheValue, 0.5) * Resource.BaseBelieverRatio
         );
-        if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.00001) {
+        if (dataBeliever.cacheMaxValue - data.cacheValue <= 0.001) {
           //信徒达到最大值
           data.cacheSpeed *= 2;
         }
@@ -250,7 +255,9 @@ function setResourceSpeed(
       break;
   }
   //这里再乘以全局速度加成,
-  const propAllRatio = store.state.props.get(EnumResearchProp.PoliticalAllRatio) ? store.state.props.get(EnumResearchProp.PoliticalAllRatio)!  : 0;
+  const propAllRatio = store.state.props.get(EnumResearchProp.PoliticalAllRatio)
+    ? store.state.props.get(EnumResearchProp.PoliticalAllRatio)!
+    : 0;
   data.cacheSpeed *= 1 + propAllRatio;
   const strValue = intToString(data.cacheSpeed, 2);
   if (strValue !== data.speed) {
@@ -262,6 +269,8 @@ function setResourceSpeed(
 }
 
 export function StartGuideByID(ID: number) {
+  if (store.state.setting.closeGuide) return;
+  if (store.state.gameData.PoliticalData.restartTime > 0) return;
   store.commit(UpdateGuideTips, ID);
   store.state.openGuide = true;
 }

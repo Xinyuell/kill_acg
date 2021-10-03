@@ -77,6 +77,11 @@ export default {
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const data: buildItemData = (this as any).buildData;
+      const propAllRatio = store.state.props.get(
+        EnumResearchProp.PoliticalAllRatio
+      )
+        ? store.state.props.get(EnumResearchProp.PoliticalAllRatio)!
+        : 0;
       switch (data.OnClickType) {
         case BuildClickType.Upgrade:
           if (import.meta.env.DEV) {
@@ -94,21 +99,21 @@ export default {
           break;
         case BuildClickType.AddInfluence:
           sourceArr.get(EnumResourceItem.Influence)!.cacheValue +=
-            Resource.ClickAddBase;
+            Resource.ClickAddBase * (1 + propAllRatio);
           break;
         case BuildClickType.AddMoeny:
           sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
-            Resource.ClickAddBase * Resource.GetMoneyRatio;
+            Resource.ClickAddBase * Resource.GetMoneyRatio * (1 + propAllRatio);
           break;
         case BuildClickType.AddResearch:
           if (
             sourceArr.get(EnumResourceItem.Money)!.cacheValue >=
-            Resource.Cost1MoneyRatio
+            Resource.Cost1MoneyRatio * (1 + propAllRatio)
           ) {
             sourceArr.get(EnumResourceItem.Cost1)!.cacheValue +=
-              Resource.ClickAddBase;
+              Resource.ClickAddBase * (1 + propAllRatio);
             sourceArr.get(EnumResourceItem.Money)!.cacheValue -=
-              Resource.Cost1MoneyRatio;
+              Resource.Cost1MoneyRatio * (1 + propAllRatio);
           }
           break;
       }

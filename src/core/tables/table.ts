@@ -492,7 +492,6 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Cost2: 10000,
       UnLock: [
         EnumResearchItem.AutoComplainLevel1,
-        EnumResearchItem.AutoComplainWrongLevel1,
         EnumResearchItem.BelieverBuildLevel3,
       ],
       Condition: 0,
@@ -642,18 +641,6 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
     },
   ],
   [
-    EnumResearchItem.AutoComplainWrongLevel1,
-    {
-      ID: EnumResearchItem.AutoComplainWrongLevel1,
-      Name: "小心处理",
-      Desc: "降低20%信徒错误举报的概率\n消耗1M的动漫知识和游戏知识",
-      Cost1: 1000 * 1000,
-      Cost2: 1000 * 1000,
-      UnLock: [EnumResearchItem.AutoComplainWrongLevel2],
-      Condition: 0,
-    },
-  ],
-  [
     EnumResearchItem.AutoComplainLevel2,
     {
       ID: EnumResearchItem.AutoComplainLevel2,
@@ -661,42 +648,6 @@ export const ResearchInfoList: Map<number, IResearchInfo> = new Map([
       Desc: "你在整个银河系都赫赫有名，没有人敢发展ACG文化了\n信徒将会自动举报外太空的ACG事件了\n消耗200M的动漫知识和游戏知识",
       Cost1: 200 * 1000 * 1000,
       Cost2: 200 * 1000 * 1000,
-      UnLock: [],
-      Condition: 0,
-    },
-  ],
-  [
-    EnumResearchItem.AutoComplainWrongLevel2,
-    {
-      ID: EnumResearchItem.AutoComplainWrongLevel2,
-      Name: "精准打击",
-      Desc: "再次降低20%信徒错误举报的概率了\n消耗5M的动漫知识和游戏知识",
-      Cost1: 5 * 1000 * 1000,
-      Cost2: 5 * 1000 * 1000,
-      UnLock: [],
-      Condition: 0,
-    },
-  ],
-  [
-    EnumResearchItem.AutoComplainWrongLevel3,
-    {
-      ID: EnumResearchItem.AutoComplainWrongLevel3,
-      Name: "缜密分析",
-      Desc: "再次降低20%信徒错误举报的概率了\n消耗25M的动漫知识和游戏知识",
-      Cost1: 25 * 1000 * 1000,
-      Cost2: 25 * 1000 * 1000,
-      UnLock: [],
-      Condition: 0,
-    },
-  ],
-  [
-    EnumResearchItem.AutoComplainWrongLevel4,
-    {
-      ID: EnumResearchItem.AutoComplainWrongLevel4,
-      Name: "完美打击",
-      Desc: "再次降低20%信徒错误举报的概率了\n消耗100M的动漫知识和游戏知识",
-      Cost1: 100 * 1000 * 1000,
-      Cost2: 100 * 1000 * 1000,
       UnLock: [],
       Condition: 0,
     },

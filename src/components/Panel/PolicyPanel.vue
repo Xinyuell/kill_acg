@@ -15,7 +15,7 @@ import PolicyItem from "../BaseItem/PolicyItem.vue";
 import LawItem from "../BaseItem/LawItem.vue";
 import { ElMessageBox } from "element-plus";
 import { router } from "../../router";
-import { GetPoliticalCount } from "../../core/gameMain/acgUpdate";
+import { GetPoliticalCount, ResetGame } from "../../core/gameMain/acgUpdate";
 import { EnumResourceItem } from "../../core/tables/Enum";
 import { intToString } from "../../core/utils";
 import { Base64 } from "js-base64";
@@ -47,44 +47,7 @@ function onClearClick() {
       confirmButtonText: "OK",
       callback: (action: string) => {
         if (action === "confirm") {
-          const PoliticalData = store.state.gameData.PoliticalData;
-          let believer = 0;
-          if (store.state.gameData.sourceArr.has(EnumResourceItem.Believer))
-            believer = store.state.gameData.sourceArr.get(
-              EnumResourceItem.Believer
-            )!.cacheValue;
-          const newPoliticalValue = GetPoliticalCount(
-            Math.floor(believer),
-            store.state.gameData.PoliticalData.restartTime
-          );
-          const LawArryList = store.state.gameData.LawArryList;
-          PoliticalData.value =
-            store.state.gameData.sourceArr.get(EnumResourceItem.Political)!
-              .cacheValue + newPoliticalValue;
-          PoliticalData.restartTime++;
-          PoliticalData.totalTimes += store.state.gameData.totalTime;
-          PoliticalData.LawLevel.length = 0;
-          store.state.gameData.LawArryList.forEach(function (lawItemData, id) {
-            PoliticalData.LawLevel.push({
-              ID: lawItemData.ID,
-              level: lawItemData.level,
-            });
-          });
-          ResetStore();
-
-          store.state.gameData.PoliticalData = PoliticalData;
-          store.state.gameData.LawArryList = LawArryList;
-          const resourcePolitical = store.state.gameData.sourceArr.get(
-            EnumResourceItem.Political
-          )!;
-          resourcePolitical.cacheValue = PoliticalData.value;
-          resourcePolitical.unlock = true;
-          CalculateProps();
-          store.state.haslog = true;
-          store.state.running = true;
-          SaveGame();
-          store.state.running = false;
-          router.push("/introduction");
+          ResetGame();
         }
       },
     }
@@ -97,10 +60,7 @@ const tips = computed(() => {
     believer = store.state.gameData.sourceArr.get(
       EnumResourceItem.Believer
     )!.cacheValue;
-  const value = GetPoliticalCount(
-    Math.floor(believer),
-    store.state.gameData.PoliticalData.restartTime
-  );
+  const value = GetPoliticalCount(Math.floor(believer));
   return "当前重置将获得" + intToString(value, 0) + "点政治背景";
 });
 </script>

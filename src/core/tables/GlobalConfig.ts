@@ -33,18 +33,18 @@ export const GameTime = {
 export const AcgProgressData = {
   /** * acg进度的上限，100亿*/
   AcgProgressMax: 10 * 1000 * 1000 * 1000,
-  /** * acg进度的基础值，1千万 */
-  AcgProgressBae: 10 * 1000 * 1000,
-  /** * acg进度的速度，5百万 */
-  AcgProgressSpeed: import.meta.env.DEV ? 20000000 : 5 * 1000 * 1000,
+  /** * acg进度的基础值，50亿 */
+  AcgProgressBae: 5 * 1000 * 1000 * 1000,
+  /** * acg进度的速度，1百万 */
+  AcgProgressSpeed: import.meta.env.DEV ? 1000 * 1000 * 1000 : 1 * 1000 * 1000,
   /** * 举报失败降低影响力百分比 */
   ComplainWrongValueRatio: 0.1,
   /** * 1级举报降低ACG影响力1百万 */
   ComplainAcgLevel1: import.meta.env.DEV ? 200000000 : 1000 * 1000,
   /** * 2级举报降低ACG影响力5百万  */
   ComplainAcgLevel2: import.meta.env.DEV ? 200000000 : 5 * 1000 * 1000,
-  /** * 3级举报降低ACG影响力2千万 */
-  ComplainAcgLevel3: import.meta.env.DEV ? 200000000 : 20 * 1000 * 1000,
+  /** * 3级举报降低ACG影响力1千万 */
+  ComplainAcgLevel3: import.meta.env.DEV ? 200000000 : 10 * 1000 * 1000,
 };
 /**政治等级 */
 export const InfluenceLevel = [

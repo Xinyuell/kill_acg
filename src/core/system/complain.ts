@@ -10,7 +10,7 @@ import {
   UpdateAcgProgressValue,
 } from "../../store";
 import { intToString } from "../utils";
-import { EnumResearchItem, EnumWorkType } from "../tables/Enum";
+import { EnumResearchItem, EnumResearchProp, EnumWorkType } from "../tables/Enum";
 import  { AcgProgressData, GameTime } from "../tables/GlobalConfig";
 
 export enum EnumTimeLineLogType {
@@ -105,6 +105,7 @@ function onNotiClick(this: NotificationParamsTyped) {
 
 function ShowComplainLog(logstr: string, classIndex: number) {
   logstr += language.comlainLogTips[classIndex];
+  const prop = store.state.props.get(EnumResearchProp.ComplainAcgRatio) ? store.state.props.get(EnumResearchProp.ComplainAcgRatio)! : 0;
   const sourceArr = store.state.gameData.sourceArr;
   if (classIndex == 0) {
     const value =
@@ -113,31 +114,34 @@ function ShowComplainLog(logstr: string, classIndex: number) {
     store.commit(ModifyResourceCurValue, -value);
     logstr += "你降低了" + intToString(value) + "点影响力";
   } else if (classIndex <= 3) {
+    const value = AcgProgressData.ComplainAcgLevel1 * (1+prop);
     store.commit(
       UpdateAcgProgressValue,
-      -AcgProgressData.ComplainAcgLevel1
+      -value
     );
     logstr +=
       "ACG文化降低了" +
-      intToString(AcgProgressData.ComplainAcgLevel1) +
+      intToString(value) +
       "点影响力";
   } else if (classIndex <= 6) {
+    const value = AcgProgressData.ComplainAcgLevel2 * (1+prop);
     store.commit(
       UpdateAcgProgressValue,
-      -AcgProgressData.ComplainAcgLevel2
+      -value
     );
     logstr +=
       "ACG文化降低了" +
-      intToString(AcgProgressData.ComplainAcgLevel2) +
+      intToString(value) +
       "点影响力";
   } else if (classIndex <= 9) {
+    const value = AcgProgressData.ComplainAcgLevel3 * (1+prop);
     store.commit(
       UpdateAcgProgressValue,
-      -AcgProgressData.ComplainAcgLevel3
+      -value
     );
     logstr +=
       "ACG文化降低了" +
-      intToString(AcgProgressData.ComplainAcgLevel3) +
+      intToString(value) +
       "点影响力";
   }
   const log: TimeLineLog = {
@@ -284,7 +288,8 @@ export function autoRandomComplain() {
 export function GetAutoComplainCD() {
   const workPeople = store.state.gameData.workConfig[EnumWorkType.ComplainWork];
   if (workPeople <= 0) return -1;
-  return 200 / Math.pow(workPeople + 50, 0.4);
+  const prop = store.state.props.get(EnumResearchProp.ComplainCD) ? store.state.props.get(EnumResearchProp.ComplainCD)! : 0
+  return 200 / Math.pow(workPeople + 50, (0.4 + prop));
 }
 
 /**获取指定毫秒数转化的时间戳 */

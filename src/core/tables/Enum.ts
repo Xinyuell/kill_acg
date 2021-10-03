@@ -97,14 +97,6 @@ export enum EnumResearchItem {
   AutoComplainLevel1,
   /** * 信徒自动举报外太空 */
   AutoComplainLevel2,
-  /** * 信徒自动举报错误率降低20% */
-  AutoComplainWrongLevel1,
-  /** * 信徒自动举报错误率降低40%  */
-  AutoComplainWrongLevel2,
-  /** * 信徒自动举报错误率降低60%  */
-  AutoComplainWrongLevel3,
-  /** * 信徒自动举报错误率降低80%  */
-  AutoComplainWrongLevel4,
 }
 /**
  * 科技增加的资源属性
@@ -126,8 +118,6 @@ export enum EnumResearchProp {
   BelieverMax,
   /** * 从众的上限  */
   PeopleMax,
-  /** * 信徒自动举报错误率百分比 */
-  AutoComplainWrongRatio,
   /** 影响力建筑成本蠕变 */
   ReduceInfluenceBuildCost,
   /** 金钱建筑成本蠕变 */

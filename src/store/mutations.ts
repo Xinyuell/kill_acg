@@ -1,5 +1,5 @@
 import { State } from "vue";
-import { EnumResearchProp } from "../core/table";
+import { EnumResearchProp } from "../core/tables/Enum";
 
 export const mutations = {
   modifyResourceCurValue(state: State, payload: any) {

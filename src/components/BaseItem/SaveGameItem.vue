@@ -126,7 +126,7 @@ const switchBtnText = ref("清空进度");
       >确认删除</el-button
     >
     <el-link
-      href="https://github.com/Xinyuell/xinyuell.github.io"
+      href="https://github.com/Xinyuell/kill_acg"
       target="_blank"
       type="danger"
       class="href"

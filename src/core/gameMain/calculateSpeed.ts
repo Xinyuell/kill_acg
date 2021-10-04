@@ -116,11 +116,14 @@ export function calculatePolicySpeed(
 
   if(!cost2.unlock){
     cost1.cacheSpeed = num1;
+    cost2.cacheSpeed = 0;
+    policy.cacheSpeed = 0;
     return false;
   }
   if(!policy.unlock || num3 < 1){
     cost1.cacheSpeed = num1;
     cost2.cacheSpeed = num2;
+    policy.cacheSpeed = 0;
     return false;
   }
   //政策资源解锁了且安排了一个人，才考虑消耗问问题

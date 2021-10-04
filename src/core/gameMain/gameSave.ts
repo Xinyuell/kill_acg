@@ -222,6 +222,7 @@ export function initGameData() {
       Desc: value.Desc,
       Cost: value.Cost,
       ResearchProp: value.ResearchProp,
+      IsReduceProp:value.IsReduceProp,
     });
   });
 
@@ -235,6 +236,7 @@ export function initGameData() {
       Cost: value.Cost,
       Condition: value.Condition,
       ResearchProp: value.ResearchProp,
+      IsReduceProp:value.IsReduceProp,
     });
   });
 

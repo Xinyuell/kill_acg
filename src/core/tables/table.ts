@@ -717,7 +717,7 @@ export const PolicyInfoList: Map<number, IPolicyInfo> = new Map([
     {
       ID: EnumPolicyItem.ReduceInfluenceBuildCost,
       Name: "扶持教育",
-      Desc: "政府大力扶持教育产业\n每级降低信徒、从众类建筑成本5%\n当前降低了{0}%",
+      Desc: "政府大力扶持教育产业\n每级降低信徒、从众类建筑成本5%，每5级降低成本蠕变因子0.1\n当前降低了{0}%",
       Condition: [0, 1, 2, 3, 4, 5],
       Cost: 10 * 1000,
       UpgradeRatio: 4,
@@ -730,7 +730,7 @@ export const PolicyInfoList: Map<number, IPolicyInfo> = new Map([
     {
       ID: EnumPolicyItem.ReduceMoneyBuildCost,
       Name: "扶持经济",
-      Desc: "政府大力扶持经济产业\n每级降低金钱类建筑成本5%\n当前降低了{0}%",
+      Desc: "政府大力扶持经济产业\n每级降低金钱类建筑成本5%，每5级降低成本蠕变因子0.1\n当前降低了{0}%",
       Condition: [0, 1, 2, 3, 4, 5],
       Cost: 10 * 1000,
       UpgradeRatio: 4,
@@ -744,7 +744,7 @@ export const PolicyInfoList: Map<number, IPolicyInfo> = new Map([
     {
       ID: EnumPolicyItem.ReduceResearchBuildCost,
       Name: "扶持正统文化",
-      Desc: "政府大力扶持正统文化产业\n每级降低研究类建筑成本5%\n当前降低了{0}%",
+      Desc: "政府大力扶持正统文化产业\n每级降低研究类建筑成本5%，每5级降低成本蠕变因子0.1\n当前降低了{0}%",
       Condition: [0, 1, 2, 3, 4, 5],
       Cost: 10 * 1000,
       UpgradeRatio: 4,

@@ -55,7 +55,7 @@ const getTips = computed(function () {
           data.Desc,
           intToString(ratio2 * 100, 0),
           intToString(1 * (1 + workBaseRatio)),
-          intToString(Resource.Cost1MoneyRatio * (1 - moneyCostRatio))
+          intToString(Resource.Cost1MoneyRatio * moneyCostRatio)
         );
       case EnumResourceItem.Cost2:
         const ratio3 = researchProps.get(EnumResearchProp.Cost2Ratio)
@@ -65,7 +65,7 @@ const getTips = computed(function () {
           data.Desc,
           intToString(ratio3 * 100, 0),
           intToString(1 * (1 + workBaseRatio)),
-          intToString(Resource.Cost2MoneyRatio * (1 - moneyCostRatio))
+          intToString(Resource.Cost2MoneyRatio * moneyCostRatio)
         );
       case EnumResourceItem.Believer:
         return data.Desc;
@@ -79,8 +79,8 @@ const getTips = computed(function () {
           data.Desc,
           intToString(ratio4 * 100, 0),
           intToString(Resource.PolicyAddBase * (1 + workBaseRatio), 2),
-          intToString(Resource.PolicyCostBaseRatio * (1 - moneyCostRatio)),
-          intToString(Resource.PolicyCostBaseRatio * (1 - researchCostRatio))
+          intToString(Resource.PolicyCostBaseRatio * moneyCostRatio),
+          intToString(Resource.PolicyCostBaseRatio * researchCostRatio)
         );
       case EnumResourceItem.Political:
         const prop = store.state.props.get(EnumResearchProp.PoliticalAllRatio) ? store.state.props.get(EnumResearchProp.PoliticalAllRatio)!  : 0;

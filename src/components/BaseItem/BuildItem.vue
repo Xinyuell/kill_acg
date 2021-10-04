@@ -25,15 +25,15 @@ function getUpgradeCost(data: buildItemData) {
     CityBuildCostBase[data.cityName]!;
   let reduce = 1;
   if ((data.Type & ItemType.InfluenceBuild) > 0) {
-    reduce -= store.state.props.get(EnumResearchProp.ReduceInfluenceBuildCost)
+    reduce = store.state.props.get(EnumResearchProp.ReduceInfluenceBuildCost)
       ? store.state.props.get(EnumResearchProp.ReduceInfluenceBuildCost)!
       : 0;
   } else if ((data.Type & ItemType.MoneyBuild) > 0) {
-    reduce -= store.state.props.get(EnumResearchProp.ReduceMoneyBuildCost)
+    reduce = store.state.props.get(EnumResearchProp.ReduceMoneyBuildCost)
       ? store.state.props.get(EnumResearchProp.ReduceMoneyBuildCost)!
       : 0;
   } else if ((data.Type & ItemType.ResearchBuild) > 0) {
-    reduce -= store.state.props.get(EnumResearchProp.ReduceResearchBuildCost)
+    reduce = store.state.props.get(EnumResearchProp.ReduceResearchBuildCost)
       ? store.state.props.get(EnumResearchProp.ReduceResearchBuildCost)!
       : 0;
   }

@@ -86,7 +86,7 @@ export function acgProgressUpdate(deltaTime: number) {
     speed *= 2;
   }
   const prop = store.state.props.get(EnumResearchProp.ReduceAcgProgressSpeedRatio) ? store.state.props.get(EnumResearchProp.ReduceAcgProgressSpeedRatio)! : 0;
-  speed *= 1 - prop;
+  speed *= prop;
   store.commit(UpdateAcgProgressValue, deltaTime * speed);
   //游戏成功失败的结算
   if (store.state.gameData.acgProgressValue >= AcgProgressData.AcgProgressMax) {

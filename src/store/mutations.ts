@@ -1,4 +1,5 @@
 import { State } from "vue";
+import { ResetGameData } from "../core/gameMain/gameSave";
 import { EnumResearchProp } from "../core/tables/Enum";
 
 export const mutations = {
@@ -21,7 +22,7 @@ export const mutations = {
     state.running = payload;
   },
   replaceGameData(state: State, paload: any) {
-    state.gameData = paload;
+    ResetGameData(state,paload);
   },
   updateNews(state: State, paload: number) {
     state.gameData.newsID.add(paload);

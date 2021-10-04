@@ -40,6 +40,8 @@ export const store = createStore<State>({
       closeLog:false,
       closeNew:false,
       hasShowAcgGuide:false,
+      buildActiveName:["0","1","2","3","4"],
+
     }
   },
   mutations:mutations,

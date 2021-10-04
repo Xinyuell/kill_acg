@@ -20,35 +20,9 @@ export const SaveLocalStorageGameDataKey = "kill_acg_game";
 export const SaveLocalStorageSettingKey = "kill_acg_game_setting";
 
 
-export function setStoreGameDataByBase64(
-  state: State,
-  code: string | undefined
-) {
-  //先初始化设置
-  const settingCode = window.localStorage[SaveLocalStorageSettingKey]
-  if(settingCode !== undefined){
-    const setting = JSON.parse(Base64.decode(settingCode))
-    state.setting = setting;
-  }
-  
+/** 用存档数据覆盖GameData */
+export function ResetGameData(state: State,saveGameData: ISaveGameData){
   const gameData = state.gameData;
-  if (code === undefined) {
-    state.haslog = false;
-    return false;
-  }
-  const str = Base64.decode(code);
-
-  const saveGameData: ISaveGameData = JSON.parse(str);
-  if (
-    saveGameData === undefined ||
-    saveGameData.sourceArr === undefined ||
-    saveGameData.buildArryList === undefined ||
-    saveGameData.PoliticalData === undefined ||
-    saveGameData.policyArryList === undefined
-  ) {
-    state.haslog = false;
-    return false;
-  }
   gameData.acgProgressValue = saveGameData.acgProgressValue;
   gameData.influenceLevel = saveGameData.influenceLevel;
   gameData.researchUnLockList = saveGameData.researchUnLockList;
@@ -59,7 +33,6 @@ export function setStoreGameDataByBase64(
   gameData.totalTime = saveGameData.totalTime;
   gameData.historyLogID = saveGameData.historyLogID;
   gameData.PoliticalData = saveGameData.PoliticalData;
-
   saveGameData.sourceArr.forEach(function (value) {
     if (gameData.sourceArr.has(value.ID)) {
       gameData.sourceArr.get(value.ID)!.cacheValue = value.cacheValue;
@@ -83,6 +56,37 @@ export function setStoreGameDataByBase64(
       gameData.LawArryList.get(value.ID)!.level = value.level;
     }
   });
+}
+
+export function setStoreGameDataByBase64(
+  state: State,
+  code: string | undefined
+) {
+  //先初始化设置
+  const settingCode = window.localStorage[SaveLocalStorageSettingKey]
+  if(settingCode !== undefined){
+    const setting = JSON.parse(Base64.decode(settingCode))
+    state.setting = setting;
+  }
+  
+  
+  if (code === undefined) {
+    state.haslog = false;
+    return false;
+  }
+  const str = Base64.decode(code);
+  const saveGameData: ISaveGameData = JSON.parse(str);
+  if (
+    saveGameData === undefined ||
+    saveGameData.sourceArr === undefined ||
+    saveGameData.buildArryList === undefined ||
+    saveGameData.PoliticalData === undefined ||
+    saveGameData.policyArryList === undefined
+  ) {
+    state.haslog = false;
+    return false;
+  }
+  ResetGameData(state,saveGameData);
   state.haslog = true;
   return true;
 }
@@ -333,6 +337,7 @@ export interface SaveSetting{
   closeLog:boolean;
   /**是否显示ACG引导 */
   hasShowAcgGuide:boolean;
+  buildActiveName:string[];
 }
 
 export interface GameData {

@@ -75,7 +75,7 @@ export class GameControl {
     const newsIndex = Math.floor(Math.random() * language.news.length);
     ElMessage.success({
       message: "今日新闻：" + language.news[newsIndex],
-      duration: 6000,
+      duration: 5000,
       showClose: true,
       center: true,
       iconClass: "success",

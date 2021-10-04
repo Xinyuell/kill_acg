@@ -95,7 +95,7 @@ export function CalculateProps() {
       EnumResourceItem.Political
     )!.cacheValue;
     let prop = 0;
-    if (value > 0) prop = Math.log(value + 10) / 2 - 1;
+    if (value > 0) prop = Math.log(value + 7) / 2 - 1;
     props.set(EnumResearchProp.PoliticalAllRatio, prop);
   }
   store.commit(UpdateProps, props);
@@ -190,6 +190,12 @@ function updateResourceValue(
 ) {
   if (!data.unlock) return 0;
   const add = data.cacheSpeed * deltaTime;
+  if (
+    data.cacheValue === undefined ||
+    data.cacheValue === Infinity ||
+    data.cacheValue === -Infinity
+  )//一些意外保护
+    data.cacheValue = 0;
   data.cacheValue += add;
   if (data.cacheMaxValue >= 0 && data.cacheValue > data.cacheMaxValue)
     data.cacheValue = data.cacheMaxValue;
@@ -201,7 +207,10 @@ function updateResourceValue(
       if (data.cacheValue >= value)
         store.state.gameData.influenceLevel = index + 1; //0级无要求 1级是索引0
     });
-    if(store.state.gameData.influenceLevel > 1 && !store.state.setting.hasShowAcgGuide){
+    if (
+      store.state.gameData.influenceLevel > 1 &&
+      !store.state.setting.hasShowAcgGuide
+    ) {
       StartGuideByID(10);
       store.state.setting.hasShowAcgGuide = true;
     }

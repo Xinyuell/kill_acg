@@ -5,7 +5,11 @@ import { ReplaceGameData, ResetStore, store } from "../../store/index";
 import useClipboard from "vue-clipboard3";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { router } from "../../router";
-import { initGameData } from "../../core/gameMain/gameSave";
+import {
+  getCurrentSaveGameData,
+  initGameData,
+  ResetGameData,
+} from "../../core/gameMain/gameSave";
 
 const textarea = ref("");
 function onImportClick() {
@@ -13,21 +17,22 @@ function onImportClick() {
     let str = Base64.decode(textarea.value);
     const storage = JSON.parse(str);
     if (
-      storage !== undefined &&
-      storage.cityUnlock !== undefined &&
-      storage.sourceArr !== undefined &&
-      storage.buildArryList !== undefined
+      storage === undefined ||
+      storage.sourceArr === undefined ||
+      storage.buildArryList === undefined ||
+      storage.PoliticalData === undefined ||
+      storage.policyArryList === undefined
     ) {
-      store.commit(ReplaceGameData, storage);
+      ElMessage.error({
+        showClose: true,
+        message: "存档数据不合法，导入失败",
+      });
+    } else {
+      ResetGameData(store.state, storage);
       store.state.haslog = true;
       ElMessage.success({
         showClose: true,
         message: "导入成功，继续游戏吧！",
-      });
-    } else {
-      ElMessage.error({
-        showClose: true,
-        message: "存档数据不合法，导入失败",
       });
     }
   } catch {
@@ -46,7 +51,15 @@ async function onExportClick() {
     });
     return;
   }
-  const str = Base64.encode(JSON.stringify(store.state.gameData));
+  const saveGameData = getCurrentSaveGameData();
+  if (saveGameData === undefined) {
+    ElMessage.error({
+      showClose: true,
+      message: "没有存档数据",
+    });
+    return;
+  }
+  const str = Base64.encode(JSON.stringify(saveGameData));
   textarea.value = str;
   try {
     await toClipboard(textarea.value);
@@ -62,16 +75,20 @@ async function onExportClick() {
   }
 }
 function onClearClick() {
-  ElMessageBox.alert("清除存档，删除你的所有进度，重新开始游戏，并且无法撤销！请先至少导出一份存档再执行此操作", "警告！危险操作！", {
-    confirmButtonText: "OK",
-    callback: (action: string) => {
-      if (action === "confirm") {
-        window.localStorage.clear();
-        ResetStore()
-        router.push("/");
-      }
-    },
-  });
+  ElMessageBox.alert(
+    "清除存档，删除你的所有进度，重新开始游戏，并且无法撤销！请先至少导出一份存档再执行此操作",
+    "警告！危险操作！",
+    {
+      confirmButtonText: "OK",
+      callback: (action: string) => {
+        if (action === "confirm") {
+          window.localStorage.clear();
+          ResetStore();
+          router.push("/");
+        }
+      },
+    }
+  );
 }
 
 function onOpenClearClick() {
@@ -88,7 +105,9 @@ const switchBtnText = ref("清空进度");
 
 <template>
   <div>
-    <el-input v-model="textarea" :rows="5" type="textarea" />
+    <div style="margin: 0.2rem">
+      <el-input v-model="textarea" :rows="5" type="textarea" />
+    </div>
     <el-button class="elbutton" type="primary" @click="onImportClick" plain
       >导入存档</el-button
     >

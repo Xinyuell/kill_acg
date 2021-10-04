@@ -49,7 +49,7 @@ const onClick = function () {
 }
 
 .gametitle {
-  font-size: 0.8rem;
+  font-size: 0.5rem;
   margin-top: 5%;
   margin-bottom: 2%;
 }

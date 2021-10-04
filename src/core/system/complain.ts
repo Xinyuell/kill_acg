@@ -84,12 +84,6 @@ export function AddTimeLineLog(log: TimeLineLog) {
       "次；失败：" +
       stateLog.wrongCount +
       "次";
-    //如果此时删完所有的举报log还大于6条，就删完除统计外的log
-    if (timelineLog.length >= 6) {
-      store.state.timelineLogs = timelineLog.filter(function (value) {
-        return value.logType === EnumTimeLineLogType.ComplainState;
-      });
-    }
   }
   if (
     log.logType === EnumTimeLineLogType.Complain &&
@@ -119,11 +113,10 @@ function ShowComplainLog(logstr: string, classIndex: number) {
     ? store.state.props.get(EnumResearchProp.ComplainAcgRatio)!
     : 0;
   const sourceArr = store.state.gameData.sourceArr;
-  const curMoney = sourceArr.get(EnumResourceItem.Money)!.cacheValue;
   if (classIndex == 0) {
-    const value =
-      store.getters.getInfluenceItem * AcgProgressData.ComplainWrongValueRatio;
-    store.commit(ModifyResourceCurValue, -value);
+    const curInfluence= sourceArr.get(EnumResourceItem.Influence)!.cacheValue;
+    const value = curInfluence * AcgProgressData.ComplainWrongValueRatio;
+    sourceArr.get(EnumResourceItem.Influence)!.cacheValue -= value;
     logstr += "你降低了" + intToString(value) + "点影响力";
   } else {
     let value = 0;
@@ -135,10 +128,7 @@ function ShowComplainLog(logstr: string, classIndex: number) {
       value = AcgProgressData.ComplainAcgLevel3 * (1 + prop);
     }
     store.commit(UpdateAcgProgressValue, -value);
-    store.commit(ModifyResourceCurValue, {
-      index: EnumResourceItem.Money,
-      value: curMoney + value * 0.01,
-    });
+    store.state.gameData.sourceArr.get(EnumResourceItem.Money)!.cacheValue += value * 0.01;
     logstr +=
       "ACG文化降低了" +
       intToString(value) +
@@ -160,7 +150,7 @@ function ShowComplainLog(logstr: string, classIndex: number) {
 export function randomComplain() {
   setTimeout(() => {
     randomComplain();
-  }, Math.random() * 10000 + 10000);
+  }, Math.random() * 8000 + 5000);
   if (!store.state.running) {
     return;
   }
@@ -186,7 +176,7 @@ function GetRandomComplain() {
   const random1 = Math.random() * 100; //大类
   const random2 = Math.floor(Math.random() * 3); //小类
   let classIndex = 0;
-  let duration = 1000;
+  let duration = 1500;
   const researchComplete = store.state.gameData.researchComplete;
   const hasAuto =
     researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0;
@@ -196,19 +186,15 @@ function GetRandomComplain() {
     researchComplete.indexOf(EnumResearchItem.AutoComplainLevel2) >= 0;
   if (random1 < 10) {
     classIndex = 0;
-    duration = 1000;
-  } else if (random1 < 70) {
+  } else if (random1 < 50) {
     //  国内1，2，3
     classIndex = random2 + 1;
-    duration = 800;
-  } else if (random1 < 95) {
+  } else if (random1 < 80) {
     //  国外4，5，6
     classIndex = random2 + 4;
-    duration = 600;
   } else {
     //  外太空7 8 9
     classIndex = random2 + 7;
-    duration = 400;
   }
   if (hasAuto && classIndex <= 3) {
     return;

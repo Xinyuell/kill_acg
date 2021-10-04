@@ -17,12 +17,15 @@ import { GetTotalPeople, GetTotalWorks } from "../../core/system/works";
 import { IWorkInfo } from "../../core/tables/ITableInfo";
 import * as Enum from "../../core/tables/Enum";
 import { Resource } from "../../core/tables/GlobalConfig";
+import language from "../../core/tables/language";
 
 export interface IWorkConfig extends IWorkInfo {
   count: number;
   clickAdd: Function;
   clickSub: Function;
 }
+const radioValue = ref("1");
+
 const IsShow = computed(function () {
   return (id: number) => {
     if (id < Enum.EnumWorkType.Cost2Work) return true;
@@ -78,6 +81,7 @@ const clickAddFunctions = [
   clickAdd3,
   clickAdd4,
   clickAdd5,
+  clickAdd6,
 ];
 const clickSubFunctions = [
   clickSub1,
@@ -85,6 +89,7 @@ const clickSubFunctions = [
   clickSub3,
   clickSub4,
   clickSub5,
+  clickSub6,
 ];
 
 const getData = computed(() => {
@@ -145,9 +150,18 @@ function cancelAuto(value: boolean) {
 //根据按键来增加人数
 function clickAdd(e: MouseEvent, index: number) {
   let value = 1;
-  if (e.ctrlKey) value *= 10;
-  if (e.shiftKey) value *= 25;
-  if (e.altKey) value *= 100;
+  if (radioValue.value === "1") {
+    if (e.ctrlKey) value *= 10;
+    if (e.shiftKey) value *= 25;
+    if (e.altKey) value *= 100;
+  } else if (radioValue.value === "25%") {
+    value = Math.floor(notWork.value * 0.25);
+  } else if (radioValue.value === "50%") {
+    value = Math.floor(notWork.value * 0.5);
+  } else if (radioValue.value === "100%") {
+    value = notWork.value;
+  }
+
   //如果金钱小于0
   const moneyData = store.state.gameData.sourceArr.get(
     Enum.EnumResourceItem.Money
@@ -157,7 +171,10 @@ function clickAdd(e: MouseEvent, index: number) {
   else index === Enum.EnumWorkType.Cost2Work;
   max /= Resource.Cost2MoneyRatio;
   max = Math.floor(max);
-  if (max < 0) return;
+  if (max < 0){
+
+    return;
+  } 
   value = Math.min(value, max); //取更小的，如果钱不够了最大能加的人则有限
   let people = GetTotalPeople();
   let total = GetTotalWorks();
@@ -170,18 +187,25 @@ function clickAdd(e: MouseEvent, index: number) {
 }
 
 function clickSub(e: MouseEvent, index: number) {
-  let value = 1;
-  if (e.ctrlKey) value *= 10;
-  if (e.shiftKey) value *= 25;
-  if (e.altKey) value *= 100;
   const workConfig: number[] = store.state.gameData.workConfig;
-
+  const curValue = workConfig[index];
+  let value = 1;
+  if (radioValue.value === "1") {
+    if (e.ctrlKey) value *= 10;
+    if (e.shiftKey) value *= 25;
+    if (e.altKey) value *= 100;
+  } else if (radioValue.value === "25%") {
+    value = Math.floor(curValue * 0.25);
+  } else if (radioValue.value === "50%") {
+    value = Math.floor(curValue * 0.5);
+  } else if (radioValue.value === "100%") {
+    value = curValue;
+  }
   //减少人数只要对应的index人数满足就够了
-  if (workConfig[index] >= value) {
+  if (curValue >= value) {
     store.commit(UpdateWorkConfig, { index, value: -value });
   } else {
-    value = -workConfig[index]; //直接减少到0
-    store.commit(UpdateWorkConfig, { index, value });
+    store.commit(UpdateWorkConfig, { index, value: -curValue });
   }
 }
 
@@ -215,19 +239,48 @@ function clickAdd5(e: any) {
 function clickSub5(e: any) {
   clickSub(e, 4);
 }
+function clickAdd6(e: any) {
+  clickAdd(e, 5);
+}
+function clickSub6(e: any) {
+  clickSub(e, 5);
+}
 </script>
 
 <template>
   <div class="leftTable workTable">
-    <div style="margin-bottom: 0.2rem">
-      <span id="spantitle">剩余人数：{{ notWork }}</span>
-      <el-switch
-        v-model="switchValue"
-        @change="cancelAuto"
-        active-text="自动分配"
-        inactive-text="关闭"
-        style="margin-left: 0.4rem; font-size: 0.4rem; display: inline-block"
-      />
+    <div style="margin-left: 0.2rem">
+      <p id="spantitle">剩余人数：{{ notWork }}</p>
+      <div style="vertical-align:">
+        <el-radio-group
+          v-model="radioValue"
+          size="mini"
+          style="display: inline-block"
+        >
+          <el-radio-button label="1"></el-radio-button>
+          <el-radio-button label="25%"></el-radio-button>
+          <el-radio-button label="50%"></el-radio-button>
+          <el-radio-button label="100%"></el-radio-button>
+        </el-radio-group>
+        <el-popover
+          placement="bottom"
+          trigger="hover"
+          :width="200"
+          transition="124"
+        >
+          <span class="tips">{{ language.workTips }}</span>
+          <template #reference>
+            <el-switch
+              v-model="switchValue"
+              @change="cancelAuto"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="自动"
+              class="elswitch"
+            />
+          </template>
+        </el-popover>
+      </div>
     </div>
     <ul id="workDataul">
       <template v-for="data in getData" :key="data.ID">
@@ -246,28 +299,30 @@ function clickSub5(e: any) {
           <span class="number">
             {{ intToString(store.state.gameData.workConfig[data.ID], 0) }}</span
           >
-          <el-button
-            type="info"
-            @click="data.clickSub"
-            icon="el-icon-d-arrow-left"
-            size="mini"
-            circle
-          >
-          </el-button>
-          <el-button
-            type="info"
-            icon="el-icon-d-arrow-right"
-            size="mini"
-            circle
-            @click="data.clickAdd"
-          ></el-button>
-          <el-radio
-            style="margin-left: 0.2rem"
-            v-model="radio"
-            @change="radioChange"
-            :label="data.ID"
-            ><span></span
-          ></el-radio>
+          <div style="display: inline;">
+            <el-button
+              type="info"
+              @click="data.clickSub"
+              icon="el-icon-d-arrow-left"
+              size="mini"
+              circle
+            >
+            </el-button>
+            <el-button
+              type="info"
+              icon="el-icon-d-arrow-right"
+              size="mini"
+              circle
+              @click="data.clickAdd"
+            ></el-button>
+            <el-radio
+              style="margin-left: 0.2rem"
+              v-model="radio"
+              @change="radioChange"
+              :label="data.ID"
+              ><span></span
+            ></el-radio>
+          </div>
         </li>
       </template>
     </ul>
@@ -275,6 +330,13 @@ function clickSub5(e: any) {
 </template>
 
 <style scoped>
+.elswitch {
+  margin-right: 0.3rem;
+  display: inline;
+  float: right;
+  text-align:center;
+}
+
 #spantitle {
   font-size: 0.4rem;
   padding: 0.1rem;
@@ -289,13 +351,13 @@ function clickSub5(e: any) {
 }
 
 span.title {
-  width: 2rem;
+  min-width: 1.5rem;
   text-align: left;
   display: inline-block;
 }
 
 span.number {
-  width: 2rem;
+  min-width: 2rem;
   text-align: center;
   display: inline-block;
 }

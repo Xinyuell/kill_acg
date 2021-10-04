@@ -22,7 +22,7 @@ import { CityBuildCostBase, Resource } from "../../core/tables/GlobalConfig";
 
 function getUpgradeCost(data: policyItemData) {
   const cost =
-    (data.level + 1) * data.Cost + Math.pow(data.UpgradeRatio, data.level);
+    (data.level * data.UpgradeRatio + 1) * data.Cost;
   return cost;
 }
 

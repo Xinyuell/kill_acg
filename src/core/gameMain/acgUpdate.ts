@@ -6,7 +6,7 @@ import {
   GetCurrentLocalDateTime,
   EnumTimeLineLogType,
 } from "../system/complain";
-import { EnumResourceItem } from "../tables/Enum";
+import { EnumResearchProp, EnumResourceItem } from "../tables/Enum";
 import { AcgProgressData } from "../tables/GlobalConfig";
 import language from "../tables/language";
 import { SaveGame } from "./gameSave";
@@ -14,7 +14,6 @@ import { CalculateProps } from "./gameUpdate";
 
 /** 当前获取的政治背景的值,传入信徒人数和重置次数 */
 export function GetPoliticalCount(count: number) {
-  if (count <= 400) return 0;
   let speed = 1;
   const curRatio =
     store.state.gameData.acgProgressValue / AcgProgressData.AcgProgressMax;
@@ -27,7 +26,9 @@ export function GetPoliticalCount(count: number) {
   } else if (curRatio <= 0.4) {
     speed = 1.5;
   }
-  return ((count - 400) / 2) * speed;
+  if (count < 200) return count * 0.1 * speed;
+  else if (count < 400) return count * 0.2 * speed;
+  return count * 0.3 * speed;
 }
 
 export function ResetGame() {
@@ -84,6 +85,8 @@ export function acgProgressUpdate(deltaTime: number) {
   } else if (curRatio <= 0.4) {
     speed *= 2;
   }
+  const prop = store.state.props.get(EnumResearchProp.ReduceAcgProgressSpeedRatio) ? store.state.props.get(EnumResearchProp.ReduceAcgProgressSpeedRatio)! : 0;
+  speed *= 1 - prop;
   store.commit(UpdateAcgProgressValue, deltaTime * speed);
   //游戏成功失败的结算
   if (store.state.gameData.acgProgressValue >= AcgProgressData.AcgProgressMax) {

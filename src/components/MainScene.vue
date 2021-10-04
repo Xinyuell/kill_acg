@@ -73,20 +73,6 @@ const dialogVisible = ref(false);
     </el-col>
   </el-row>
 
-  <!-- <el-row  class="hidden-lg-and-up">
-    <el-col :span="24" class="mainCol" style="line-height: 0.1rem">
-      <ResourcePanel />
-      <WorkPanel v-if="workShow" />
-    </el-col>
-    <el-col :span="24" class="mainCol">
-      <MiddlePanel />
-      <router-view></router-view>
-    </el-col>
-    <el-col :span="24" class="mainCol">
-      <LogPanel />
-    </el-col>
-  </el-row> -->
-
   <el-drawer
     v-model="store.state.openGuide"
     title=""
@@ -116,74 +102,7 @@ const dialogVisible = ref(false);
 </template>
 
 <style>
-.el-drawer__header {
-  margin-bottom: 0 !important;
-}
-@media only screen and (max-width: 767px) {
-  .hidden-xs-only {
-    display: none !important;
-  }
-}
 
-@media only screen and (min-width: 768px) {
-  .hidden-sm-and-up {
-    display: none !important;
-  }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-  .hidden-sm-only {
-    display: none !important;
-  }
-}
-
-@media only screen and (max-width: 991px) {
-  .hidden-sm-and-down {
-    display: none !important;
-  }
-}
-
-@media only screen and (min-width: 992px) {
-  .hidden-md-and-up {
-    display: none !important;
-  }
-}
-
-@media only screen and (min-width: 992px) and (max-width: 1199px) {
-  .hidden-md-only {
-    display: none !important;
-  }
-}
-
-@media only screen and (max-width: 1199px) {
-  .hidden-md-and-down {
-    display: none !important;
-  }
-}
-
-@media only screen and (min-width: 1200px) {
-  .hidden-lg-and-up {
-    display: none !important;
-  }
-}
-
-@media only screen and (min-width: 1200px) and (max-width: 1919px) {
-  .hidden-lg-only {
-    display: none !important;
-  }
-}
-
-@media only screen and (max-width: 1919px) {
-  .hidden-lg-and-down {
-    display: none !important;
-  }
-}
-
-@media only screen and (min-width: 1920px) {
-  .hidden-xl-only {
-    display: none !important;
-  }
-}
 .mainCol {
   background-color: #dcdfe6;
   margin: 0.02rem;

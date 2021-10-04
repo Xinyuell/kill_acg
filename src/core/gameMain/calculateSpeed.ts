@@ -135,7 +135,7 @@ let num7 = researchProps.get(EnumResearchProp.ResearchCostRatio)
   num3 *= (1 + num6) * Resource.PolicyCostBaseRatio * num7 * (1 + num8);
   cost1.cacheSpeed = num1 - num3;
   cost2.cacheSpeed = num2 - num3;
-  policy.cacheSpeed = num3 * Resource.PolicyAddBase;
+  policy.cacheSpeed = num3 * Resource.PolicyAddBase / Resource.PolicyCostBaseRatio; //算自身的速度的时候要除以消耗知识的倍率
   //如果知识的速度加上当前的值，小于0，清楚政策的工人就可以了
   let isDebts = false;
   if (

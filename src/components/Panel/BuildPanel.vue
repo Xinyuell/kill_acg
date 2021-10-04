@@ -4,7 +4,6 @@ import BuildItem from "../BaseItem/BuildItem.vue";
 import { ReplaceGameData, store } from "../../store/index";
 import { buildItemData } from "../../core/gameMain/gameSave";
 
-const activeNames = ref(["0","1","2","3","4"]);
 const buildArry0 = computed(() => {
   const buildArryList: Map<number, buildItemData> =
     store.state.gameData.buildArryList;
@@ -56,7 +55,7 @@ const buildArry4 = computed(() => {
 
 <template>
   <div>
-    <el-collapse v-model="activeNames">
+    <el-collapse v-model="store.state.setting.buildActiveName">
       <el-collapse-item name="0" class="Collapsetitle" >
         <template #title>
           <h3 class="CollapsetitleText">村口</h3>

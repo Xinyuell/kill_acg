@@ -13,22 +13,29 @@ import { SaveGame } from "./gameSave";
 import { CalculateProps } from "./gameUpdate";
 
 /** 当前获取的政治背景的值,传入信徒人数和重置次数 */
-export function GetPoliticalCount(count: number) {
+export function GetPoliticalCount(count: number, curRatio?: number) {
   let speed = 1;
-  const curRatio =
-    store.state.gameData.acgProgressValue / AcgProgressData.AcgProgressMax;
-  if (curRatio <= 0.1) {
-    speed = 3;
-  } else if (curRatio <= 0.2) {
-    speed = 2.5;
+  if (curRatio === undefined)
+    curRatio =
+      store.state.gameData.acgProgressValue / AcgProgressData.AcgProgressMax;
+  if (curRatio <= 0.2) {
+    speed = 4;
   } else if (curRatio <= 0.3) {
-    speed = 2;
+    speed = 3;
   } else if (curRatio <= 0.4) {
+    speed = 2;
+  } else if (curRatio <= 0.5) {
     speed = 1.5;
   }
-  if (count < 200) return count * 0.1 * speed;
-  else if (count < 400) return count * 0.2 * speed;
-  return count * 0.3 * speed;
+  if (count < 200) return count * 0.2 * speed;
+  else if (count < 400) return count * 0.3 * speed;
+  return count * 0.4 * speed;
+}
+
+/**政治背景转化为全局加成公示 */
+export function GetPropRatioByPolitical(value: number) {
+  if (value <= 5) return value / 100;
+  return Math.log(value + 1) * 0.8 - 1.5;
 }
 
 export function ResetGame() {
@@ -76,16 +83,20 @@ export function acgProgressUpdate(deltaTime: number) {
   let speed = AcgProgressData.AcgProgressSpeed;
   const curRatio =
     store.state.gameData.acgProgressValue / AcgProgressData.AcgProgressMax;
-  if (curRatio <= 0.1) {
+  if (curRatio <= 0.2) {
     speed *= 16;
-  } else if (curRatio <= 0.2) {
-    speed *= 8;
   } else if (curRatio <= 0.3) {
-    speed *= 4;
+    speed *= 8;
   } else if (curRatio <= 0.4) {
+    speed *= 4;
+  } else if (curRatio <= 0.5) {
     speed *= 2;
   }
-  const prop = store.state.props.get(EnumResearchProp.ReduceAcgProgressSpeedRatio) ? store.state.props.get(EnumResearchProp.ReduceAcgProgressSpeedRatio)! : 0;
+  const prop = store.state.props.get(
+    EnumResearchProp.ReduceAcgProgressSpeedRatio
+  )
+    ? store.state.props.get(EnumResearchProp.ReduceAcgProgressSpeedRatio)!
+    : 0;
   speed *= prop;
   store.commit(UpdateAcgProgressValue, deltaTime * speed);
   //游戏成功失败的结算

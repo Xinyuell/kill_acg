@@ -46,19 +46,19 @@ export default {
       let str = "";
       str += "消耗" + intToString(getUpgradeCost(data)) + "政治背景\n";
       str += data.Desc;
-      switch (data.ID) {
-        case EnumLawItem.ComplainCD:
-          return stringFormat(str, intToString( (data.level * 0.02),2) );
-        case EnumLawItem.ComplainAcgRatio:
-          return stringFormat(str, intToString((data.level * 10),2));
-        case EnumLawItem.WorkBaseRatio:
-          return stringFormat(str, intToString((data.level * 10),2));
-        case EnumLawItem.MoneyCostRatio:
-          return stringFormat(str, intToString((1 - Math.pow(0.95, data.level)) * 100));
-        case EnumLawItem.ResearchCostRatio:
-          return stringFormat(str, intToString((1 - Math.pow(0.95, data.level)) * 100) );
+      let prop = 0;
+      data.ResearchProp.forEach(value=>{
+        prop = value;
+      })
+      if(data.IsReduceProp){
+        return stringFormat(str, intToString((1 - Math.pow(1- prop, data.level)) * 100));
       }
-      return str;
+      else{
+        if(data.ID === EnumLawItem.ComplainCD)
+          return stringFormat(str, intToString( (data.level * prop),2) );
+        else 
+         return stringFormat(str, intToString( (data.level * prop * 100),2) );//百分比属性显示
+      }
     },
     canClick: function () {
       const data: lawItemData = (this as any).lawItemData;

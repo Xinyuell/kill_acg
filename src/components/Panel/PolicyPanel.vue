@@ -61,7 +61,7 @@ const tips = computed(() => {
       EnumResourceItem.Believer
     )!.cacheValue;
   const value = GetPoliticalCount(Math.floor(believer));
-  return "当前重置将获得" + intToString(value, 0) + "点政治背景\n信徒数量越多，ACG文化影响力越低，获得的政治背景越多";
+  return "当前重置将获得" + intToString(value, 0) + "点政治背景\n信徒数量越多，ACG文化影响力越低，获得的政治背景越多\n设置界面可以查看相关计算器";
 });
 </script>
 

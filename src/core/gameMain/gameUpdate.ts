@@ -20,6 +20,7 @@ import { checkResourceUnlock } from "../system/resource";
 import { calculateMoneySpeed, calculatePolicySpeed } from "./calculateSpeed";
 import { checkBuildUnlock } from "../system/build";
 import { InfluenceLevel, Resource } from "../tables/GlobalConfig";
+import { GetPropRatioByPolitical } from "./acgUpdate";
 
 /** 递减属性的百分比算法 */
 function GetReduceProp(level: number, prop: number) {
@@ -95,7 +96,7 @@ export function CalculateProps() {
       EnumResourceItem.Political
     )!.cacheValue;
     let prop = 0;
-    if (value > 0) prop = Math.log(value + 7) / 2 - 1;
+    if (value > 0) prop = GetPropRatioByPolitical(value);
     props.set(EnumResearchProp.PoliticalAllRatio, prop);
   }
   store.commit(UpdateProps, props);

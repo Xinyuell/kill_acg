@@ -33,8 +33,8 @@ export const GameTime = {
 export const AcgProgressData = {
   /** * acg进度的上限，100亿*/
   AcgProgressMax: 10 * 1000 * 1000 * 1000,
-  /** * acg进度的基础值，50亿 */
-  AcgProgressBae: 5 * 1000 * 1000 * 1000,
+  /** * acg进度的基础值，60亿 */
+  AcgProgressBae: 6 * 1000 * 1000 * 1000,
   /** * acg进度的速度，1百万 */
   AcgProgressSpeed: 1 * 1000 * 1000,
   /** * 举报失败降低影响力百分比 */

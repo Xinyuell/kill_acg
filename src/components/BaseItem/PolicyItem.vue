@@ -57,8 +57,12 @@ export default {
       let str = "";
       str += "消耗" + intToString(getUpgradeCost(data)) + "政策点\n";
       str += data.Desc;
-      const value = (1 - Math.pow(0.95, data.level));
-      return stringFormat(str, intToString(value * 100,4));
+      
+      let prop = 0;
+      data.ResearchProp.forEach(value=>{
+        prop = value;
+      })
+      return stringFormat(str, intToString((1 - Math.pow(1 - prop, data.level)) * 100,4));
     },
     canClick: function () {
       const data: policyItemData = (this as any).policyItemData;

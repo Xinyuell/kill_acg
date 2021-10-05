@@ -70,4 +70,5 @@ export const PoliticalLevel = [
   10000 /** * 4级50000点政治背景*/, 50000,
 ];
 
-export const CityBuildCostBase = [10, 100, 1000, 5000, 20000, 100000];
+export const CityBuildCostBase = [0, 50, 5000, 50*1000, 500*1000, 100000];
+

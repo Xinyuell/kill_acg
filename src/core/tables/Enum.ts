@@ -43,16 +43,22 @@ export enum EnumResearchItem {
   None,
   /** * 影响力获得金钱1级0.01 */
   InfluenceMoneyLevel1,
-  /** * 影响力获得金钱2级0.02 */
+  /** * 影响力获得金钱2级0.01 */
   InfluenceMoneyLevel2,
-  /** * 影响力获得金钱3级0.04 */
+  /** * 影响力获得金钱3级0.02 */
   InfluenceMoneyLevel3,
-  /** * 影响力获得金钱4级0.06 */
+  /** * 影响力获得金钱4级0.02 */
   InfluenceMoneyLevel4,
-  /** * 影响力获得金钱5级0.08 */
+  /** * 影响力获得金钱5级0.04 */
   InfluenceMoneyLevel5,
-  /** * 无限科技，影响力获得金钱6级0.1 */
+  /** * 影响力获得金钱6级0.05 */
   InfluenceMoneyLevel6,
+  /** * 影响力获得金钱7级0.05 */
+  InfluenceMoneyLevel7,
+  /** * 影响力获得金钱8级0.05 */
+  InfluenceMoneyLevel8,
+  /** * 影响力获得金钱9级0.05 */
+  InfluenceMoneyLevel9,
 
   /** * 解锁1级信徒建筑 */
   BelieverBuildLevel1,
@@ -90,6 +96,18 @@ export enum EnumResearchItem {
   BelieverInfluenceMax3,
   /** * 信徒提升影响力上限4级 */
   BelieverInfluenceMax4,
+  /** * 信徒提升影响力上限5级 */
+  BelieverInfluenceMax5,
+  /** * 信徒提升影响力上限6级 */
+  BelieverInfluenceMax6,
+  /** * 信徒提升影响力上限7级 */
+  BelieverInfluenceMax7,
+  /** * 信徒提升影响力上限8级 */
+  BelieverInfluenceMax8,
+  /** * 信徒提升影响力上限9级 */
+  BelieverInfluenceMax9,
+  /** * 信徒提升影响力上限10级 */
+  BelieverInfluenceMax10,
 
   /** * 解锁举报 */
   ComplainUnLock,

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { PropType } from "vue";
+import { PropType, ref } from "vue";
 import {
   ModifyResourceCurValue,
   store,
@@ -15,15 +15,11 @@ import {
   EnumResourceItem,
   ItemType,
 } from "../../core/tables/Enum";
-import { CityBuildCostBase, Resource } from "../../core/tables/GlobalConfig";
+import { CityBuildCostBase,  Resource } from "../../core/tables/GlobalConfig";
 
 function getUpgradeCost(data: buildItemData) {
-  let cost =
-    Resource.BuildUpgradeBase *
-      (data.curValue * data.UpgradeCostRatio +
-        Math.pow(data.UpgradeCostPower, data.curValue)) +
-    CityBuildCostBase[data.cityName]!;
-  let reduce = 1;
+  const cost = CityBuildCostBase[data.cityName]! + Math.pow(data.UpgradeCostPower, data.curValue - 1) * Resource.BuildUpgradeBase * data.UpgradeCostRatio
+  let reduce = 0;
   if ((data.Type & ItemType.InfluenceBuild) > 0) {
     reduce = store.state.props.get(EnumResearchProp.ReduceInfluenceBuildCost)
       ? store.state.props.get(EnumResearchProp.ReduceInfluenceBuildCost)!
@@ -126,17 +122,6 @@ export default {
       let str = "";
       if (data.OnClickType === BuildClickType.Upgrade) {
         str += "消耗" + intToString(getUpgradeCost(data)) + "金钱\n";
-        const sourceArr: Map<number, resourceItemData> =
-          store.state.gameData.sourceArr;
-        if (
-          getUpgradeCost(data) >
-          sourceArr.get(EnumResourceItem.Money)!.cacheValue
-        ) {
-          str +=
-            "当前金钱" +
-            intToString(sourceArr.get(EnumResourceItem.Money)!.cacheValue) +
-            "无法升级\n";
-        }
       }
       str += data.Desc;
       return str;
@@ -155,25 +140,34 @@ export default {
       return false;
     },
   },
+
+  setup(props:any){
+    const hover = ref(false);
+    return{
+      hover,
+    }
+  }
 };
 </script>
 
 
 <template>
-  <el-popover placement="bottom" trigger="hover" transition="" :width="200">
+  <el-popover placement="bottom" trigger="hover" transition="" :width="200" >
     <template #reference>
       <el-button
         :plain="canClick"
         class="buildItem"
         type="success"
         @click="buildItemClick"
+        @mouseenter="()=>{hover = true;}"
+        @mouseleave="()=>{hover = false;}"
         >{{ buildData.Name }}
         <span class="buildCount" v-show="buildData.curValue > 0">{{
           buildData.curValue
         }}</span>
       </el-button>
-    </template>
-    <span class="tips">{{ tips }}</span>
+    </template >
+    <span class="tips" >{{ tips }}</span>
   </el-popover>
 </template>
 

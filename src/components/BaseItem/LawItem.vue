@@ -45,17 +45,6 @@ export default {
       const data: lawItemData = (this as any).lawItemData;
       let str = "";
       str += "消耗" + intToString(getUpgradeCost(data)) + "政治背景\n";
-      const sourceArr: Map<number, resourceItemData> =
-        store.state.gameData.sourceArr;
-      if (
-        getUpgradeCost(data) >
-        sourceArr.get(EnumResourceItem.Political)!.cacheValue
-      ) {
-        str +=
-          "当前政治背景" +
-          intToString(sourceArr.get(EnumResourceItem.Political)!.cacheValue) +
-          "无法升级\n";
-      }
       str += data.Desc;
       switch (data.ID) {
         case EnumLawItem.ComplainCD:

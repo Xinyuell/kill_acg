@@ -48,7 +48,6 @@ export default {
       sourceArr.get(EnumResourceItem.Policy)!.cacheValue -= cost;
       data.level++;
       CalculateProps();
-      //TODO 升级有什么提示 或者解锁
     },
   },
 
@@ -57,20 +56,9 @@ export default {
       const data: policyItemData = (this as any).policyItemData;
       let str = "";
       str += "消耗" + intToString(getUpgradeCost(data)) + "政策点\n";
-      const sourceArr: Map<number, resourceItemData> =
-        store.state.gameData.sourceArr;
-      if (
-        getUpgradeCost(data) >
-        sourceArr.get(EnumResourceItem.Policy)!.cacheValue
-      ) {
-        str +=
-          "当前政策点" +
-          intToString(sourceArr.get(EnumResourceItem.Policy)!.cacheValue) +
-          "无法升级\n";
-      }
       str += data.Desc;
       const value = (1 - Math.pow(0.95, data.level));
-      return stringFormat(str, intToString(value * 100));
+      return stringFormat(str, intToString(value * 100,4));
     },
     canClick: function () {
       const data: policyItemData = (this as any).policyItemData;

@@ -210,10 +210,10 @@ function updateResourceValue(
     });
     if (
       store.state.gameData.influenceLevel > 1 &&
-      !store.state.setting.hasShowAcgGuide
+      !store.state.gameData.setting.hasShowAcgGuide
     ) {
       StartGuideByID(10);
-      store.state.setting.hasShowAcgGuide = true;
+      store.state.gameData.setting.hasShowAcgGuide = true;
     }
   }
   const strValue = intToString(data.cacheValue);
@@ -279,7 +279,7 @@ function setResourceSpeed(
 }
 
 export function StartGuideByID(ID: number) {
-  if (store.state.setting.closeGuide) return;
+  if (store.state.gameData.setting.closeGuide) return;
   if (store.state.gameData.PoliticalData.restartTime > 0) return;
   store.commit(UpdateGuideTips, ID);
   store.state.openGuide = true;

@@ -35,14 +35,7 @@ export const store = createStore<State>({
     timelineLogs:[],
     gameFail:false,
     props:new Map<EnumResearchProp,number>([]),
-    setting:{
-      closeGuide :false,
-      closeLog:false,
-      closeNew:false,
-      hasShowAcgGuide:false,
-      buildActiveName:["0","1","2","3","4"],
-
-    }
+    stopGame:false,
   },
   mutations:mutations,
   getters:getters,

@@ -40,7 +40,7 @@ const onCheck2 = function () {
     <SaveGameItem />
     <div class="content">
       <el-switch
-        v-model="store.state.setting.closeGuide"
+        v-model="store.state.gameData.setting.closeGuide"
         active-text="关闭新手引导弹窗"
         active-color="#13ce66"
         inactive-color="#ff4949"
@@ -48,7 +48,7 @@ const onCheck2 = function () {
       >
       </el-switch>
       <el-switch
-        v-model="store.state.setting.closeNew"
+        v-model="store.state.gameData.setting.closeNew"
         active-text="关闭新闻"
         active-color="#13ce66"
         inactive-color="#ff4949"
@@ -56,7 +56,7 @@ const onCheck2 = function () {
       >
       </el-switch>
       <el-switch
-        v-model="store.state.setting.closeLog"
+        v-model="store.state.gameData.setting.closeLog"
         active-text="关闭举报日志"
         active-color="#13ce66"
         inactive-color="#ff4949"

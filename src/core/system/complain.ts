@@ -87,7 +87,7 @@ export function AddTimeLineLog(log: TimeLineLog) {
   }
   if (
     log.logType === EnumTimeLineLogType.Complain &&
-    store.state.setting.closeLog
+    store.state.gameData.setting.closeLog
   )
     return;
   store.state.timelineLogs.unshift(log);

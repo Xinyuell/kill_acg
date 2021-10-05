@@ -24,6 +24,8 @@ export default {
   },
   methods: {
     lawItemClick: function () {
+      if (store.state.stopGame || store.state.gameFail || !store.state.running)
+        return;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const data: lawItemData = (this as any).lawItemData;
@@ -47,17 +49,18 @@ export default {
       str += "消耗" + intToString(getUpgradeCost(data)) + "政治背景\n";
       str += data.Desc;
       let prop = 0;
-      data.ResearchProp.forEach(value=>{
+      data.ResearchProp.forEach((value) => {
         prop = value;
-      })
-      if(data.IsReduceProp){
-        return stringFormat(str, intToString((1 - Math.pow(1- prop, data.level)) * 100));
-      }
-      else{
-        if(data.ID === EnumLawItem.ComplainCD)
-          return stringFormat(str, intToString( (data.level * prop),2) );
-        else 
-         return stringFormat(str, intToString( (data.level * prop * 100),2) );//百分比属性显示
+      });
+      if (data.IsReduceProp) {
+        return stringFormat(
+          str,
+          intToString((1 - Math.pow(1 - prop, data.level)) * 100)
+        );
+      } else {
+        if (data.ID === EnumLawItem.ComplainCD)
+          return stringFormat(str, intToString(data.level * prop, 2));
+        else return stringFormat(str, intToString(data.level * prop * 100, 2)); //百分比属性显示
       }
     },
     canClick: function () {

@@ -71,7 +71,7 @@ export class GameControl {
     if (store.state.gameFail) {
       return;
     }
-    if (store.state.setting.closeNew) return;
+    if (store.state.gameData.setting.closeNew) return;
     const newsIndex = Math.floor(Math.random() * language.news.length);
     ElMessage.success({
       message: "今日新闻：" + language.news[newsIndex],
@@ -94,12 +94,23 @@ export class GameControl {
       this.now = Date.now();
       return;
     }
+    if(store.state.stopGame){
+      this.now = Date.now();
+      return;
+    }
     updateHistory();
     //正式开始游戏才会计时
-    const pass = Date.now() - this.now;
+    let pass = Date.now() - this.now;
+    if (store.state.gameData.setting.doubleTime > 0) {
+      store.state.gameData.setting.doubleTime -= pass;
+      pass *= 2;
+      if (store.state.gameData.setting.doubleTime < 0)
+        store.state.gameData.setting.doubleTime = 0;
+    }
     store.state.gameData.totalTime += pass;
     this.now = Date.now();
     resourceUpdate(pass / 1000);
     acgProgressUpdate(pass / 1000);
+    store.state.gameData.setting.timeNow = this.now;
   }
 }

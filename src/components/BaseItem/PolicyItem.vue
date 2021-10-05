@@ -21,8 +21,7 @@ import {
 import { CityBuildCostBase, Resource } from "../../core/tables/GlobalConfig";
 
 function getUpgradeCost(data: policyItemData) {
-  const cost =
-    (data.level * data.UpgradeRatio + 1) * data.Cost;
+  const cost = (data.level * data.UpgradeRatio + 1) * data.Cost;
   return cost;
 }
 
@@ -35,6 +34,8 @@ export default {
   },
   methods: {
     policyItemClick: function () {
+      if (store.state.stopGame || store.state.gameFail || !store.state.running)
+        return;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const data: policyItemData = (this as any).policyItemData;
@@ -57,12 +58,15 @@ export default {
       let str = "";
       str += "消耗" + intToString(getUpgradeCost(data)) + "政策点\n";
       str += data.Desc;
-      
+
       let prop = 0;
-      data.ResearchProp.forEach(value=>{
+      data.ResearchProp.forEach((value) => {
         prop = value;
-      })
-      return stringFormat(str, intToString((1 - Math.pow(1 - prop, data.level)) * 100,4));
+      });
+      return stringFormat(
+        str,
+        intToString((1 - Math.pow(1 - prop, data.level)) * 100, 4)
+      );
     },
     canClick: function () {
       const data: policyItemData = (this as any).policyItemData;

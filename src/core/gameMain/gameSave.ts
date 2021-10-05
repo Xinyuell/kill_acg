@@ -8,7 +8,7 @@ import {
   LawInfoList,
 } from "../tables/table";
 import { ItemType, BuildClickType, EnumResearchProp } from "../tables/Enum";
-import { AcgProgressData } from "../tables/GlobalConfig";
+import { AcgProgressData, GameTime } from "../tables/GlobalConfig";
 import {
   IBuildInfo,
   IItemInfo,
@@ -17,11 +17,20 @@ import {
 } from "../tables/ITableInfo";
 
 export const SaveLocalStorageGameDataKey = "kill_acg_game";
-export const SaveLocalStorageSettingKey = "kill_acg_game_setting";
 
+function SetDoubleTime(setting: SaveSetting) {
+  let pass = Date.now() - setting.timeNow;
+  if (pass > GameTime.BaseDoubleTime) {
+    setting.doubleTime += pass;
+    if (setting.doubleTime > GameTime.MaxDoubleTime)
+      setting.doubleTime = GameTime.MaxDoubleTime;
+    console.log(pass)
+  }
+  setting.timeNow = Date.now();
+}
 
 /** 用存档数据覆盖GameData */
-export function ResetGameData(state: State,saveGameData: ISaveGameData){
+export function ResetGameData(state: State, saveGameData: ISaveGameData) {
   const gameData = state.gameData;
   gameData.acgProgressValue = saveGameData.acgProgressValue;
   gameData.influenceLevel = saveGameData.influenceLevel;
@@ -33,6 +42,8 @@ export function ResetGameData(state: State,saveGameData: ISaveGameData){
   gameData.totalTime = saveGameData.totalTime;
   gameData.historyLogID = saveGameData.historyLogID;
   gameData.PoliticalData = saveGameData.PoliticalData;
+  gameData.setting = saveGameData.setting;
+  SetDoubleTime(gameData.setting);
   saveGameData.sourceArr.forEach(function (value) {
     if (gameData.sourceArr.has(value.ID)) {
       gameData.sourceArr.get(value.ID)!.cacheValue = value.cacheValue;
@@ -62,14 +73,6 @@ export function setStoreGameDataByBase64(
   state: State,
   code: string | undefined
 ) {
-  //先初始化设置
-  const settingCode = window.localStorage[SaveLocalStorageSettingKey]
-  if(settingCode !== undefined){
-    const setting = JSON.parse(Base64.decode(settingCode))
-    state.setting = setting;
-  }
-  
-  
   if (code === undefined) {
     state.haslog = false;
     return false;
@@ -81,23 +84,18 @@ export function setStoreGameDataByBase64(
     saveGameData.sourceArr === undefined ||
     saveGameData.buildArryList === undefined ||
     saveGameData.PoliticalData === undefined ||
-    saveGameData.policyArryList === undefined
+    saveGameData.policyArryList === undefined ||
+    saveGameData.setting === undefined
   ) {
     state.haslog = false;
     return false;
   }
-  ResetGameData(state,saveGameData);
+  ResetGameData(state, saveGameData);
   state.haslog = true;
   return true;
 }
 
 export function SaveGame() {
-  const setting = store.state.setting;
-  if(setting !== undefined){
-    const codeSetting = Base64.encode(JSON.stringify(setting));
-    window.localStorage.setItem(SaveLocalStorageSettingKey, codeSetting);
-  }
-
   if (!store.state.running) return;
   if (store.state.gameFail) {
     return;
@@ -127,6 +125,7 @@ export function getCurrentSaveGameData() {
     totalTime: gameData.totalTime,
     historyLogID: gameData.historyLogID,
     PoliticalData: gameData.PoliticalData,
+    setting: gameData.setting,
   };
   gameData.sourceArr.forEach(function (value, key) {
     saveGameData.sourceArr.push({
@@ -180,6 +179,15 @@ export function initGameData() {
     },
     policyArryList: new Map([]),
     LawArryList: new Map([]),
+    setting: {
+      closeGuide: false,
+      closeLog: false,
+      closeNew: false,
+      hasShowAcgGuide: false,
+      buildActiveName: ["0", "1", "2", "3", "4"],
+      timeNow: Date.now(),
+      doubleTime: 0,
+    },
   };
   ItemInfoList.forEach(function (value, index) {
     gameData.sourceArr.set(value.ID, {
@@ -222,7 +230,7 @@ export function initGameData() {
       Desc: value.Desc,
       Cost: value.Cost,
       ResearchProp: value.ResearchProp,
-      IsReduceProp:value.IsReduceProp,
+      IsReduceProp: value.IsReduceProp,
     });
   });
 
@@ -236,7 +244,7 @@ export function initGameData() {
       Cost: value.Cost,
       Condition: value.Condition,
       ResearchProp: value.ResearchProp,
-      IsReduceProp:value.IsReduceProp,
+      IsReduceProp: value.IsReduceProp,
     });
   });
 
@@ -315,6 +323,7 @@ interface ISaveGameData {
   newsID: number[];
   /** * 游戏的总时间 */
   totalTime: number;
+  setting: SaveSetting;
 }
 
 /**重置资源 */
@@ -330,16 +339,18 @@ export interface PoliticalData {
 }
 
 /**独立存档的设置设置 */
-export interface SaveSetting{
+export interface SaveSetting {
   /**关闭引导 */
-  closeGuide:boolean;
+  closeGuide: boolean;
   /**关闭新闻 */
-  closeNew:boolean;
+  closeNew: boolean;
   /**关闭举报Log */
-  closeLog:boolean;
+  closeLog: boolean;
   /**是否显示ACG引导 */
-  hasShowAcgGuide:boolean;
-  buildActiveName:string[];
+  hasShowAcgGuide: boolean;
+  buildActiveName: string[];
+  timeNow: number;
+  doubleTime: number;
 }
 
 export interface GameData {
@@ -388,4 +399,5 @@ export interface GameData {
   autoWorkIndex: number;
   /** * 当前游戏的总时间 */
   totalTime: number;
+  setting: SaveSetting;
 }

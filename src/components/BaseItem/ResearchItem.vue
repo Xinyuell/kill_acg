@@ -21,11 +21,12 @@ export default {
   },
   methods: {
     researchItemClick: function () {
+      if (store.state.stopGame || store.state.gameFail || !store.state.running)
+        return;
       //消耗cost 解锁研究。还需要考虑影响力的因素
       const data: IResearchInfo = (this as any).researchData;
       const complete = store.state.gameData.researchComplete;
-      if(complete.indexOf(data.ID) >= 0)
-        return;
+      if (complete.indexOf(data.ID) >= 0) return;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const cost1Data = sourceArr.get(

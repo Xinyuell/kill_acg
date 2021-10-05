@@ -16,18 +16,22 @@ export const Resource = {
   /** * 全局建筑基础消耗10 */
   BuildUpgradeBase: 10,
   /** 政策转化基础值 */
-  PolicyAddBase:0.1,
+  PolicyAddBase: 0.1,
 };
 //时间相关
 export const GameTime = {
   /** * 游戏时间,找一个有意义时间 */
   StartDate: Date.UTC(2016, 6, 1),
   /** * 自动存档时间 */
-  SaveTime: 20000,
+  SaveTime: 10000,
   /** * 刷新毫秒数,每秒20帧 */
   UpdateTime: 50,
   /** * 虚拟时间放大倍数，5秒=1天 */
   VrtulTimeRatio: 17280,
+  /**最大双倍时间 */
+  MaxDoubleTime: 12 * 60 * 60 * 1000,
+   /**起始双倍时间 */
+  BaseDoubleTime: import.meta.env.DEV ? 1 : 5 * 60 * 1000,
 };
 //ACG进度相关
 export const AcgProgressData = {
@@ -40,11 +44,11 @@ export const AcgProgressData = {
   /** * 举报失败降低影响力百分比 */
   ComplainWrongValueRatio: 0.1,
   /** * 1级举报降低ACG影响力1百万 */
-  ComplainAcgLevel1:  1000 * 1000,
+  ComplainAcgLevel1: 1000 * 1000,
   /** * 2级举报降低ACG影响力5百万  */
-  ComplainAcgLevel2:  5 * 1000 * 1000,
+  ComplainAcgLevel2: 5 * 1000 * 1000,
   /** * 3级举报降低ACG影响力1千万 */
-  ComplainAcgLevel3:  10 * 1000 * 1000,
+  ComplainAcgLevel3: 10 * 1000 * 1000,
 };
 /**政治等级 */
 export const InfluenceLevel = [
@@ -70,5 +74,4 @@ export const PoliticalLevel = [
   10000 /** * 4级50000点政治背景*/, 50000,
 ];
 
-export const CityBuildCostBase = [0, 50, 5000, 50*1000, 500*1000, 100000];
-
+export const CityBuildCostBase = [0, 50, 5000, 50 * 1000, 500 * 1000, 100000];

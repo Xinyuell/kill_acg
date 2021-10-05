@@ -10,6 +10,8 @@ import LogPanel from "./Panel/LogPanel.vue";
 import AcgProgress from "./Panel/AcgProgress.vue";
 import { EnumBuildItem } from "../core/tables/Enum";
 import language from "../core/tables/language";
+import { GetCurrentLocalDateTime } from "../core/system/complain";
+import { GameTime } from "../core/tables/GlobalConfig";
 
 const headerHeight = computed(() => {
   let base = 0.5;
@@ -27,9 +29,61 @@ const workShow = computed(() => {
   return false;
 });
 const dialogVisible = ref(false);
+const currentLocalTime = computed(()=>{
+return  new Date(
+      GameTime.StartDate +
+        store.state.gameData.totalTime * GameTime.VrtulTimeRatio
+    ).toLocaleDateString('zh-CN',{
+      dateStyle:"full"
+    });
+})
+const doubleTime = computed(()=>{
+  const time =store.state.gameData.setting.doubleTime
+  if(time <= 60000)
+    return "";
+  const hours = Math.floor(time / 3600000);
+  const minute =Math.floor((time - hours*3600000)/60000);
+  return hours + ":" + minute;
+})
+
+
+const stopGameIcon = computed(()=>{
+  if(store.state.stopGame)
+  return "el-icon-video-pause";
+  else return "el-icon-caret-right" 
+})
+
+const stopTips =computed(()=>{
+  if(store.state.stopGame)
+  return "继续游戏";
+  else return "暂停游戏" 
+})
+
+function onClick(){
+  store.state.stopGame = !store.state.stopGame;
+}
+
+
 </script>
 
 <template>
+  <el-row justify="center" style="height: 0.7rem">
+    <el-col :xs="24" :sm="24" :md="24" :lg="20" :xl="14" style="height: 100%">
+      <div class="head">
+        <span class="headtext">
+          {{ currentLocalTime }}
+        </span>
+        <el-tooltip content="加速(2x)，离线5分钟后有效，最大12小时" placement="bottom">
+        <span class="headtext" v-show="doubleTime !== ''">
+          {{ doubleTime }}
+        </span>
+        </el-tooltip>
+         <el-tooltip :content="stopTips" placement="bottom">
+         <el-button type="primary" :icon="stopGameIcon" @click="onClick" size="mini" circle></el-button>
+           </el-tooltip>
+      </div>
+    </el-col>
+  </el-row>
   <el-row justify="center">
     <el-col :height="headerHeight" :xs="18" :sm="18" :md="24" :lg="12" :xl="12">
       <AcgProgress />
@@ -88,21 +142,42 @@ const dialogVisible = ref(false);
       >
     </template>
     <el-scrollbar height="2rem">
-        <span
-          style="
-            font-size: 0.3rem;
-            line-height: 0.5rem;
-            display: inline-block;
-            white-space: pre-line;
-          "
-          >{{ language.guideTips[store.state.guideTipsID] }}</span
-        >
+      <span
+        style="
+          font-size: 0.3rem;
+          line-height: 0.5rem;
+          display: inline-block;
+          white-space: pre-line;
+        "
+        >{{ language.guideTips[store.state.guideTipsID] }}</span
+      >
     </el-scrollbar>
   </el-drawer>
 </template>
 
 <style>
+div.head {
+  background-color: #dcdfe6;
+  padding: 0rem;
+  margin: 0rem;
+  height: 100%;
+  line-height: 0.1rem;
+}
+span.headtext {
+  font-size: 0.35rem;
+  color: #000000;
+  padding: 0rem;
+  margin-right: 0.8rem;
+  text-align: center;
+  display: inline-block;
+  height: 100%;
 
+}
+
+span.right {
+  font-size: 0.35rem;
+  color: #409eff;
+}
 .mainCol {
   background-color: #dcdfe6;
   margin: 0.02rem;

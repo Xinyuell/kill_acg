@@ -55,7 +55,7 @@ const buildArry4 = computed(() => {
 
 <template>
   <div>
-    <el-collapse v-model="store.state.setting.buildActiveName">
+    <el-collapse v-model="store.state.gameData.setting.buildActiveName">
       <el-collapse-item name="0" class="Collapsetitle" >
         <template #title>
           <h3 class="CollapsetitleText">村口</h3>

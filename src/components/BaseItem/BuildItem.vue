@@ -15,10 +15,14 @@ import {
   EnumResourceItem,
   ItemType,
 } from "../../core/tables/Enum";
-import { CityBuildCostBase,  Resource } from "../../core/tables/GlobalConfig";
+import { CityBuildCostBase, Resource } from "../../core/tables/GlobalConfig";
 
 function getUpgradeCost(data: buildItemData) {
-  const cost = CityBuildCostBase[data.cityName]! + Math.pow(data.UpgradeCostPower, data.curValue - 1) * Resource.BuildUpgradeBase * data.UpgradeCostRatio
+  const cost =
+    CityBuildCostBase[data.cityName]! +
+    Math.pow(data.UpgradeCostPower, data.curValue - 1) *
+      Resource.BuildUpgradeBase *
+      data.UpgradeCostRatio;
   let reduce = 0;
   if ((data.Type & ItemType.InfluenceBuild) > 0) {
     reduce = store.state.props.get(EnumResearchProp.ReduceInfluenceBuildCost)
@@ -70,6 +74,8 @@ export default {
   },
   methods: {
     buildItemClick: function () {
+      if (store.state.stopGame || store.state.gameFail || !store.state.running)
+        return;
       const sourceArr: Map<number, resourceItemData> =
         store.state.gameData.sourceArr;
       const data: buildItemData = (this as any).buildData;
@@ -141,33 +147,41 @@ export default {
     },
   },
 
-  setup(props:any){
+  setup(props: any) {
     const hover = ref(false);
-    return{
+    return {
       hover,
-    }
-  }
+    };
+  },
 };
 </script>
 
 
 <template>
-  <el-popover placement="bottom" trigger="hover" transition="" :width="200" >
+  <el-popover placement="bottom" trigger="hover" transition="" :width="200">
     <template #reference>
       <el-button
         :plain="canClick"
         class="buildItem"
         type="success"
         @click="buildItemClick"
-        @mouseenter="()=>{hover = true;}"
-        @mouseleave="()=>{hover = false;}"
+        @mouseenter="
+          () => {
+            hover = true;
+          }
+        "
+        @mouseleave="
+          () => {
+            hover = false;
+          }
+        "
         >{{ buildData.Name }}
         <span class="buildCount" v-show="buildData.curValue > 0">{{
           buildData.curValue
         }}</span>
       </el-button>
-    </template >
-    <span class="tips" >{{ tips }}</span>
+    </template>
+    <span class="tips">{{ tips }}</span>
   </el-popover>
 </template>
 

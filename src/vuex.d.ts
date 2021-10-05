@@ -23,7 +23,7 @@ declare module '@vue/runtime-core' {
     gameFail:boolean;
     /** 动态属性（不存档，登录重算，更新建筑等逻辑都会重算）  */
     props:Map<EnumResearchProp, number>;
-    setting:SaveSetting;
+    stopGame:boolean;
 }
 
   // 为 `this.$store` 提供类型声明

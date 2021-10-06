@@ -280,7 +280,7 @@ function setResourceSpeed(
 
 export function StartGuideByID(ID: number) {
   if (store.state.gameData.setting.closeGuide) return;
-  if (store.state.gameData.PoliticalData.restartTime > 0) return;
+  if (store.state.gameData.PoliticalData.restartTime > 0 && ID <=7) return;
   store.commit(UpdateGuideTips, ID);
   store.state.openGuide = true;
 }

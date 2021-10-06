@@ -40,6 +40,7 @@ export function GetPropRatioByPolitical(value: number) {
 
 export function ResetGame() {
   const PoliticalData = store.state.gameData.PoliticalData;
+  const setting = store.state.gameData.setting;
   let believer = 0;
   if (store.state.gameData.sourceArr.has(EnumResourceItem.Believer))
     believer = store.state.gameData.sourceArr.get(
@@ -64,6 +65,7 @@ export function ResetGame() {
 
   store.state.gameData.PoliticalData = PoliticalData;
   store.state.gameData.LawArryList = LawArryList;
+  store.state.gameData.setting = setting;
   const resourcePolitical = store.state.gameData.sourceArr.get(
     EnumResourceItem.Political
   )!;

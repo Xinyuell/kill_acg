@@ -84,8 +84,8 @@ function onClick(){
       </div>
     </el-col>
   </el-row>
-  <el-row justify="center">
-    <el-col :height="headerHeight" :xs="18" :sm="18" :md="24" :lg="12" :xl="12">
+  <el-row justify="center" style="margin-top:0.1rem;margin-bottom:0.1rem">
+    <el-col :height="headerHeight" :xs="24" :sm="24" :md="24" :lg="20" :xl="14">
       <AcgProgress />
     </el-col>
   </el-row>

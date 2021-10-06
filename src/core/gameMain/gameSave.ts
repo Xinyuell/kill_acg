@@ -183,6 +183,7 @@ export function initGameData() {
       closeGuide: false,
       closeLog: false,
       closeNew: false,
+      closeComplain:false,
       hasShowAcgGuide: false,
       buildActiveName: ["0", "1", "2", "3", "4"],
       timeNow: Date.now(),

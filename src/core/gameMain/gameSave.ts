@@ -346,6 +346,8 @@ export interface SaveSetting {
   closeNew: boolean;
   /**关闭举报Log */
   closeLog: boolean;
+  /**关闭举报弹窗 */
+  closeComplain: boolean;
   /**是否显示ACG引导 */
   hasShowAcgGuide: boolean;
   buildActiveName: string[];

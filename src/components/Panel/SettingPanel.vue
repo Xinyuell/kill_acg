@@ -5,7 +5,10 @@ import { computed, reactive, ref } from "vue";
 import { store } from "../../store";
 import { EnumResourceItem } from "../../core/tables/Enum";
 import { intToString } from "../../core/utils";
-import { GetPoliticalCount, GetPropRatioByPolitical } from "../../core/gameMain/acgUpdate";
+import {
+  GetPoliticalCount,
+  GetPropRatioByPolitical,
+} from "../../core/gameMain/acgUpdate";
 function getTotalByLevel(level: number) {
   return (level * (level + 1)) / 2;
 }
@@ -22,7 +25,7 @@ const politicalCheckValue = ref(0);
 const politicalCheckRatio = ref("0%");
 
 const form1 = reactive({ believer: 0, acgProgressPercent: 0 });
-const form2 = reactive({ politicalCount: 0});
+const form2 = reactive({ politicalCount: 0 });
 
 const onCheck1 = function () {
   politicalCheckValue.value = GetPoliticalCount(
@@ -31,7 +34,8 @@ const onCheck1 = function () {
   );
 };
 const onCheck2 = function () {
-  politicalCheckRatio.value = intToString(GetPropRatioByPolitical(form2.politicalCount)*100, 3) + "%"
+  politicalCheckRatio.value =
+    intToString(GetPropRatioByPolitical(form2.politicalCount) * 100, 3) + "%";
 };
 </script>
 
@@ -41,7 +45,7 @@ const onCheck2 = function () {
     <div class="content">
       <el-switch
         v-model="store.state.gameData.setting.closeGuide"
-        active-text="关闭新手引导弹窗"
+        active-text="关闭新手引导"
         active-color="#13ce66"
         inactive-color="#ff4949"
         class="elswitch"
@@ -58,6 +62,14 @@ const onCheck2 = function () {
       <el-switch
         v-model="store.state.gameData.setting.closeLog"
         active-text="关闭举报日志"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+        class="elswitch"
+      >
+      </el-switch>
+      <el-switch
+        v-model="store.state.gameData.setting.closeComplain"
+        active-text="关闭举报弹窗"
         active-color="#13ce66"
         inactive-color="#ff4949"
         class="elswitch"
@@ -86,23 +98,35 @@ const onCheck2 = function () {
       <p class="tips">政治背景总计获得： {{ politicalValue }}点</p>
     </div>
     <div class="content">
-      <p class="tips"> 政治背景的获取量以及效果计算：</p>
+      <p class="tips">政治背景的获取量以及效果计算：</p>
       <el-form :model="form1" :inline="true">
-        <el-form-item label="信徒数量" >
-          <el-input v-model.number="form1.believer" @change="onCheck1" class="elInput" ></el-input>
+        <el-form-item label="信徒数量">
+          <el-input
+            v-model.number="form1.believer"
+            @change="onCheck1"
+            class="elInput"
+          ></el-input>
         </el-form-item>
         <el-tooltip content="填影响力进度的百分比" placement="bottom">
-        <el-form-item label="ACG文化" >
-          <el-input v-model.number="form1.acgProgressPercent" @change="onCheck1"  class="elInput"  ></el-input>
-        </el-form-item>
+          <el-form-item label="ACG文化">
+            <el-input
+              v-model.number="form1.acgProgressPercent"
+              @change="onCheck1"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
         </el-tooltip>
-        <span class="formTitle">可获得政治背景：{{politicalCheckValue}}</span>
+        <span class="formTitle">可获得政治背景：{{ politicalCheckValue }}</span>
       </el-form>
-       <el-form :model="form2" :inline="true">
-        <el-form-item label="政治背景" >
-          <el-input v-model.number="form2.politicalCount" @change="onCheck2" class="elInput" ></el-input>
+      <el-form :model="form2" :inline="true">
+        <el-form-item label="政治背景">
+          <el-input
+            v-model.number="form2.politicalCount"
+            @change="onCheck2"
+            class="elInput"
+          ></el-input>
         </el-form-item>
-        <span class="formTitle">全局效率加成：{{politicalCheckRatio}}</span>
+        <span class="formTitle">全局效率加成：{{ politicalCheckRatio }}</span>
       </el-form>
     </div>
   </div>

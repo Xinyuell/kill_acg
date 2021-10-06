@@ -114,7 +114,7 @@ function ShowComplainLog(logstr: string, classIndex: number) {
     : 0;
   const sourceArr = store.state.gameData.sourceArr;
   if (classIndex == 0) {
-    const curInfluence= sourceArr.get(EnumResourceItem.Influence)!.cacheValue;
+    const curInfluence = sourceArr.get(EnumResourceItem.Influence)!.cacheValue;
     const value = curInfluence * AcgProgressData.ComplainWrongValueRatio;
     sourceArr.get(EnumResourceItem.Influence)!.cacheValue -= value;
     logstr += "你降低了" + intToString(value) + "点影响力";
@@ -128,7 +128,8 @@ function ShowComplainLog(logstr: string, classIndex: number) {
       value = AcgProgressData.ComplainAcgLevel3 * (1 + prop);
     }
     store.commit(UpdateAcgProgressValue, -value);
-    store.state.gameData.sourceArr.get(EnumResourceItem.Money)!.cacheValue += value * 0.01;
+    store.state.gameData.sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
+      value * 0.01;
     logstr +=
       "ACG文化降低了" +
       intToString(value) +
@@ -173,6 +174,7 @@ export function randomComplain() {
 }
 
 function GetRandomComplain() {
+  if (store.state.gameData.setting.closeComplain) return;
   const random1 = Math.random() * 100; //大类
   const random2 = Math.floor(Math.random() * 3); //小类
   let classIndex = 0;
@@ -196,15 +198,7 @@ function GetRandomComplain() {
     //  外太空7 8 9
     classIndex = random2 + 7;
   }
-  if (hasAuto && classIndex <= 3) {
-    return;
-  }
-  if (hasAutoLevel1 && classIndex <= 6) {
-    return;
-  }
-  if (hasAutoLevel2 && classIndex <= 9) {
-    return;
-  }
+
   return GetTimelogParams(classIndex, duration);
 }
 

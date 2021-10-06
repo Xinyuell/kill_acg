@@ -40,7 +40,7 @@ const lawList = computed(() => {
 
 function onClearClick() {
   ElMessageBox.alert(
-    "这将重新开始游戏，请在发展停滞不前的时候使用<br>ACG文化影响力达到满值也会自动重置<br>除<strong>政治背景、法案</strong>等级外，所有升级、建筑、资源均会清零<br>根据<strong>信徒数量<strong>和<strong>ACG文化影响进度</strong>获得政治背景<br>政治背景可以提高全局资源效率以及解锁法案<br>祝你投个好胎！",
+    "这将重新开始游戏，请在发展停滞不前的时候使用<br>ACG文化影响力达到满值也会自动重置<br>除<strong>政治背景、法案</strong>等级外，所有升级、建筑、资源均会清零<br>根据<strong>信徒数量</strong>和<strong>ACG文化影响进度</strong>获得政治背景<br>政治背景可以提高全局资源效率以及解锁法案<br>祝你投个好胎！",
     "注意！",
     {
       dangerouslyUseHTMLString: true,

@@ -113,6 +113,9 @@ function ShowComplainLog(logstr: string, classIndex: number) {
     ? store.state.props.get(EnumResearchProp.ComplainAcgRatio)!
     : 0;
   const sourceArr = store.state.gameData.sourceArr;
+  const propMoney = store.state.props.get(EnumResearchProp.MoneyRatio)
+    ? store.state.props.get(EnumResearchProp.MoneyRatio)!
+    : 0;
   if (classIndex == 0) {
     const curInfluence = sourceArr.get(EnumResourceItem.Influence)!.cacheValue;
     const value = curInfluence * AcgProgressData.ComplainWrongValueRatio;
@@ -128,13 +131,14 @@ function ShowComplainLog(logstr: string, classIndex: number) {
       value = AcgProgressData.ComplainAcgLevel3 * (1 + prop);
     }
     store.commit(UpdateAcgProgressValue, -value);
+    const moneyAdd =  value * 0.01 * propMoney;
     store.state.gameData.sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
-      value * 0.01;
+    moneyAdd;
     logstr +=
       "ACG文化降低了" +
       intToString(value) +
       "点影响力。你获得了" +
-      intToString(value * 0.01) +
+      intToString(moneyAdd * 0.01) +
       "的金钱奖励";
   }
 
@@ -229,7 +233,9 @@ export function autoRandomComplain() {
     researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0 &&
     workPeople > 0
   ) {
-    const CD = GetAutoComplainCD();
+    let CD = GetAutoComplainCD();
+    if(store.state.gameData.setting.doubleTime > 0)
+      CD *= 0.5;
     const hasAutoLevel1 =
       researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
     const hasAutoLevel2 =

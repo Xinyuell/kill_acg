@@ -43,8 +43,8 @@ export const AcgProgressData = {
   AcgProgressSpeed: 1 * 1000 * 1000,
   /** * 举报失败降低影响力百分比 */
   ComplainWrongValueRatio: 0.1,
-  /** * 1级举报降低ACG影响力1百万 */
-  ComplainAcgLevel1: 1000 * 1000,
+  /** * 1级举报降低ACG影响力2百万 */
+  ComplainAcgLevel1: 2000 * 1000,
   /** * 2级举报降低ACG影响力5百万  */
   ComplainAcgLevel2: 5 * 1000 * 1000,
   /** * 3级举报降低ACG影响力1千万 */

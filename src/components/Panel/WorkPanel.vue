@@ -1,5 +1,5 @@
 <script  setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import {
   store,
   UpdateAutoWorkIndex,
@@ -24,7 +24,7 @@ export interface IWorkConfig extends IWorkInfo {
   clickAdd: Function;
   clickSub: Function;
 }
-const radioValue = ref("1");
+const percentRadioValue = ref("1");
 
 const IsShow = computed(function () {
   return (id: number) => {
@@ -125,7 +125,9 @@ const notWork = computed(() => {
   });
   return Math.floor(people - total + 0.00001);
 });
+
 const radio = ref(-1);
+const switchValue = ref(false);
 let old = -1;
 //选哪个自动，上传store
 function radioChange(curValue: number) {
@@ -135,7 +137,19 @@ function radioChange(curValue: number) {
   store.commit(UpdateAutoWorkIndex, curValue);
 }
 
-const switchValue = ref(false);
+const watchWorkIndex = computed(()=>{
+  console.log("watchWorkIndex")
+  const index = store.state.gameData.autoWorkIndex;
+  if(index < 0){
+    radio.value = -1;
+    switchValue.value =false;
+  }
+  else{
+    switchValue.value = true;
+    radio.value = store.state.gameData.autoWorkIndex;
+  }
+})
+
 function cancelAuto(value: boolean) {
   if (value === false) {
     old = radio.value;
@@ -150,15 +164,15 @@ function cancelAuto(value: boolean) {
 //根据按键来增加人数
 function clickAdd(e: MouseEvent, index: number) {
   let value = 1;
-  if (radioValue.value === "1") {
+  if (percentRadioValue.value === "1") {
     if (e.ctrlKey) value *= 10;
     if (e.shiftKey) value *= 25;
     if (e.altKey) value *= 100;
-  } else if (radioValue.value === "25%") {
+  } else if (percentRadioValue.value === "25%") {
     value = Math.floor(notWork.value * 0.25);
-  } else if (radioValue.value === "50%") {
+  } else if (percentRadioValue.value === "50%") {
     value = Math.floor(notWork.value * 0.5);
-  } else if (radioValue.value === "100%") {
+  } else if (percentRadioValue.value === "100%") {
     value = notWork.value;
   }
 
@@ -190,15 +204,15 @@ function clickSub(e: MouseEvent, index: number) {
   const workConfig: number[] = store.state.gameData.workConfig;
   const curValue = workConfig[index];
   let value = 1;
-  if (radioValue.value === "1") {
+  if (percentRadioValue.value === "1") {
     if (e.ctrlKey) value *= 10;
     if (e.shiftKey) value *= 25;
     if (e.altKey) value *= 100;
-  } else if (radioValue.value === "25%") {
+  } else if (percentRadioValue.value === "25%") {
     value = Math.floor(curValue * 0.25);
-  } else if (radioValue.value === "50%") {
+  } else if (percentRadioValue.value === "50%") {
     value = Math.floor(curValue * 0.5);
-  } else if (radioValue.value === "100%") {
+  } else if (percentRadioValue.value === "100%") {
     value = curValue;
   }
   //减少人数只要对应的index人数满足就够了
@@ -253,7 +267,7 @@ function clickSub6(e: any) {
       <p id="spantitle">剩余人数：{{ notWork }}</p>
       <div style="vertical-align:">
         <el-radio-group
-          v-model="radioValue"
+          v-model="percentRadioValue"
           size="mini"
           style="display: inline-block"
         >

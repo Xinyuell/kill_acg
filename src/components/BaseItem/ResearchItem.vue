@@ -12,6 +12,21 @@ import { resourceItemData } from "../../core/gameMain/gameSave";
 import { IResearchInfo } from "../../core/tables/ITableInfo";
 import { EnumResearchItem, EnumResourceItem } from "../../core/tables/Enum";
 
+function getUpgradeCost(data: IResearchInfo):[boolean,resourceItemData,resourceItemData] {
+  const sourceArr: Map<number, resourceItemData> =
+    store.state.gameData.sourceArr;
+  const cost1Data = sourceArr.get(EnumResourceItem.Cost1) as resourceItemData;
+  const cost2Data = sourceArr.get(EnumResourceItem.Cost2) as resourceItemData;
+  const influenceData = sourceArr.get(
+    EnumResourceItem.Influence
+  ) as resourceItemData;
+
+  if (data.Condition > influenceData.cacheValue) return [false, cost1Data,cost2Data];
+  if (data.Cost1 > cost1Data.cacheValue) return [false, cost1Data,cost2Data];
+  if (data.Cost2 > cost2Data.cacheValue) return [false, cost1Data,cost2Data];
+  return [true, cost1Data,cost2Data]
+}
+
 export default {
   props: {
     researchData: {
@@ -27,23 +42,7 @@ export default {
       const data: IResearchInfo = (this as any).researchData;
       const complete = store.state.gameData.researchComplete;
       if (complete.indexOf(data.ID) >= 0) return;
-      const sourceArr: Map<number, resourceItemData> =
-        store.state.gameData.sourceArr;
-      const cost1Data = sourceArr.get(
-        EnumResourceItem.Cost1
-      ) as resourceItemData;
-      const cost2Data = sourceArr.get(
-        EnumResourceItem.Cost2
-      ) as resourceItemData;
-      const influenceData = sourceArr.get(
-        EnumResourceItem.Influence
-      ) as resourceItemData;
-
-      if (!import.meta.env.DEV) {
-        if (data.Condition > influenceData.cacheValue) return;
-        if (data.Cost1 > cost1Data.cacheValue) return;
-        if (data.Cost2 > cost2Data.cacheValue) return;
-      }
+      let [isUpgrade,cost1Data,cost2Data] = getUpgradeCost(data);
 
       cost1Data.cacheValue -= data.Cost1;
       cost2Data.cacheValue -= data.Cost2;
@@ -69,13 +68,19 @@ export default {
       }
     },
   },
+  computed: {
+    canClick: function () {
+      let [IsClick] = getUpgradeCost((this as any).researchData)
+      return !IsClick;
+    },
+  },
 };
 </script>
 
 <template>
   <el-popover placement="bottom" trigger="hover" :width="250">
     <template #reference>
-      <el-button class="buildItem" type="info" plain @click="researchItemClick"
+      <el-button class="buildItem" type="success" :plain="canClick"  @click="researchItemClick" 
         >{{ researchData.Name }}
       </el-button>
     </template>

@@ -1,3 +1,5 @@
+import { ElMessage } from "element-plus";
+import { store } from "../../store";
 import { GetTotalWorks } from "../system/works";
 import {
   EnumResearchProp,
@@ -5,6 +7,7 @@ import {
   EnumWorkType,
 } from "../tables/Enum";
 import { Resource } from "../tables/GlobalConfig";
+import language from "../tables/language";
 import { buildItemData, resourceItemData } from "./gameSave";
 
 /** * 计算当前金钱的最终速度，考虑产出和消耗 */
@@ -78,6 +81,14 @@ export function calculateMoneySpeed(
     }
     isDebts = true;
     moneyData.cacheSpeed = num7;
+    ElMessage.success({
+      message: "金钱不足，所有信徒、从众均离开了工作岗位",
+      duration: 5000,
+      showClose: true,
+      center: true,
+      iconClass: "warning",
+    });
+    store.state.gameData.autoWorkIndex = -1;
   }
   return isDebts;
 }
@@ -149,6 +160,13 @@ let num7 = researchProps.get(EnumResearchProp.ResearchCostRatio)
     cost1.cacheSpeed = num1;
     cost2.cacheSpeed = num2;
     policy.cacheSpeed = 0;
+    ElMessage.success({
+      message: "知识不足，所有信徒、从众均离开了会议室",
+      duration: 5000,
+      showClose: true,
+      center: true,
+      iconClass: "warning",
+    });
   }
   return isDebts;
 }

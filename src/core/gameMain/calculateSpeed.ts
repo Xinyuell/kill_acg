@@ -74,14 +74,21 @@ export function calculateMoneySpeed(
   let num9 = num8 + num7 - num6 - num1 - num2 - num12; //金钱工人收入+影响力收入 - 从众工人支持-研究1消耗-研究2消耗-政策点消耗
   moneyData.cacheSpeed = num9;
   let isDebts = false;
-  if (num9 * deltaTime + moneyData.cacheValue <= 0) {
+  if (num9 * deltaTime + moneyData.cacheValue < 0) {
     //这一帧金钱会扣到0以下，所有工人全部停工
     for (let i = 0; i < workConfig.length; i++) {
       workConfig[i] = 0;
     }
     isDebts = true;
     moneyData.cacheSpeed = num7;
-   
+    ElMessage.success({
+      message: "金钱不足，所有信徒、从众均离开了工作岗位",
+      duration: 5000,
+      showClose: true,
+      center: true,
+      iconClass: "warning",
+    });
+    store.state.gameData.autoWorkIndex = -1;
   }
   return isDebts;
 }
@@ -146,14 +153,20 @@ let num7 = researchProps.get(EnumResearchProp.ResearchCostRatio)
   //如果知识的速度加上当前的值，小于0，清楚政策的工人就可以了
   let isDebts = false;
   if (
-    cost1.cacheSpeed * deltaTime + cost1.cacheValue <= 0 || cost2.cacheSpeed * deltaTime + cost2.cacheValue <= 0
+    cost1.cacheSpeed * deltaTime + cost1.cacheValue < 0 || cost2.cacheSpeed * deltaTime + cost2.cacheValue < 0
   ) {
     workConfig[EnumWorkType.PolicyWork] = 0;
     isDebts = true;//此时知识的速度就不用减去消耗了
     cost1.cacheSpeed = num1;
     cost2.cacheSpeed = num2;
     policy.cacheSpeed = 0;
-   
+    ElMessage.success({
+      message: "知识不足，所有信徒、从众均离开了会议室",
+      duration: 5000,
+      showClose: true,
+      center: true,
+      iconClass: "warning",
+    });
   }
   return isDebts;
 }

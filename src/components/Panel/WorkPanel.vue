@@ -1,5 +1,5 @@
 <script  setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import {
   store,
   UpdateAutoWorkIndex,
@@ -9,7 +9,6 @@ import * as table from "../../core/tables/table";
 import { intToString } from "../../core/utils";
 /**
  * 我也不想这样的，有空研究清楚了再改
- * 太菜了 搞不定了
  */
 import { GetAutoComplainCD } from "../../core/system/complain";
 import { resourceItemData } from "../../core/gameMain/gameSave";
@@ -126,7 +125,7 @@ const notWork = computed(() => {
   return Math.floor(people - total + 0.00001);
 });
 
-const radio = ref(-1);
+const autoWorkRadio = ref(-1);
 const switchValue = ref(false);
 let old = -1;
 //选哪个自动，上传store
@@ -137,28 +136,16 @@ function radioChange(curValue: number) {
   store.commit(UpdateAutoWorkIndex, curValue);
 }
 
-const watchWorkIndex = computed(()=>{
-  console.log("watchWorkIndex")
-  const index = store.state.gameData.autoWorkIndex;
-  if(index < 0){
-    radio.value = -1;
-    switchValue.value =false;
-  }
-  else{
-    switchValue.value = true;
-    radio.value = store.state.gameData.autoWorkIndex;
-  }
-})
 
 function cancelAuto(value: boolean) {
   if (value === false) {
-    old = radio.value;
-    radio.value = -1;
+    old = autoWorkRadio.value;
+    autoWorkRadio.value = -1;
   } else {
     if (old < 0) old = 0;
-    radio.value = old;
+    autoWorkRadio.value = old;
   }
-  store.commit(UpdateAutoWorkIndex, radio.value);
+  store.commit(UpdateAutoWorkIndex, autoWorkRadio.value);
 }
 
 //根据按键来增加人数
@@ -331,7 +318,7 @@ function clickSub6(e: any) {
             ></el-button>
             <el-radio
               style="margin-left: 0.2rem"
-              v-model="radio"
+              v-model="autoWorkRadio"
               @change="radioChange"
               :label="data.ID"
               ><span></span

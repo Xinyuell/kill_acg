@@ -30,7 +30,7 @@ export function updateHistory() {
       store.state.gameData.historyLogID = i;
       if (i === 1 || i >= 3) {
         store.state.gameData.acgProgressValue -=
-          store.state.gameData.acgProgressValue * 0.05;
+          store.state.gameData.acgProgressValue * 0.1;
       }
       return;
     }

@@ -854,9 +854,9 @@ export const LawInfoList: Map<number, ILawInfo> = new Map([
     {
       ID: EnumLawItem.ComplainAcgRatio,
       Name: "严格审查",
-      Desc: "越做审核工作，越倾向严格\n每级提高举报效果10%\n当前提高{0}%",
+      Desc: "越做审核工作，越倾向严格\n每级提高举报效果20%\n当前提高{0}%",
       Cost: 50,
-      ResearchProp: new Map([[EnumResearchProp.ComplainAcgRatio, 0.1]]),
+      ResearchProp: new Map([[EnumResearchProp.ComplainAcgRatio, 0.2]]),
     },
   ],
   [

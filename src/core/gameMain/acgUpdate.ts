@@ -79,9 +79,7 @@ export function ResetGame() {
   router.push("/introduction");
 }
 
-export function acgProgressUpdate(deltaTime: number) {
-  if (store.state.gameData.influenceLevel <= 1) return;
-  //ACG进度速度从40% 翻倍 30%翻倍 20%翻倍 10%翻倍
+export function GetAcgPropgressSpeed(){
   let speed = AcgProgressData.AcgProgressSpeed;
   const curRatio =
     store.state.gameData.acgProgressValue / AcgProgressData.AcgProgressMax;
@@ -94,12 +92,20 @@ export function acgProgressUpdate(deltaTime: number) {
   } else if (curRatio <= 0.5) {
     speed *= 2;
   }
+  
   const prop = store.state.props.get(
     EnumResearchProp.ReduceAcgProgressSpeedRatio
   )
     ? store.state.props.get(EnumResearchProp.ReduceAcgProgressSpeedRatio)!
     : 0;
   speed *= prop;
+  return speed;
+}
+
+export function acgProgressUpdate(deltaTime: number) {
+  if (store.state.gameData.influenceLevel <= 1) return;
+  //ACG进度速度从40% 翻倍 30%翻倍 20%翻倍 10%翻倍
+  const speed = GetAcgPropgressSpeed();
   store.commit(UpdateAcgProgressValue, deltaTime * speed);
   //游戏成功失败的结算
   if (store.state.gameData.acgProgressValue >= AcgProgressData.AcgProgressMax) {

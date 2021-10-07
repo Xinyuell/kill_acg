@@ -3,6 +3,7 @@ import { computed } from "@vue/reactivity";
 import { ReplaceGameData, store, UpdateGuideTips } from "../../store/index";
 import { intToString } from "../../core/utils";
 import { AcgProgressData } from "../../core/tables/GlobalConfig";
+import { GetAcgPropgressSpeed } from "../../core/gameMain/acgUpdate";
 const precent = computed(()=>{
   const value = 100 * store.state.gameData.acgProgressValue / AcgProgressData.AcgProgressMax;
   return parseFloat(value.toFixed(2)) ;
@@ -11,10 +12,11 @@ const precent = computed(()=>{
 const tips = computed(()=>{
   const value =  100 * store.state.gameData.acgProgressValue / AcgProgressData.AcgProgressMax;
   const precent = parseFloat(value.toFixed(2)) ;
-  const time = (AcgProgressData.AcgProgressMax - store.state.gameData.acgProgressValue) / AcgProgressData.AcgProgressSpeed / 5;
+  const speed = GetAcgPropgressSpeed();
+  const time = (AcgProgressData.AcgProgressMax - store.state.gameData.acgProgressValue) / speed / 5;
   
   let str = "ACG文化对世界造成的影响力" + intToString(store.state.gameData.acgProgressValue) + "；进度：" +  precent + "%\n";
-  str += "ACG文化影响力增长速度" + intToString(AcgProgressData.AcgProgressSpeed) + "(增长速度低于50%后每降低10%，速度翻倍一次)\n还需" + time.toFixed(1) + "天（现实时间5秒等于游戏时间一天）,世界将被毁灭!\n"
+  str += "ACG文化影响力增长速度" + intToString(speed) + "(增长速度低于50%后每降低10%，速度翻倍一次)\n还需" + time.toFixed(1) + "天（现实时间5秒等于游戏时间一天）,世界将被毁灭!\n"
   str += "解锁举报功能后将有效遏制ACG文化的发展"
   return str;
 })

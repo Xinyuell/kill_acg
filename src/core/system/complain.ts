@@ -131,14 +131,14 @@ function ShowComplainLog(logstr: string, classIndex: number) {
       value = AcgProgressData.ComplainAcgLevel3 * (1 + prop);
     }
     store.commit(UpdateAcgProgressValue, -value);
-    const moneyAdd =  value * 0.01 * propMoney;
+    const moneyAdd =  value * 0.01 *  (1 + propMoney);
     store.state.gameData.sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
     moneyAdd;
     logstr +=
       "ACG文化降低了" +
       intToString(value) +
       "点影响力。你获得了" +
-      intToString(moneyAdd * 0.01) +
+      intToString(moneyAdd) +
       "的金钱奖励";
   }
 
@@ -234,8 +234,7 @@ export function autoRandomComplain() {
     workPeople > 0
   ) {
     let CD = GetAutoComplainCD();
-    if(store.state.gameData.setting.doubleTime > 0)
-      CD *= 0.5;
+  
     const hasAutoLevel1 =
       researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
     const hasAutoLevel2 =
@@ -280,7 +279,10 @@ export function GetAutoComplainCD() {
   const prop = store.state.props.get(EnumResearchProp.ComplainCD)
     ? store.state.props.get(EnumResearchProp.ComplainCD)!
     : 0;
-  return 200 / Math.pow(workPeople + 50, 0.4 + prop);
+  let CD = 200 / Math.pow(workPeople + 50, 0.4 + prop);
+  if(store.state.gameData.setting.doubleTime > 0)
+    CD *= 0.5;
+  return CD;
 }
 
 /**获取指定毫秒数转化的时间戳 */

@@ -9,7 +9,7 @@ import {
 import { EnumResearchProp, EnumResourceItem } from "../tables/Enum";
 import { AcgProgressData } from "../tables/GlobalConfig";
 import language from "../tables/language";
-import { SaveGame } from "./gameSave";
+import { SaveGame, SetDoubleTime } from "./gameSave";
 import { CalculateProps } from "./gameUpdate";
 
 /** 当前获取的政治背景的值,传入信徒人数和重置次数 */
@@ -66,6 +66,7 @@ export function ResetGame() {
   store.state.gameData.PoliticalData = PoliticalData;
   store.state.gameData.LawArryList = LawArryList;
   store.state.gameData.setting = setting;
+  SetDoubleTime(setting);
   const resourcePolitical = store.state.gameData.sourceArr.get(
     EnumResourceItem.Political
   )!;

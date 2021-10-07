@@ -19,7 +19,7 @@ import { CalculateProps } from "./gameUpdate";
 
 export const SaveLocalStorageGameDataKey = "kill_acg_game";
 
-function SetDoubleTime(setting: SaveSetting) {
+export function SetDoubleTime(setting: SaveSetting) {
   let pass = Date.now() - setting.timeNow;
   if (pass > GameTime.BaseDoubleTime) {
     setting.doubleTime += pass;

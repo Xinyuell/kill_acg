@@ -15,6 +15,7 @@ import {
   ILawInfo,
   IPolicyInfo,
 } from "../tables/ITableInfo";
+import { CalculateProps } from "./gameUpdate";
 
 export const SaveLocalStorageGameDataKey = "kill_acg_game";
 
@@ -67,6 +68,7 @@ export function ResetGameData(state: State, saveGameData: ISaveGameData) {
       gameData.LawArryList.get(value.ID)!.level = value.level;
     }
   });
+  CalculateProps(); //初始化要重算一次属性
 }
 
 export function setStoreGameDataByBase64(

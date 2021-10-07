@@ -37,7 +37,7 @@ export class GameControl {
       state,
       window.localStorage[SaveLocalStorageGameDataKey]
     );
-    CalculateProps(); //初始化要重算一次属性
+    
     setInterval(() => {
       this.update();
     }, GameTime.UpdateTime);

@@ -131,7 +131,7 @@ function ShowComplainLog(logstr: string, classIndex: number) {
       value = AcgProgressData.ComplainAcgLevel3 * (1 + prop);
     }
     store.commit(UpdateAcgProgressValue, -value);
-    const moneyAdd =  value * 0.01 *  (1 + propMoney);
+    const moneyAdd =  value * 0.005 *  (1 + propMoney);
     store.state.gameData.sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
     moneyAdd;
     logstr +=

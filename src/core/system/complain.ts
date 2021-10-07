@@ -252,10 +252,10 @@ export function autoRandomComplain() {
         classIndex += random2 + 6;
       }
     } else if (hasAutoLevel1) {
-      //6：4
-      if (random1 <= 60) {
+      //7：3
+      if (random1 <= 70) {
         classIndex += random2;
-      } else if (random1 <= 40) {
+      } else  {
         classIndex += random2 + 3;
       }
     } else classIndex += random2;

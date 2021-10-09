@@ -62,7 +62,16 @@ const stopTips =computed(()=>{
 function onClick(){
   store.state.stopGame = !store.state.stopGame;
 }
+const closeDrawerOnclickModal = ref(false)
+function AfterDrawerOpen(){
+  setTimeout(() => {
+    closeDrawerOnclickModal.value = true;
+  }, 1000);
+}
 
+function AfterDrawerClosed(){
+  closeDrawerOnclickModal.value = false;
+}
 
 </script>
 
@@ -132,13 +141,15 @@ function onClick(){
     title=""
     direction="ttb"
     size="4rem"
-    :close-on-click-modal="false"
+    :close-on-click-modal="closeDrawerOnclickModal"
     :show-close="true"
+    @opened="AfterDrawerOpen"
+    @closed="AfterDrawerClosed"
   >
     <template #title>
       <span
         style="font-size: 0.4rem; line-height: 0.5rem; display: inline-block"
-        >指引【ESC关闭】</span
+        >新手指引</span
       >
     </template>
     <el-scrollbar height="2rem">

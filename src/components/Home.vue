@@ -63,7 +63,8 @@ function GetGameName() {
               >成就</el-button
             >
           </div>
-          <p style="font-size: 0.3rem">本故事纯属虚构，如有雷同，纯属巧合</p>
+          <p style="font-size: 0.3rem;text-align:center">本故事纯属虚构</p>
+          <p style="font-size: 0.3rem;text-align:center">如有雷同纯属巧合</p>
         </div>
       </div>
     </el-col>
@@ -101,8 +102,9 @@ h1.title {
 }
 
 .home {
-  width: 10rem;
-  height: 10rem;
+
+  width: 5rem;
+  height: 6rem;
   margin: 0 auto;
 }
 .elButton {

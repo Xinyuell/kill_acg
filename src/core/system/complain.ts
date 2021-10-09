@@ -131,9 +131,9 @@ function ShowComplainLog(logstr: string, classIndex: number) {
       value = AcgProgressData.ComplainAcgLevel3 * (1 + prop);
     }
     store.commit(UpdateAcgProgressValue, -value);
-    const moneyAdd =  value * 0.005 *  (1 + propMoney);
+    const moneyAdd = value * 0.005 * (1 + propMoney);
     store.state.gameData.sourceArr.get(EnumResourceItem.Money)!.cacheValue +=
-    moneyAdd;
+      moneyAdd;
     logstr +=
       "ACG文化降低了" +
       intToString(value) +
@@ -168,6 +168,7 @@ export function randomComplain() {
     ) < 0
   )
     return;
+  if (store.state.stopGame) return;
   const params = GetRandomComplain();
   if (params === undefined) return;
   if (params.title !== "0") {
@@ -230,11 +231,12 @@ export function autoRandomComplain() {
   if (
     store.state.running &&
     !store.state.gameFail &&
+    !store.state.stopGame &&
     researchComplete.indexOf(EnumResearchItem.BelieverInfluenceMax2) >= 0 &&
     workPeople > 0
   ) {
     let CD = GetAutoComplainCD();
-  
+
     const hasAutoLevel1 =
       researchComplete.indexOf(EnumResearchItem.AutoComplainLevel1) >= 0;
     const hasAutoLevel2 =
@@ -255,7 +257,7 @@ export function autoRandomComplain() {
       //7：3
       if (random1 <= 70) {
         classIndex += random2;
-      } else  {
+      } else {
         classIndex += random2 + 3;
       }
     } else classIndex += random2;
@@ -280,8 +282,7 @@ export function GetAutoComplainCD() {
     ? store.state.props.get(EnumResearchProp.ComplainCD)!
     : 0;
   let CD = 200 / Math.pow(workPeople + 50, 0.4 + prop);
-  if(store.state.gameData.setting.doubleTime > 0)
-    CD *= 0.5;
+  if (store.state.gameData.setting.doubleTime > 0) CD *= 0.5;
   return CD;
 }
 

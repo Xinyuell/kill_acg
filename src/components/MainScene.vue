@@ -66,7 +66,7 @@ const closeDrawerOnclickModal = ref(false)
 function AfterDrawerOpen(){
   setTimeout(() => {
     closeDrawerOnclickModal.value = true;
-  }, 1000);
+  }, 500);
 }
 
 function AfterDrawerClosed(){
